@@ -74,7 +74,7 @@ while IFS= read -r f; do
 done < <(git diff --name-only --diff-filter=A HEAD "origin/$BRANCH")
 
 # --- 3. Fast-forward only --------------------------------------------------
-if ! git merge --ff-only --quiet "origin/$BRANCH"; then
+if ! git -c advice.diverging=false merge --ff-only --quiet "origin/$BRANCH" 2>/dev/null; then
   echo "Fast-forward failed: this pod has commits of its own, which it should never have."
   echo "Nothing was changed. Inspect with: git log --oneline origin/$BRANCH..HEAD"
   exit 1
