@@ -1,0 +1,82 @@
+# ---------------------------------------------------------------------------
+# cad-arr2026 — what is NOT tracked, and why.
+#
+# Rule of thumb (experiment-discipline, version-control-for-experiments.md):
+#   track code, configs, the ledger, measured configuration, and primary evidence;
+#   ignore regenerable caches and anything large that a re-run reproduces exactly.
+# Every negated (re-included) pattern below carries its reason. Do not delete one
+# without reading it.
+# ---------------------------------------------------------------------------
+
+# --- Python / OS -----------------------------------------------------------
+__pycache__/
+*.py[cod]
+.DS_Store
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# --- Secrets: NEVER commit --------------------------------------------------
+# HF tokens and judge API keys are passed through the environment on the pod.
+.env
+.env.*
+*.key
+*secret*
+*token*.txt
+.huggingface/
+
+# pod_pull.sh parks files here while it pulls; per-pull scratch, never evidence.
+.pull_aside/
+
+# --- LaTeX build products (Overleaf rebuilds them) -------------------------
+paper_arr2026/*.aux
+paper_arr2026/*.bbl
+paper_arr2026/*.blg
+paper_arr2026/*.log
+paper_arr2026/*.out
+paper_arr2026/*.synctex.gz
+paper_arr2026/*.fdb_latexmk
+paper_arr2026/*.fls
+
+# --- Pod scratch output ----------------------------------------------------
+# Runners write here while they run. These are IGNORED on purpose: git never
+# touches ignored files, so a `git pull` on the pod can never overwrite a
+# half-finished run. Results that the paper cites are copied into results/
+# and committed from the laptop, which is the durable machine.
+rtsd_fullres_checkpoints/
+pincer_k40_checkpoints/
+controls_checkpoints/
+gemma_generation_checkpoints/
+qwen_generation_checkpoints/
+leace_checkpoints/
+e1_outputs/
+
+# Large tensors are regenerable from the model and too big for history.
+*.pt
+*.safetensors
+*.bin
+*.npz
+
+# EXCEPTION — the loudness filter norms (17 KB).
+# This file DEFINES which 2,083 of the 4,164 AccessEval pairs are used. It is a
+# measurement, not a cache: runners that cannot find it RECOMPUTE it, and a
+# recomputation can move the median by one tie, which is how one earlier run got
+# a 2,082-pair pool and another 2,083. Three copies because three runners look in
+# three places; all three are byte-identical (sha256 checked at commit time).
+angular_checkpoints/*
+!angular_checkpoints/accesseval_loudness.npz
+baseline_results/*
+!baseline_results/caa_checkpoints/
+!baseline_results/angular_checkpoints/
+baseline_results/caa_checkpoints/*
+baseline_results/angular_checkpoints/*
+!baseline_results/caa_checkpoints/accesseval_loudness.npz
+!baseline_results/angular_checkpoints/accesseval_loudness.npz
+
+# --- results/ is TRACKED ---------------------------------------------------
+# Primary evidence. Generation uses do_sample=True, so re-running produces
+# DIFFERENT text: these files cannot be regenerated, only reproduced in
+# distribution. The paper quotes specific responses from them. The CAD
+# per-response texts from the first frontier sweep were lost this way (left on
+# a pod that was shut down); only their judge scores survived.
+# Nothing to ignore here; listed so nobody adds results/ above by accident.

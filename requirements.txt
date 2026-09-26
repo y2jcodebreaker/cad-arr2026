@@ -1,0 +1,20 @@
+# Pinned to the versions that ran on the RunPod A100 image (torch 2.4.x, CUDA 12.x).
+#
+# torch is deliberately NOT listed: the pod image ships a CUDA-matched build, and
+# letting pip reinstall it breaks CUDA. Install torch from the image, then this file.
+#
+# transformers 5.x fails against torch 2.4 with "ImportError: DTensor". These four
+# pins are the combination that fixed it on the pod; change them together or not at all.
+transformers==4.44.2
+tokenizers==0.19.1
+datasets==2.21.0
+numpy==1.26.3
+
+accelerate          # device_map="auto"; not imported directly
+concept-erasure     # LEACE (evaluate_leace_baseline.py, exp3_leace_rank_k.py)
+evaluate            # HF evaluate: Regard
+scikit-learn
+scipy
+tqdm
+matplotlib
+vaderSentiment
