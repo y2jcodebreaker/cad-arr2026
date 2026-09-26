@@ -1,0 +1,17 @@
+{
+  "k": 40,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_eval": 250,
+  "n_pool": 2082,
+  "cohens_d": 0.20459702933861817,
+  "ci95": [
+    0.10612033661034562,
+    0.30541720655758475
+  ],
+  "delta_med_pct": 49.50845839166974,
+  "baseline_mean": 0.5314147052656005,
+  "steered_mean": 0.2683194770219663,
+  "n_empty": 0,
+  "degenerate": false,
+  "interpretation": "rank-k LEACE erases the same top-k contrastive subspace as CAD but with covariance whitening; comparing to CAD's unwhitened projection isolates rank from whitening."
+}

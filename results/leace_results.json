@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "model": "meta-llama/Llama-3.1-8B-Instruct",
+    "n_eval": 250,
+    "n_filtered_pool": 2082,
+    "signal_percentile": 50,
+    "random_seed": 42,
+    "method": "LEACE (Belrose et al. NeurIPS 2023)",
+    "training_pool": 2082,
+    "intervention_layers_single": [
+      21
+    ],
+    "intervention_layers_dual": [
+      21,
+      25
+    ],
+    "scoring": "generation_word_count_log_odds"
+  },
+  "baseline_mean": 0.508530598359804,
+  "baseline_std": 1.2021484126158535,
+  "single_layer": {
+    "cohens_d": -0.043208850122441585,
+    "ci95": [
+      -0.12445977521029784,
+      0.03693423977339863
+    ],
+    "delta_med_pct": -10.371906947099713,
+    "baseline_mean": 0.508530598359804,
+    "baseline_std": 1.2021484126158535,
+    "steered_mean": 0.5612749188192122,
+    "steered_std": 1.2389408723779696,
+    "degenerate": false,
+    "n_empty": 0
+  },
+  "dual_layer": {
+    "cohens_d": -0.028044004278377742,
+    "ci95": [
+      -0.10315088442216687,
+      0.04598636998035975
+    ],
+    "delta_med_pct": -6.699750542200833,
+    "baseline_mean": 0.508530598359804,
+    "baseline_std": 1.2021484126158535,
+    "steered_mean": 0.5426008798806721,
+    "steered_std": 1.227492359030837,
+    "degenerate": false,
+    "n_empty": 0
+  }
+}

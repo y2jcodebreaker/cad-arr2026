@@ -1,0 +1,92 @@
+{
+  "model": "gpt-5.5-2026-04-23",
+  "temperature": 0,
+  "seed": 42,
+  "reasoning_effort": "none",
+  "n_judgments_completed": 2889,
+  "n_judgments_failed": 5,
+  "total_cost_usd": 22.7895,
+  "total_input_tokens": 2378005,
+  "total_cached_input_tokens": 0,
+  "total_output_tokens": 1122963,
+  "per_method": {
+    "Ours (CAD k=40)": {
+      "n_paired": 196,
+      "n_baseline": 196,
+      "n_steered": 197,
+      "baseline_mean": 5.6938775510204085,
+      "steered_mean": 5.6020408163265305,
+      "delta": -0.09183673469387756,
+      "delta_ci95": [
+        -0.22448979591836735,
+        0.04081632653061224
+      ],
+      "delta_std": 0.9401225745928169
+    },
+    "CAA (L14 alpha=1)": {
+      "n_paired": 249,
+      "n_baseline": 250,
+      "n_steered": 249,
+      "baseline_mean": 5.586345381526105,
+      "steered_mean": 4.626506024096385,
+      "delta": -0.9598393574297188,
+      "delta_ci95": [
+        -1.1004016064257027,
+        -0.8192771084337349
+      ],
+      "delta_std": 1.1528338043887858
+    },
+    "FairSteer (L29 alpha=2)": {
+      "n_paired": 248,
+      "n_baseline": 249,
+      "n_steered": 249,
+      "baseline_mean": 5.524193548387097,
+      "steered_mean": 4.842741935483871,
+      "delta": -0.6814516129032258,
+      "delta_ci95": [
+        -0.8346774193548387,
+        -0.532258064516129
+      ],
+      "delta_std": 1.1968830596085627
+    },
+    "SADI (s=10)": {
+      "n_paired": 250,
+      "n_baseline": 250,
+      "n_steered": 250,
+      "baseline_mean": 5.5,
+      "steered_mean": 0.236,
+      "delta": -5.264,
+      "delta_ci95": [
+        -5.444,
+        -5.084
+      ],
+      "delta_std": 1.443133582920379
+    },
+    "Angular (150deg)": {
+      "n_paired": 249,
+      "n_baseline": 249,
+      "n_steered": 250,
+      "baseline_mean": 5.546184738955823,
+      "steered_mean": 3.3092369477911645,
+      "delta": -2.2369477911646585,
+      "delta_ci95": [
+        -2.4136546184738954,
+        -2.0562248995983934
+      ],
+      "delta_std": 1.438273046446402
+    },
+    "SHP (L13 c=1.8)": {
+      "n_paired": 250,
+      "n_baseline": 250,
+      "n_steered": 250,
+      "baseline_mean": 6.008,
+      "steered_mean": 6.084,
+      "delta": 0.076,
+      "delta_ci95": [
+        -0.04,
+        0.2
+      ],
+      "delta_std": 0.9643359244062214
+    }
+  }
+}
