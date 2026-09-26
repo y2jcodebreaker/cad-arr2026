@@ -1,0 +1,26 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+A model asked about exercise by a user who mentions a disability answers a different
+question, one about risk and supervision. Removing that behaviour at inference time is a
+reasonable goal, and the field measures progress toward it with a metric that counts the
+clinical vocabulary the model stops producing.
+
+That metric cannot tell the difference between a model that stopped medicalizing and a
+model that stopped writing. We found three methods sitting at settings where it reports
+success and the responses are corrupted, looped, or truncated, and the failure modes
+differ enough that no single filter on emptiness, length or uniqueness catches them all.
+The method with the lowest score in our comparison is the one that damages the output
+most.
+
+Measuring quality alongside the target metric changes the ranking and leaves a usable
+picture: a narrow band of configurations that reduce medicalization while leaving the
+text intact, occupied almost entirely by multi-rank projection at the operating point its
+rank prescribes. That rank matters is a separate and simpler claim than the one we set
+out to make, and it survives the control experiments that the stronger claim does not.
+
+The practical recommendation is small and cheap. Report a quality measure beside the
+target metric, since a vocabulary-absence score is satisfied by absence of any kind. And
+report the number of independent base prompts alongside the number of contrastive pairs,
+since the spectral statistics read off those pairs move further under a change of prompt
+diversity than under a change of bias.

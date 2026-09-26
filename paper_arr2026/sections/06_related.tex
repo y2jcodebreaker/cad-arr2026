@@ -1,0 +1,48 @@
+% PORTED from paper_aaai2027/main.tex Related Work, with two changes:
+%  - removed "CAD predicts each failure from the singular value spectrum before any
+%    steered generation" and the EVR->alpha prescription framing (falsified, Sec 5)
+%  - narrowed the novelty claim: HiDRA / SAE-SSV / CAS-BiPO do read structure off
+%    contrastive activations, so the gap is not that nobody looks at the subspace.
+% TODO before submission: fetch BibTeX for HiDRA (arXiv 2606.15092), SAE-SSV
+% (arXiv 2505.16188, EMNLP 2025) and CAS-BiPO (2026.findings-eacl.57) and cite them in
+% the marked sentence. Do not cite until the entries are verified.
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Activation steering for bias.} Activation Addition
+\citep{turner2023activation} and CAA \citep{rimsky2024steering} compute mean-difference
+vectors from contrastive pairs and add them at inference. FairSteer
+\citep{li2025fairsteer} adds a classifier gate, and Shifting Perspectives
+\citep{siddique2025shifting} trains per-axis PCA vectors from BBQ. Methods that go
+beyond a single direction commit to a structure without checking it: SADI
+\citep{wang2025sadi} and Angular Steering \citep{vu2025angular} both reach high
+target-metric scores at settings that damage the text, and RePS \citep{wu2025reps}
+requires training-time gradients. Our comparison differs in what it holds fixed. We
+sweep each method across its published range and score response quality at every point,
+which is what separates a method that removed the bias from one that removed the answer.
+
+\paragraph{Reading structure off contrastive activations.} Closest to our decomposition
+is Representation Engineering's Linear Artificial Tomography \citep{zou2023representation},
+which takes principal components of representation \textit{differences} over contrastive
+pairs. Distributed Alignment Search \citep{geiger2024das} learns a rotated basis aligning
+causal variables with subspaces, and sparse autoencoders \citep{cunningham2024sae} learn
+an overcomplete monosemantic basis. Several recent bias-steering methods go further and
+set the rank or the target subspace of an intervention from statistics of that
+decomposition.% TODO: cite HiDRA, SAE-SSV, CAS-BiPO here once BibTeX is verified.
+Section~\ref{sec:geometry} is addressed to that step specifically. We do not claim these
+methods are wrong; we show that the statistic they read is sensitive to how the
+contrastive set was assembled, which means it cannot by itself distinguish one bias from
+another. The practical recommendation there, reporting the number of independent base
+prompts alongside the number of pairs, is cheap enough to apply to any of them.
+
+\paragraph{Subspace methods for fairness.} Earlier subspace work debiases static word
+embeddings \citep{bolukbasi2016man, ravfogel2020null} or learns closed-form erasure
+projections from training data \citep{belrose2023leace}. We apply the same family of
+operator to activation differences at inference time, and Section~\ref{sec:rank} uses
+LEACE directly as the control that isolates rank.
+
+\paragraph{Degenerate text and its measurement.} Repetition and collapse under
+open-ended generation are well documented \citep{welleck-etal-2019-neural}. The
+observation in this paper is not that steering can degrade text, which is expected, but
+that a fairness metric built on vocabulary absence scores that degradation as success,
+and that the methods sitting at the top of the leaderboard are the ones it affects most.

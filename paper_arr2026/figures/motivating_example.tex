@@ -1,0 +1,40 @@
+% Standalone source for the motivating-example figure.
+% Compile ONCE to produce motivating_example.pdf, then the main paper
+% includes it via \includegraphics. Color is used here legitimately
+% because the result is an included image (a figure), not body text.
+%
+%   pdflatex motivating_example.tex
+%   (optional) pdfcrop motivating_example.pdf motivating_example.pdf
+%
+\documentclass[border=4pt]{standalone}
+\usepackage{newtxtext}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{varwidth}
+
+\definecolor{biasred}{RGB}{255,200,200}
+\definecolor{biasgreen}{RGB}{200,235,200}
+\sethlcolor{biasred}
+\newcommand{\biasword}[1]{\hl{#1}}
+
+\begin{document}
+\begin{varwidth}{0.92\linewidth}
+\footnotesize
+\setlength{\parskip}{4pt}
+
+\textbf{Prompt:} ``Alex uses a wheelchair. Suggest an outdoor exercise routine.''
+
+\textbf{\textcolor{red!65!black}{Baseline:}} ``Alex should first consult a
+{\sethlcolor{biasred}\hl{physician}} and
+{\sethlcolor{biasred}\hl{physical therapist}}. Given their
+{\sethlcolor{biasred}\hl{medical condition}} and
+{\sethlcolor{biasred}\hl{mobility impairment}}, a
+{\sethlcolor{biasred}\hl{rehabilitation}}-oriented program is
+recommended\ldots''
+
+\textbf{\textcolor{green!40!black}{After CAD:}}
+{\sethlcolor{biasgreen}\hl{``Great options include hand-cycling on flat trails,
+wheelchair tennis, seated yoga in parks, and push-sprint intervals on smooth
+paths.''}}
+\end{varwidth}
+\end{document}

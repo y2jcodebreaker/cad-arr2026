@@ -1,0 +1,126 @@
+% APPENDIX. Does not count toward the 8-page content limit (verified from the ARR CFP).
+% Everything here is reproducible from the artifacts named in each section.
+% TODO still to port from paper_aaai2027/main.tex supplementary:
+%   - Unfiltered evaluation on n=250
+%   - Per-disability-category stratification
+%   - Mechanistic accounts of baselines (propagation metrics)
+%   - Phase 1 vocabulary threshold robustness
+%   - Why SVD, not PCA or ICA
+%   - Qualitative examples (6 prompt types) and the cross-method comparison table
+
+\section{Judge protocol}
+\label{app:judge}
+
+Responses are scored by Llama-3.1-8B-Instruct against a ten-point accessibility rubric,
+with \texttt{temperature}$=0.1$, seed 42, and responses truncated to 2{,}000 characters.
+The judge is asked for a line of the form \texttt{Overall Score: X/10}, and a response
+whose output cannot be parsed, or which is empty, receives $5.0$.
+
+That default deserves scrutiny, since $5.0$ is also a plausible middling score. Across
+the 2{,}500 unsteered responses, none receives exactly $5.0$. In this run the value marks
+failure rather than mediocrity. Recoding every $5.0$ to zero moves SADI from $3.19$ to
+$1.37$, because $36.4\%$ of its responses are unparseable, and moves no other method by
+more than $0.05$. The default therefore understates the collapse, and every quality drop
+reported in the main text is conservative.
+
+Scoring is deduplicated by response hash: 21{,}750 responses reduce to 19{,}888 unique
+texts, each scored once.
+
+\section{Statistical procedures}
+\label{app:stats}
+
+The unit of analysis is one sweep point, meaning one method at one configuration, with
+$n{=}250$ responses. Intervals on a mean judge score are percentile bootstrap intervals
+over 2{,}000 resamples of the 250 responses, seed 42.
+
+Judge scores take eight distinct values and are strongly left-skewed at degenerate
+points, so normality fails and we use the Mann-Whitney $U$ test with rank-biserial
+correlation as the effect size rather than a $t$-test. Comparisons of the five published
+operating points against the pooled unsteered baseline are Holm-corrected across those
+five tests. The Pareto front is a descriptive geometric construction and carries no
+$p$-value.
+
+Responses within a sweep point come from different prompts and are treated as
+independent. The same prompt recurs across sweep points, so comparisons between points
+are not strictly independent; we report them as unpaired regardless, which widens the
+intervals rather than narrowing them.
+
+Two consequences of the measurement are worth stating. The judge emits eight distinct
+values, so it does not grade fine gradations within a single response; at $n{=}250$ the
+resulting interval on a point mean has a median half-width of $0.18$. And our CAD runner
+records medicalization in aggregate rather than per response, so the CAD points in
+Figure~\ref{fig:frontier} carry no interval on the horizontal axis.
+
+The unpaired and matched designs agree on the comparison they share. The frontier gives
+$+0.30$ with interval $[0.07, 0.53]$ for the projection against CAA; the matched-item
+test in Section~\ref{sec:paired} gives $+0.35$ with $[0.18, 0.53]$.
+
+\section{Sensitivity of the degeneracy criterion}
+\label{app:thresholds}
+
+The criterion in Section~\ref{sec:frontier} uses three cut-offs: uniqueness below
+$0.50$, parse-failure rate above $0.10$, and medicalization below $-0.05$. These are
+conventional rather than derived, so we varied all three. Across the 27 combinations of
+$\{0.3, 0.5, 0.7\} \times \{0.05, 0.10, 0.20\} \times \{-0.10, -0.05, 0\}$ the Pareto
+front holds the same twelve configurations, ten of them CAD operators, and the same four
+configurations reaching at least half the baseline reduction.
+
+Relative to applying no criterion at all, flagging removes exactly one configuration
+from the front, FairSteer at $\alpha{=}8$, which reaches medicalization $0.000$ with 68
+of its 250 responses distinct.
+
+\section{Contrast-set controls in full}
+\label{app:controls}
+
+Section~\ref{sec:geometry} reports the homogeneity ladder in the main text and summarises
+three further controls. This section gives those three, all on the AccessEval contrastive
+pool of 2{,}083 pairs on Llama-3.1-8B-Instruct.
+
+\paragraph{Cluster versus pair sampling.} AccessEval expands 468 base queries into 4{,}164
+pairs by substituting nine disability categories into templated queries, so pairs are
+nested within base queries. Sampling 13 pairs uniformly gives $\mathrm{EVR}_1{=}21.5\%$;
+sampling 13 pairs by drawing whole base queries gives $72.2\%$. Same data, same $n$, same
+layer, a $3.4$-fold swing from the sampling structure alone. The gap closes as $n$ grows:
+$15.6\%$ against $40.4\%$ at $n{\approx}30$, $11.1\%$ against $14.1\%$ at $n{\approx}250$,
+and $10.4\%$ against $10.8\%$ at $n{\approx}1000$.
+
+\paragraph{A permuted-pairing null.} We match each clean activation to a different
+corrupted one, destroying the contrast while preserving both marginals. At $n{=}13$ the
+real data give $\mathrm{EVR}_1{=}21.5\%$ and the null gives $26.2\%$, so the null is
+higher. The two curves separate only above $n \approx 250$
+(Figure~\ref{fig:controls}). Any concentration estimated from a dozen pairs is consistent
+with no contrastive structure at all, which is the regime the reported Target A profile
+sits in.
+
+\paragraph{Cluster bootstrap.} Resampling the 2{,}083 pairs directly gives
+$k@80\%{=}40$ with a $95\%$ interval of $[40, 41]$. Resampling the 292 base queries
+instead gives $k@80\%{=}35.3$ $[33, 37]$ at L21, $32.2$ $[31, 33]$ at L14, and
+$10.6$ $[10, 11]$ at L0. The pair-level and cluster-level intervals do not overlap, so
+the pair-level procedure is biased as well as over-precise.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figure-03-contrast-set-controls.pdf}
+\caption{Spectral concentration (left) and prescribed rank (right) against the number of
+contrastive pairs, on AccessEval. Solid lines sample pairs uniformly; dashed lines sample
+whole base queries; the dotted grey line is a null built by permuting the pairing, which
+destroys the contrast while preserving both marginals. Bands are $95\%$ intervals over 40
+draws. Below $n \approx 250$ the real data and the null are not separated, so spectra
+estimated from a dozen pairs carry no contrastive signal. The dash-dotted line marks the
+profile the paper reports for Target A.}
+\label{fig:controls}
+\end{figure*}
+
+
+\section{Reproduction}
+\label{app:repro}
+
+Generation and judging ran on a single A100 80GB. The five sweeps took approximately
+eleven GPU-hours in total and the judging pass approximately three. The diagnostic
+itself is cheap next to either: collecting activations over the contrastive pairs is one
+forward pass, and the truncated SVD of the resulting $n \times d$ difference matrix takes
+seconds. The projection is then applied at $\alpha{=}1$ with no strength search, which is
+the practical difference from the additive baselines, each of which requires a
+layer-by-strength grid where every cell is a full generation-and-scoring pass.
+
+\input{sections/A_sweep_table}

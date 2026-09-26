@@ -1,0 +1,187 @@
+% =====================================================================
+% BRANCH B DRAFT: Section 3 - quality-constrained comparison
+% Working title: When Debiasing Scores Reward Broken Text
+% Target: ARR October 2026 cycle (submission Oct 12)
+%
+% DRAFTING RULE FOR THIS FILE: no hedging in the body. Every scope
+% condition is stated once, plainly, and the rest live in Section 6
+% (Limitations). Numbers are from analysis-output/sweep_points.csv and
+% analysis-output/stats-appendix.md.
+% =====================================================================
+
+\section{What the methods do once quality is held constant}
+\label{sec:frontier}
+
+Section~\ref{sec:audit} showed that a high target-metric score can be produced by
+damaging the response. That makes the published ranking uninterpretable on its own:
+it does not distinguish an intervention that removed the bias from one that removed
+the answer. This section re-runs the comparison with response quality measured
+alongside the target metric.
+
+\paragraph{Protocol.} We sweep the steering strength of every method across its full
+published range and generate 250 AccessEval responses at each setting, giving 87 sweep
+points and 21{,}750 responses in total. Each response receives a medicalization score
+and a quality score from an LLM judge (Llama-3.1-8B-Instruct, temperature $0.1$, seed
+42) on a ten-point accessibility rubric. Ten of the 87 points apply no steering; these
+give a reference of $7.92 \pm 0.04$ for quality and $0.659 \pm 0.043$ for
+medicalization, where the intervals are standard deviations across the ten points. A
+medicalization score of zero is neutral, and scores below zero mean the model withholds
+medical information from users who asked for it.
+
+\paragraph{Flagging degenerate output.} We mark a sweep point as degenerate from
+properties of the text and the target metric alone, never from the quality score: fewer
+than half the 250 responses distinct, more than $10\%$ empty or unparseable, or a mean
+medicalization below $-0.05$. Keeping the quality score out of the definition means the
+judge remains an independent outcome rather than a restatement of the flag. 38 of the
+87 points are flagged, and the analysis below is insensitive to where the three cut-offs
+sit: across all 27 combinations of $\{0.3, 0.5, 0.7\}$, $\{0.05, 0.10, 0.20\}$ and
+$\{-0.10, -0.05, 0\}$ the Pareto front holds the same twelve configurations.
+
+\subsection{The cost at each published operating point}
+
+\input{sections/tab_main}
+
+
+Table~\ref{tab:main} reports each method at the configuration its authors
+recommend. All five reduce medicalization, and all five cost quality, but the cost
+spans an order of magnitude.
+
+SADI is the clearest case. It posts the lowest medicalization score in the table and
+loses $60\%$ of the model's judged quality. Angular reaches $-0.222$, which is past
+neutral, and the responses that get it there carry token corruption inside words.
+Ordering these five methods by the target metric and ordering them by quality produce
+different rankings.
+
+The judge assigns $5.0$ to output it cannot parse, which is also a plausible middling
+score, so we checked whether the two are separable. Across the 2{,}500 unsteered
+responses, not one receives exactly $5.0$. The value marks failure rather than
+mediocrity in this run. Recoding every $5.0$ to zero moves SADI from $3.19$ to $1.37$,
+because $36.4\%$ of its responses are unparseable, and moves no other method by more
+than $0.05$. The default therefore understates the collapse, and the drops in
+Table~\ref{tab:main} are conservative.
+
+\subsection{The frontier}
+
+Figure~\ref{fig:frontier} plots all 87 points. The intact points trace a shallow curve
+that stays near the unsteered reference until roughly $0.2$ on the target metric, then
+falls away. Every point that reaches or passes neutral is degenerate.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure-01-quality-debiasing-frontier.pdf}
+\caption{Judged quality against medicalization for 87 sweep points, $n{=}250$ responses
+each. Filled markers are intact output, hollow markers are degenerate by the criterion
+in Section~\ref{sec:frontier}, which uses text properties and not the quality score.
+Error bars are bootstrap $95\%$ confidence intervals on the mean quality. The grey band
+is the unsteered reference, $\pm 2$ standard deviations across ten no-steer points. The
+shaded region past neutral marks responses that withhold medical information, which is
+not an improvement. The blue line is the Pareto front over intact points.}
+\label{fig:frontier}
+\end{figure}
+
+The Pareto front over intact points holds twelve configurations, ten of them CAD
+operators. Restricting to points that remove at least half the baseline medicalization,
+all four surviving front configurations are CAD: the probe at $\alpha{=}9$, the
+mean-difference operator at $\alpha{=}8$ and $\alpha{=}7$, and the projection at
+$\alpha{=}1$. No baseline method reaches that region of the plot without degenerating.
+
+At matched strength the projection scores $7.59$ against CAA's $7.29$, a difference of
+$+0.30$ with a bootstrap $95\%$ interval of $[0.07, 0.53]$ (Mann-Whitney $p = 0.001$).
+CAA removes slightly more bias at that setting, $0.146$ against $0.199$. The claim here
+is that the projection sits above CAA along the frontier, not that it dominates at
+every point. A paired version of this comparison, on identical items with a shared
+baseline, appears in Section~\ref{sec:paired} and gives $+0.35$ with an interval of
+$[0.18, 0.53]$.
+
+\subsection{The same comparison on matched items}
+\label{sec:paired}
+
+The frontier compares sweep points generated from independently drawn prompt subsets. To
+compare the projection against CAA without that limitation, we generated both on an
+identical $n{=}250$ AccessEval sample with a shared unsteered baseline, and scored every
+response with the same judge.
+
+On that matched set the projection averages $7.616$ against CAA's $7.264$. The paired
+difference is $+0.352$ with a bootstrap $95\%$ interval of $[0.176, 0.534]$ and a
+Wilcoxon signed-rank $p = 2.5 \times 10^{-4}$. Expressed as a drop from the shared
+baseline of $7.974$, the projection loses $0.358$ and CAA loses $0.710$, so the quality
+cost of reaching this level of debiasing is roughly halved.
+
+Three qualifications belong with that number. The effect sizes on this set are
+$d{=}0.369$ for the projection and $d{=}0.388$ for CAA, so CAA again removes marginally
+more bias; the claim is about the quality cost at comparable debiasing, not about winning
+on both axes. The judge emits eight distinct values, so most pairs tie and the projection
+strictly outscores CAA on $31.2\%$ of items; the paired difference is carried by the
+items that do differ, which is what the signed-rank test is testing. And this comparison
+covers two operators, not the whole frontier, which is why the ordering in
+Table~\ref{tab:main} rests on the sweep and this number rests on matched items.
+
+\paragraph{One measure disagrees.} The same paired test on VADER sentiment runs the other
+way: CAA scores $0.931$ against the projection's $0.881$, a difference of $-0.050$ with
+interval $[-0.097, -0.006]$ and $p = 2.5 \times 10^{-8}$. Negative regard shows no
+reliable difference ($+0.007$, $[-0.006, 0.019]$, not significant after correction). We
+report the judge result as the quality claim and record the sentiment result as running
+against it, rather than selecting the measure that agrees.
+
+\subsection{Collapse is a threshold, and the published settings sit close to it}
+
+Figure~\ref{fig:collapse}(a) sweeps steering strength for each method. Quality holds
+close to the unsteered reference and then falls steeply over a narrow range of
+strengths. The fall is not gradual in any of them.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure-02-collapse-and-cost.pdf}
+\caption{(a) Judged quality against steering strength, one configuration family per
+method so that only strength varies. Strengths are in each method's own units and
+compare in shape rather than magnitude. Angular Steering is excluded because its
+parameter is an angle and has no monotone ordering: $270^\circ$ is not a stronger dose
+than $150^\circ$. (b) Quality change at each published setting, with bootstrap $95\%$
+intervals.}
+\label{fig:collapse}
+\end{figure}
+
+Raw strengths do not compare across methods, since each parameterises its intervention
+differently. What does compare is the margin between the setting an author recommends
+and the setting at which the method breaks. Taking the breaking point as the first
+strength whose mean quality falls below $6.0$, that margin is $3.0\times$ for the CAD
+projection, $2.0\times$ for CAA and for FairSteer, $1.9\times$ for the CAD
+mean-difference operator, $1.2\times$ for the CAD probe, and $1.0\times$ for SADI.
+
+SADI's published setting is its breaking point. At $s{=}5$ it scores $7.5$ on quality
+and removes little bias; at $s{=}10$, the value its authors report, quality is $3.2$.
+There is no intermediate setting in the published sweep at which the method both works
+and leaves the text intact.
+
+A wider margin is not immunity. The CAD projection is flagged degenerate from
+$\alpha{=}3$, where $70\%$ of its responses become unparseable, and at $\alpha{=}5$ it
+returns 75 empty responses out of 250. Every method here has a range in which it works
+and a point past which it destroys the output. What separates them is how much room
+sits between that point and the strength needed to remove the bias.
+
+This also explains why the leaderboard inverts the ranking. Methods are tuned to
+maximise the target metric, and the target metric keeps rewarding larger steering
+strengths past the point where the text breaks, because broken text contains neither
+medical nor professional vocabulary and the log-odds contrast
+\citep{monroe2008fightin} goes to zero. The degeneration modes themselves are familiar
+from open-ended generation \citep{welleck-etal-2019-neural}; what is new here is that a
+fairness metric scores them as success.
+
+\subsection{Two checks on the ranking}
+
+\paragraph{A second judge family.} Scoring the same methods with GPT-5.5 reproduces the
+ordering at both ends: CAD loses least ($-0.08$), SADI loses most ($-5.26$), and
+Angular is second worst ($-2.23$). CAA and FairSteer swap places between the two
+judges, so the middle of the ranking is not stable, while the endpoints that carry the
+argument hold across judge families.
+
+\paragraph{A second architecture.} On Qwen2.5-7B the projection operator reaches
+$d{=}0.392$ at $\alpha{=}1$ with no degenerate output, and collapses at $\alpha{=}2$
+rather than the $\alpha{=}3$ we observe for Llama-3.1-8B. The operating window is
+narrower on Qwen, and the threshold structure of Figure~\ref{fig:collapse} replicates
+with a different threshold.
+
+\paragraph{Scope.} The frontier compares methods on independently drawn 250-prompt
+subsets of AccessEval, so it supports the ordering and the shape of the curve rather
+than paired effect sizes; Section~\ref{sec:paired} supplies the matched-item
+comparison. Section~\ref{sec:limitations} states what this design does not establish.

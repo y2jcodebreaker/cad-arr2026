@@ -1,0 +1,75 @@
+% =====================================================================
+% ARR October 2026 cycle  (submission deadline Oct 12 2026)
+% Style files are the UNMODIFIED official ACL copies from
+%   github.com/acl-org/acl-style-files (master).
+%   acl.sty  md5 e2c027f483aa40e577ed34264c8b0655
+% DO NOT edit acl.sty, and do not use \setlength\titlebox below 5cm,
+% \raggedbottom, \enlargethispage or any other spacing hack. A previous
+% submission of this work was desk rejected for exactly that.
+%
+% VERIFIED ARR/ACL RULES (aclrollingreview.org/authors + ACLPUB formatting):
+%   long paper REVIEW version : 8 pages of CONTENT (9 on acceptance)
+%   references                : UNLIMITED, do not count
+%   appendices                : do not count, no maximum total PDF length
+%   "Limitations" section     : REQUIRED, does NOT count toward the limit
+%   Ethics / Broader Impact   : optional, does NOT count
+% So the budget to manage is 8 pages up to the start of Limitations.
+% =====================================================================
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\graphicspath{{figures/}}
+
+\title{When Debiasing Scores Reward Broken Text}
+
+\author{Anonymous ARR submission}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Activation steering for bias is judged by a target metric that counts how often a model
+produces the vocabulary marking the bias. We show that this metric can be satisfied by
+destroying the response instead of debiasing it, and that the methods reporting the
+strongest results are the ones this affects most. Sweeping five steering methods across
+their published strength ranges on a disability-bias benchmark, 87 configurations and
+21{,}750 generations, we score every response for quality alongside the target metric.
+Three methods reach the metric's value for unbiased text while emitting corrupted or
+repeated text, by three failure modes that no single filter on emptiness, length or
+uniqueness detects. At its published setting one of them scores 201 of 250 responses as
+perfectly unbiased while judged quality falls from $7.9$ to $3.2$ out of ten. Holding
+quality constant reorders the comparison, and a multi-rank projection reaches comparable
+debiasing at roughly half the quality cost (paired difference $+0.35$, $95\%$ CI
+$[0.18, 0.53]$). We further find that the spectral statistic several recent methods use
+to set an intervention's rank reports how the contrastive set was built rather than how
+the bias is represented: holding the number of pairs at 13 and varying only prompt
+diversity moves the top explained-variance ratio from $22\%$ to $76\%$.
+\end{abstract}
+
+\input{sections/01_intro}
+\input{sections/02_audit}
+\input{sections/02_method}
+\input{sections/03_frontier}
+\input{sections/04_rank}
+\input{sections/05_geometry}
+\input{sections/06_related}
+\input{sections/07_conclusion}
+
+% ---- everything below this line is OUTSIDE the 8-page content budget ----
+\input{sections/99_limitations}
+
+\bibliography{custom}
+
+\appendix
+\input{sections/A_appendix}
+
+\end{document}

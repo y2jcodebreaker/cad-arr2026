@@ -1,0 +1,70 @@
+% Section 2: the evaluation audit. Every number verified against the saved sweep results
+% (~/Downloads/{sadi_results-2,fairsteer_results_L29,caa_results_L14}.json).
+\section{How a debiasing score is earned}
+\label{sec:audit}
+
+The medicalization score is a log-odds contrast between two halves of a vocabulary, the
+medical and the professional \citep{monroe2008fightin}. A response drops toward zero when
+it stops using medical words relative to professional ones. It also drops toward zero
+when it stops using either, which is a different event with the same measurement.
+
+This section is about how often the second event is what happened.
+
+\paragraph{Three ways to score zero.} Table~\ref{tab:degeneration} gives the three
+methods that reach a mean medicalization of $0.000$ on AccessEval, the metric's value for
+unbiased text, along with what the responses look like at that point. The unsteered model
+averages 481 words and scores $0.712$.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+& SADI & FairSteer & CAA \\
+& $s{=}10$ & $\alpha{=}6$ & $\alpha{=}6$ \\
+\midrule
+Medicalization & $0.119$ & $0.000$ & $0.000$ \\
+Judged quality & $3.19$ & $2.38$ & $3.02$ \\
+\midrule
+Empty responses & $0$ & $0$ & $0$ \\
+Mean length (words) & $188$ & $945$ & $638$ \\
+Distinct of 250 & $249$ & $\mathbf{68}$ & $247$ \\
+\bottomrule
+\end{tabular}
+\caption{Three methods at settings where the target metric reports success, and what the
+responses are. No filter on emptiness, length or uniqueness catches all three: none
+produces an empty response, all three are at or above the unsteered length of 481 words
+except SADI, which is shorter but almost entirely distinct, and only FairSteer collapses
+into repetition.}
+\label{tab:degeneration}
+\end{table}
+
+The three failures are not variants of one another. SADI corrupts tokens inside words
+while keeping the responses distinct, 249 of 250, so a uniqueness check passes it. A
+typical response reads ``Improving digital security for individuals with
+mental\texttt{GuidId\&ampHeaderCode} Behavioral\texttt{HeaderCode}
+Disorders\ldots{}requires empathy, understanding,\texttt{HeaderCode} Viable IT
+solutions, Viable IT Viable IT''. Of its 250 responses, 201 score exactly $0.000$.
+
+FairSteer fails in the opposite direction. Only 68 of its 250 responses are distinct, and
+the most frequent one, returned verbatim for 43 different prompts, is the word ``Here''
+repeated for 1{,}048 words. CAA at the same nominal strength produces a third pattern,
+247 distinct responses of 638 words each, built from looping phrases rather than a single
+repeated token.
+
+\paragraph{No cheap filter separates them.} The obvious guards each fail on at least two
+of the three. Checking for empty output catches none: every response is non-empty.
+Filtering on length catches none: FairSteer and CAA are more than twice the unsteered
+length, and SADI's 188 words is short but well inside the range of a legitimate answer.
+Counting distinct responses catches FairSteer alone. A reviewer applying any single one
+of these and finding it clean would conclude the outputs were fine.
+
+\paragraph{What this costs the ranking.} These are not obscure corners of the
+hyperparameter space. SADI's published operating point is one of them, and it posts the
+lowest medicalization score among the five methods we compare while losing $60\%$ of the
+model's judged quality. The metric cannot distinguish the two events, so a practitioner
+selecting a method from published numbers would choose the one that damages responses
+most, and the users who carry that cost are the ones the intervention was built to
+protect.
+
+Section~\ref{sec:frontier} measures the quality axis explicitly and re-runs the
+comparison with both axes visible.

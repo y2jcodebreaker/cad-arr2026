@@ -1,0 +1,105 @@
+% =====================================================================
+% BRANCH B DRAFT: Sections 1 and 4
+% Working title: When Debiasing Scores Reward Broken Text
+% Target: ARR October 2026 cycle (submission Oct 12) -> NAACL/COLING 2027
+%
+% STATUS: first draft for author review. Citations marked
+% [CITATION NEEDED] were NOT programmatically verified and must be
+% checked before submission. Verified-real citations are noted inline.
+% =====================================================================
+
+\section{Introduction}
+
+Ask a language model how to start a fitness routine and it answers the
+question. Mention a disability in the same query and it often answers a
+different one: consult your physician, be mindful of your limitations,
+consider the risks. The user asked about exercise and was handled as a
+patient. This pattern, which we call medicalization bias following
+\citep{accesseval2024}, appears across domains that have nothing to do with
+medicine, including credit cards, air travel, and film distribution.
+
+Activation steering offers a way to remove such behaviour at inference time,
+by editing the model's internal activations with no retraining
+\citep{turner2023activation,rimsky2024steering}. Whether an intervention
+works is judged by a target metric: how much less often the steered model
+produces the vocabulary that marks the bias. We set out to reduce
+medicalization bias this way, and the results we report here are what we
+found about how that judgment is made.
+
+On the AccessEval disability-bias benchmark \citep{accesseval2024}, the
+strongest target-metric score in our comparison belongs to SADI
+\citep{wang2025sadi}. At its reported operating point it scores zero, the
+metric's value for unbiased text, on 201 of 250 responses. Those responses
+are not absent. They average 188 words and read like this: ``Improving
+digital security for individuals with mental\texttt{GuidId\&ampHeaderCode}
+Behavioral\texttt{HeaderCode} Disorders\ldots'' The medicalization metric is
+a log-odds contrast between medical and professional vocabulary, and
+corrupted text contains neither, so the contrast evaluates to zero and the
+metric records perfect neutrality.
+
+FairSteer \citep{li2025fairsteer} fails the same way at higher strength but
+with a different signature: at $\alpha{=}6$ only 68 of its 250 responses are
+distinct, and the most frequent one, returned verbatim for 43 different
+prompts, is the word ``Here'' repeated for 1{,}048 words. It too scores zero.
+Angular Steering \citep{vu2025angular} reaches the highest effect size in our
+comparison while injecting corruption inside words, and pushes past neutral,
+which withholds medical information from users who asked for it.
+
+These methods sit at the top of a leaderboard. None of them has reduced
+medicalization bias.
+
+This is the problem we address. The metric counts an absence, and an
+intervention can produce that absence either by removing the bias or by
+destroying the answer. Nothing in the standard evaluation separates the two,
+and the degenerate outputs are not obviously degenerate: they are fluent in
+shape, correctly formatted, and longer than the baseline responses they
+replace. A practitioner comparing published numbers would select one of these
+methods, deploy it, and ship a model that answers disability-related queries
+with corrupted or repeated text. The users who carry that cost are the ones
+the intervention was meant to protect.
+
+The same weakness appears a second time, one step earlier in the pipeline.
+Recent methods set the \emph{structure} of an intervention, in particular its
+rank, from the singular value spectrum of contrastive activation differences
+\citep{zou2023representation}. % HiDRA, SAE-SSV, CAS-BiPO: [CITATION NEEDED], all three verified real, BibTeX not yet fetched
+A concentrated spectrum is read as a behaviour that one direction can
+address, a diffuse one as a behaviour that needs many. We show that this
+statistic reports how the contrastive set was built rather than how the
+behaviour is represented. Holding the number of pairs fixed at 13 and
+varying only the diversity of the prompts moves the top explained-variance
+ratio from $22.1\%$ to $76.1\%$, on one benchmark, at one layer.
+
+Both failures have the same shape. A quantity is treated as a measurement of
+the bias, and it is measuring something else: output length in the first
+case, prompt diversity in the second. We establish this for both quantities
+and show what changes once it is corrected. Under a quality-constrained
+comparison the ranking of steering methods changes, and a multi-rank
+projection reduces medicalization as far as the strongest rank-1 baseline
+while keeping the answers intact.
+
+Our contributions:
+
+\begin{itemize}
+\item \textbf{An evaluation audit of six steering methods.} We show that
+  two of the three highest target-metric scores come from collapsed or
+  corrupted generations, and we give the failure modes at token level
+  (Section~\ref{sec:audit}).
+\item \textbf{A quality-constrained comparison on matched items.} On an
+  identical $n{=}250$ AccessEval subset with a shared baseline, the
+  multi-rank projection reaches $d{=}0.337$ against CAA's $d{=}0.341$
+  while degrading judged quality significantly less (paired difference
+  $+0.35$ on a ten-point scale, $95\%$ CI $[0.18, 0.53]$, Wilcoxon
+  $p<0.001$).
+\item \textbf{Rank matters for the intervention.} Holding the layer, the
+  data, and the operator fixed, rank-1 erasure fails ($d{=}{-}0.03$) where
+  a rank-40 erasure recovers $d{=}0.205$ (Section~\ref{sec:rank}).
+\item \textbf{Measured bias dimensionality is a property of the contrast
+  set.} Four controls (prompt homogeneity, cluster versus pair sampling,
+  a permutation null, and a cluster bootstrap) show that the spectral
+  statistics used to describe ``bias geometry'' track contrast-set
+  construction rather than bias type (Section~\ref{sec:geometry}).
+\end{itemize}
+
+
+
+% =====================================================================

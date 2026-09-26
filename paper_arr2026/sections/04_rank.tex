@@ -1,0 +1,29 @@
+% PORTED from paper_aaai2027/main.tex "LEACE Baseline Comparison" appendix, promoted to
+% a main-text section. This is the controlled experiment isolating RANK, and it survives
+% the falsification in Section~\ref{sec:geometry} because it varies rank directly rather
+% than inferring it from a spectrum.
+\section{Rank is what changes the outcome}
+\label{sec:rank}
+
+The operator in Section~\ref{sec:method} differs from the rank-1 baselines in two ways
+at once: it removes a 40-dimensional subspace rather than one direction, and it removes
+variance rather than adding a vector. To separate those, we hold the layer, the data and
+the operator family fixed and vary only the rank.
+
+LEACE \citep{belrose2023leace} gives a clean control, since it is a closed-form erasure
+with a whitening step. Rank-1 LEACE fails outright on AccessEval, $d{=}{-}0.03$.
+Generalising it to erase the same top-40 contrastive subspace that our projection
+removes, with whitening retained, recovers $d{=}0.205$ ($95\%$ CI $[0.11, 0.31]$, no
+collapse). Nothing changed between those two numbers except the rank.
+
+Our unwhitened projection at the same rank and the same layers reaches $d{=}0.337$ on
+the matched $n{=}250$ set, so the whitening is not what produces the gain here. Two
+readings follow. Rank governs whether the intervention does anything at all, and at a
+fixed rank the simpler projection is at least as good as the whitened erasure.
+
+This result is independent of the spectral claims examined in
+Section~\ref{sec:geometry}. It varies the rank directly and measures the outcome, rather
+than reading a rank off a spectrum and trusting the reading. What it establishes is
+narrow and survives: for this bias, at these layers, a rank-1 intervention is not enough,
+and a rank-40 one is. It does not establish that 40 is derivable in advance from
+$\mathrm{EVR}_1$, which is the inference Section~\ref{sec:geometry} rules out.

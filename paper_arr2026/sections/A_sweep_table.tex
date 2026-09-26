@@ -1,0 +1,133 @@
+\section{Complete sweep}
+\label{app:sweep}
+
+Tables~\ref{tab:allsweep1}--\ref{tab:allsweep3} list every sweep point behind
+Figure~\ref{fig:frontier}: 87 configurations, $n{=}250$ responses each, 21{,}750
+responses in total. Quality is the mean judge score with a percentile bootstrap $95\%$
+interval over 2{,}000 resamples. ``Uniq'' is the fraction of the 250 responses that are
+distinct and ``Fail'' the fraction the judge could not parse. A point is marked
+degenerate ($\bullet$) when uniqueness falls below $0.50$, the failure rate exceeds
+$0.10$, or medicalization falls below $-0.05$.
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{llrrrrc}
+\toprule
+Method & Configuration & Med. & Quality \scriptsize[95\% CI] & Uniq & Fail & Deg. \\
+\midrule
+Angular & max\_sim\_L23/mode\_0/angle\_150 & $-0.222$ & $6.06$ \scriptsize$[5.86,\,6.24]$ & $1.00$ & $0.01$ & $\bullet$ \\
+Angular & max\_sim\_L23/mode\_1/angle\_150 & $-0.210$ & $6.04$ \scriptsize$[5.83,\,6.23]$ & $1.00$ & $0.01$ & $\bullet$ \\
+Angular & max\_sim\_L23/mode\_0/angle\_120 & $-0.169$ & $6.19$ \scriptsize$[6.00,\,6.38]$ & $1.00$ & $0.00$ & $\bullet$ \\
+Angular & max\_sim\_L23/mode\_1/angle\_120 & $-0.154$ & $6.39$ \scriptsize$[6.22,\,6.58]$ & $1.00$ & $0.00$ & $\bullet$ \\
+Angular & max\_sim\_L23/mode\_0/angle\_180 & $-0.071$ & $6.02$ \scriptsize$[5.82,\,6.21]$ & $1.00$ & $0.02$ & $\bullet$ \\
+Angular & max\_sim\_L23/mode\_1/angle\_180 & $-0.070$ & $6.34$ \scriptsize$[6.15,\,6.52]$ & $1.00$ & $0.01$ & $\bullet$ \\
+Angular & max\_norm\_L31/mode\_0/angle\_150 & $-0.060$ & $6.17$ \scriptsize$[5.98,\,6.35]$ & $1.00$ & $0.00$ & $\bullet$ \\
+Angular & max\_norm\_L31/mode\_0/angle\_180 & $-0.052$ & $5.53$ \scriptsize$[5.32,\,5.74]$ & $1.00$ & $0.00$ & $\bullet$ \\
+Angular & max\_norm\_L31/mode\_1/angle\_180 & $-0.052$ & $5.66$ \scriptsize$[5.44,\,5.86]$ & $1.00$ & $0.00$ & $\bullet$ \\
+Angular & max\_norm\_L31/mode\_1/angle\_150 & $0.090$ & $6.26$ \scriptsize$[6.07,\,6.46]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_1/angle\_270 & $0.237$ & $7.06$ \scriptsize$[6.86,\,7.23]$ & $1.00$ & $0.01$ &  \\
+Angular & max\_norm\_L31/mode\_0/angle\_270 & $0.243$ & $6.87$ \scriptsize$[6.65,\,7.06]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_0/angle\_270 & $0.377$ & $7.08$ \scriptsize$[6.87,\,7.26]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_0/angle\_120 & $0.384$ & $7.29$ \scriptsize$[7.12,\,7.45]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_1/angle\_270 & $0.418$ & $7.42$ \scriptsize$[7.25,\,7.58]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_1/angle\_120 & $0.526$ & $7.49$ \scriptsize$[7.35,\,7.62]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_0/angle\_60 & $0.599$ & $7.70$ \scriptsize$[7.58,\,7.80]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_0/angle\_0 & $0.614$ & $7.88$ \scriptsize$[7.76,\,7.98]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_1/angle\_0 & $0.629$ & $7.95$ \scriptsize$[7.84,\,8.05]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_1/angle\_60 & $0.633$ & $7.79$ \scriptsize$[7.66,\,7.91]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_1/angle\_60 & $0.651$ & $7.97$ \scriptsize$[7.87,\,8.06]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_0/angle\_0 & $0.670$ & $7.92$ \scriptsize$[7.82,\,8.00]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_norm\_L31/mode\_0/angle\_60 & $0.672$ & $7.87$ \scriptsize$[7.78,\,7.95]$ & $1.00$ & $0.00$ &  \\
+Angular & max\_sim\_L23/mode\_1/angle\_0 & $0.703$ & $7.98$ \scriptsize$[7.87,\,8.07]$ & $1.00$ & $0.00$ &  \\
+CAA & L14/alpha\_2.0 & $-0.321$ & $5.96$ \scriptsize$[5.74,\,6.17]$ & $1.00$ & $0.00$ & $\bullet$ \\
+CAA & L14/alpha\_4.0 & $-0.249$ & $1.24$ \scriptsize$[1.06,\,1.40]$ & $1.00$ & $0.05$ & $\bullet$ \\
+CAA & L14/alpha\_6.0 & $0.000$ & $3.02$ \scriptsize$[2.72,\,3.32]$ & $0.99$ & $0.60$ & $\bullet$ \\
+CAA & L14/alpha\_8.0 & $0.000$ & $2.90$ \scriptsize$[2.62,\,3.20]$ & $0.84$ & $0.56$ & $\bullet$ \\
+CAA & L14/alpha\_1.0 & $0.146$ & $7.29$ \scriptsize$[7.11,\,7.46]$ & $1.00$ & $0.00$ &  \\
+CAA & L14/alpha\_0.5 & $0.433$ & $7.70$ \scriptsize$[7.58,\,7.82]$ & $1.00$ & $0.00$ &  \\
+\bottomrule
+\end{tabular}
+\caption{All sweep points, part 1 of 3.}
+\label{tab:allsweep1}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{llrrrrc}
+\toprule
+Method & Configuration & Med. & Quality \scriptsize[95\% CI] & Uniq & Fail & Deg. \\
+\midrule
+CAA & L14/alpha\_0.0 & $0.712$ & $7.87$ \scriptsize$[7.74,\,7.98]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha15.0 & $-0.183$ & $2.52$ \scriptsize$[2.28,\,2.77]$ & $1.00$ & $0.28$ & $\bullet$ \\
+CAD mean-diff & alpha10.0 & $-0.180$ & $6.60$ \scriptsize$[6.41,\,6.80]$ & $1.00$ & $0.00$ & $\bullet$ \\
+CAD mean-diff & alpha9.0 & $-0.107$ & $6.96$ \scriptsize$[6.78,\,7.13]$ & $1.00$ & $0.00$ & $\bullet$ \\
+CAD mean-diff & alpha20.0 & $-0.035$ & $1.81$ \scriptsize$[1.52,\,2.10]$ & $0.99$ & $0.30$ & $\bullet$ \\
+CAD mean-diff & alpha8.0 & $0.077$ & $7.20$ \scriptsize$[7.03,\,7.38]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha7.0 & $0.139$ & $7.47$ \scriptsize$[7.31,\,7.61]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha5.0 & $0.338$ & $7.70$ \scriptsize$[7.56,\,7.83]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha3.0 & $0.402$ & $7.82$ \scriptsize$[7.70,\,7.92]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha2.0 & $0.466$ & $7.84$ \scriptsize$[7.72,\,7.95]$ & $1.00$ & $0.00$ &  \\
+CAD mean-diff & alpha1.0 & $0.583$ & $7.92$ \scriptsize$[7.81,\,8.01]$ & $1.00$ & $0.00$ &  \\
+CAD probe & alpha13.0 & $-0.186$ & $4.34$ \scriptsize$[4.11,\,4.57]$ & $1.00$ & $0.04$ & $\bullet$ \\
+CAD probe & alpha11.0 & $-0.149$ & $5.64$ \scriptsize$[5.44,\,5.83]$ & $1.00$ & $0.02$ & $\bullet$ \\
+CAD probe & alpha15.0 & $-0.120$ & $2.60$ \scriptsize$[2.37,\,2.83]$ & $0.99$ & $0.20$ & $\bullet$ \\
+CAD probe & alpha17.0 & $-0.048$ & $2.27$ \scriptsize$[1.97,\,2.56]$ & $0.99$ & $0.38$ & $\bullet$ \\
+CAD probe & alpha9.0 & $0.034$ & $7.02$ \scriptsize$[6.85,\,7.19]$ & $1.00$ & $0.00$ &  \\
+CAD probe & alpha7.0 & $0.268$ & $7.44$ \scriptsize$[7.27,\,7.59]$ & $1.00$ & $0.00$ &  \\
+CAD probe & alpha5.0 & $0.366$ & $7.60$ \scriptsize$[7.44,\,7.74]$ & $1.00$ & $0.00$ &  \\
+CAD probe & alpha3.0 & $0.437$ & $7.87$ \scriptsize$[7.75,\,7.99]$ & $1.00$ & $0.00$ &  \\
+CAD probe & alpha1.0 & $0.569$ & $7.94$ \scriptsize$[7.84,\,8.04]$ & $1.00$ & $0.00$ &  \\
+CAD projection & alpha9.0 & $-0.114$ & $1.98$ \scriptsize$[1.66,\,2.29]$ & $0.94$ & $0.39$ & $\bullet$ \\
+CAD projection & alpha7.0 & $-0.049$ & $1.95$ \scriptsize$[1.65,\,2.24]$ & $0.96$ & $0.38$ & $\bullet$ \\
+CAD projection & alpha5.0 & $-0.011$ & $2.16$ \scriptsize$[1.86,\,2.43]$ & $0.80$ & $0.40$ & $\bullet$ \\
+CAD projection & alpha3.0 & $-0.002$ & $3.54$ \scriptsize$[3.25,\,3.80]$ & $0.83$ & $0.70$ & $\bullet$ \\
+CAD projection & alpha2.0 & $0.181$ & $6.98$ \scriptsize$[6.78,\,7.17]$ & $1.00$ & $0.00$ &  \\
+CAD projection & alpha1.0 & $0.199$ & $7.59$ \scriptsize$[7.44,\,7.73]$ & $1.00$ & $0.01$ &  \\
+CAD projection & alpha0.5 & $0.371$ & $7.79$ \scriptsize$[7.67,\,7.90]$ & $1.00$ & $0.01$ &  \\
+CAD projection & alpha0.3 & $0.444$ & $7.85$ \scriptsize$[7.74,\,7.96]$ & $1.00$ & $0.00$ &  \\
+CAD projection & alpha0.1 & $0.580$ & $7.97$ \scriptsize$[7.88,\,8.06]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.7/alpha\_4.0 & $-0.018$ & $2.08$ \scriptsize$[1.80,\,2.38]$ & $0.97$ & $0.36$ & $\bullet$ \\
+\bottomrule
+\end{tabular}
+\caption{All sweep points, part 2 of 3.}
+\label{tab:allsweep2}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{llrrrrc}
+\toprule
+Method & Configuration & Med. & Quality \scriptsize[95\% CI] & Uniq & Fail & Deg. \\
+\midrule
+FairSteer & L29/thresh\_0.5/alpha\_4.0 & $-0.012$ & $2.31$ \scriptsize$[2.02,\,2.61]$ & $0.94$ & $0.38$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.3/alpha\_4.0 & $-0.002$ & $2.31$ \scriptsize$[2.02,\,2.62]$ & $0.95$ & $0.39$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.3/alpha\_6.0 & $0.000$ & $2.42$ \scriptsize$[2.12,\,2.73]$ & $0.30$ & $0.40$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.3/alpha\_8.0 & $0.000$ & $4.28$ \scriptsize$[4.08,\,4.48]$ & $0.30$ & $0.82$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.5/alpha\_6.0 & $0.000$ & $2.38$ \scriptsize$[2.08,\,2.72]$ & $0.27$ & $0.40$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.5/alpha\_8.0 & $0.000$ & $4.34$ \scriptsize$[4.15,\,4.53]$ & $0.26$ & $0.83$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.7/alpha\_6.0 & $0.000$ & $2.38$ \scriptsize$[2.09,\,2.70]$ & $0.26$ & $0.39$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.7/alpha\_8.0 & $0.000$ & $4.29$ \scriptsize$[4.09,\,4.48]$ & $0.25$ & $0.82$ & $\bullet$ \\
+FairSteer & L29/thresh\_0.3/alpha\_2.0 & $0.144$ & $6.65$ \scriptsize$[6.46,\,6.83]$ & $1.00$ & $0.01$ &  \\
+FairSteer & L29/thresh\_0.5/alpha\_2.0 & $0.184$ & $6.68$ \scriptsize$[6.50,\,6.87]$ & $1.00$ & $0.01$ &  \\
+FairSteer & L29/thresh\_0.7/alpha\_2.0 & $0.207$ & $6.74$ \scriptsize$[6.55,\,6.92]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.3/alpha\_1.0 & $0.476$ & $7.80$ \scriptsize$[7.68,\,7.91]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.5/alpha\_1.0 & $0.477$ & $7.80$ \scriptsize$[7.69,\,7.91]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.5/alpha\_0.5 & $0.539$ & $7.90$ \scriptsize$[7.78,\,8.00]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.7/alpha\_1.0 & $0.566$ & $7.77$ \scriptsize$[7.64,\,7.89]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.7/alpha\_0.5 & $0.568$ & $7.83$ \scriptsize$[7.70,\,7.94]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.3/alpha\_0.5 & $0.589$ & $7.89$ \scriptsize$[7.79,\,8.00]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.7/alpha\_0.0 & $0.650$ & $7.93$ \scriptsize$[7.83,\,8.02]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.5/alpha\_0.0 & $0.663$ & $7.93$ \scriptsize$[7.82,\,8.03]$ & $1.00$ & $0.00$ &  \\
+FairSteer & L29/thresh\_0.3/alpha\_0.0 & $0.712$ & $7.87$ \scriptsize$[7.74,\,7.98]$ & $1.00$ & $0.00$ &  \\
+SADI & strength\_40.0 & $-0.011$ & $2.98$ \scriptsize$[2.72,\,3.25]$ & $0.99$ & $0.40$ & $\bullet$ \\
+SADI & strength\_20.0 & $0.000$ & $2.69$ \scriptsize$[2.40,\,2.96]$ & $0.98$ & $0.37$ & $\bullet$ \\
+SADI & strength\_80.0 & $0.000$ & $3.28$ \scriptsize$[3.02,\,3.53]$ & $1.00$ & $0.53$ & $\bullet$ \\
+SADI & strength\_10.0 & $0.119$ & $3.19$ \scriptsize$[2.97,\,3.42]$ & $1.00$ & $0.36$ & $\bullet$ \\
+SADI & strength\_5.0 & $0.593$ & $7.53$ \scriptsize$[7.37,\,7.68]$ & $1.00$ & $0.01$ &  \\
+SADI & strength\_2.0 & $0.596$ & $7.96$ \scriptsize$[7.86,\,8.05]$ & $1.00$ & $0.00$ &  \\
+SADI & strength\_1.0 & $0.656$ & $7.91$ \scriptsize$[7.80,\,8.02]$ & $1.00$ & $0.00$ &  \\
+\bottomrule
+\end{tabular}
+\caption{All sweep points, part 3 of 3.}
+\label{tab:allsweep3}
+\end{table*}

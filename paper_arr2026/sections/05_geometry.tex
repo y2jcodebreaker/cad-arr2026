@@ -1,0 +1,91 @@
+\section{Measured bias dimensionality is a property of the contrast set}
+\label{sec:geometry}
+
+Section~\ref{sec:rank} showed that intervention rank changes what a steering
+method achieves. A natural next step is to estimate, for a given behaviour,
+how many dimensions its representation occupies, and to set the rank from
+that estimate. Several recent methods do something of this kind
+\citep{zou2023representation}. % + HiDRA / SAE-SSV / CAS-BiPO [CITATION NEEDED]
+
+The usual estimator is the singular value spectrum of a stack of contrastive
+activation differences: collect pairs of prompts differing only in the
+attribute of interest, take the difference of their activations, and read off
+the top explained-variance ratio ($\mathrm{EVR}_1$) or the rank needed to
+reach some fraction of the variance ($k@80\%$). Low $\mathrm{EVR}_1$ is read
+as a diffuse behaviour needing many directions; high $\mathrm{EVR}_1$ as a
+concentrated one that a single vector can address.
+
+We ran four controls on this estimator. All four use the AccessEval
+contrastive pool of 2{,}083 pairs on Llama-3.1-8B-Instruct, and all four
+indicate that $\mathrm{EVR}_1$ and $k@80\%$ report properties of the
+contrastive set rather than of the bias.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Contrast set ($n{=}13$, L21) & $\mathrm{EVR}_1$ & $k@80\%$ \\
+\midrule
+Heterogeneous (any query)      & $22.1\%$ & $7.0$ \\
+Single category                & $22.3\%$ & $7.0$ \\
+Single domain                  & $27.1\%$ & $5.9$ \\
+5 base queries only            & $44.2\%$ & $3.1$ \\
+2 base queries only            & $\mathbf{76.1\%}$ & $\mathbf{1.7}$ \\
+\midrule
+\multicolumn{3}{l}{\textit{Paper's reported Target A (L4+L15, $n{=}13$)}} \\
+\quad reported profile         & $67.9\%$ & $2$ \\
+\bottomrule
+\end{tabular}
+\caption{Holding the number of contrastive pairs fixed at 13 and varying only how many
+distinct base queries they are drawn from. Means over 40 draws. The $95\%$ intervals are
+$[17.8, 28.4]$ for the heterogeneous row and $[62.0, 87.5]$ for two base queries. The
+profile the paper reports for DiscrimEval Target A falls inside the latter interval and
+matches its rank. The effect replicates at L14, where the same contrast runs from
+$22.9\%$ $[18.1, 28.6]$ to $69.4\%$ $[54.3, 80.4]$.}
+\label{tab:homogeneity}
+\end{table}
+
+\paragraph{Prompt diversity moves the estimate more than anything else.}
+We fix the number of pairs at $n{=}13$ and vary only how many distinct base
+queries those pairs are drawn from (Table~\ref{tab:homogeneity}). Drawn from
+the whole pool, $\mathrm{EVR}_1$ is $22.1\%$ with $k@80\%{=}7.0$. Restricted
+to two base queries, the same benchmark at the same layer gives
+$\mathrm{EVR}_1{=}76.1\%$ $[62\%, 87\%]$ with $k@80\%{=}1.7$. The effect
+replicates at L14 ($22.9\%$ to $69.4\%$ $[54\%, 80\%]$). A benchmark
+described as forty-dimensional produces a near-rank-1 spectrum when its
+prompts are made homogeneous.
+
+\paragraph{Three further controls agree.} Sampling 13 pairs by drawing whole base
+queries rather than uniformly moves $\mathrm{EVR}_1$ from $21.5\%$ to $72.2\%$ on the
+same data at the same layer. A null built by permuting the pairing, which destroys the
+contrast while preserving both marginals, is \emph{higher} than the real data at
+$n{=}13$ ($26.2\%$ against $21.5\%$) and separates from it only above $n \approx 250$,
+so a concentration estimated from a dozen pairs is consistent with no contrastive
+structure at all. And resampling the 2{,}083 pairs directly gives $k@80\%{=}40$
+$[40, 41]$ where resampling the 292 base queries gives $35.3$ $[33, 37]$, intervals that
+do not overlap, so treating nested pairs as independent is not merely over-precise.
+Appendix~\ref{app:controls} gives all three in full.
+
+\paragraph{What this means for the diagnostic.} Taken together, these
+controls remove the basis for using $\mathrm{EVR}_1$ to prescribe an
+intervention rank. Two benchmarks can differ in reported dimensionality
+because one varies a single template while the other spans nine categories
+and six domains, with no difference in the underlying bias. We had read the
+same signal as evidence that bias geometry varies by bias type, and it does
+not follow.
+
+One earlier observation now reads differently. The first singular direction
+of the contrastive differences is close to orthogonal to a trained linear
+probe for the same attribute ($\cos{=}{-}0.001$ at L21), and the probe
+direction holds $0.0002\%$ of the spectrum's energy at rank 1. We had taken
+this to mean that rank-1 interventions miss the bias. It also means the top
+of the spectrum is not measuring the bias, which is what the controls above
+show directly.
+
+\paragraph{Practical recommendation.} Reporting $\mathrm{EVR}_1$ or $k@80\%$
+for a behaviour is informative only alongside the contrast set that produced
+it. We recommend reporting the number of independent base prompts as well as
+the number of pairs, computing intervals over base prompts rather than pairs,
+and including a permuted-pairing null at the same $n$. All three are cheap.
+On our data they cost minutes of CPU time and no additional generation.

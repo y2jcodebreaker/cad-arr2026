@@ -1,0 +1,59 @@
+% PORTED from paper_aaai2027/main.tex Method section (Phases 1,2,4), with Phase 3
+% reframed: the decomposition still supplies the subspace, but we no longer claim the
+% spectrum diagnoses a bias type. Section~\ref{sec:geometry} is why.
+\section{Measuring and removing medicalization}
+\label{sec:method}
+
+\paragraph{The bias vocabulary.} The signal we measure is the differential frequency of
+words across demographic groups, identified by log-odds ratios with informative
+Dirichlet priors \citep{monroe2008fightin}. For groups $i$ and $j$ the log-odds ratio
+for word $w$ is
+\begin{multline}
+\delta(w) = \log\frac{y_i^w + \beta^w}{n_i - y_i^w + \beta_0 - \beta^w} \\
+- \log\frac{y_j^w + \beta^w}{n_j - y_j^w + \beta_0 - \beta^w}
+\label{eq:logodds}
+\end{multline}
+where $y_i^w$ counts $w$ in group $i$'s responses, $n_i$ is that group's token count,
+and $\beta^w$ is a prior proportional to background frequency. Words with $|z|>3.0$ form
+the bias vocabulary. The threshold is not load-bearing: the top-20 vocabulary is
+unchanged at $|z|>2.0$, $2.5$ and $3.0$ across six DiscrimEval lexicons. A response's
+medicalization score is the log-odds contrast between the medical and professional
+halves of this vocabulary, so a response containing neither scores zero. That property
+is what Section~\ref{sec:audit} exploits.
+
+\paragraph{Locating the layers.} We use layer-level activation patching at the residual
+stream \citep{wang2022interpretability,conmy2023automated}: for each layer and component
+we cache activations from a biased prompt, inject them into a neutral prompt's forward
+pass, and measure whether the output moves toward the biased behaviour. Layers producing
+significant shifts are the ones we intervene at. We call these a bias circuit only in
+this layer-localization sense and do not perform edge-level attribution. A
+\textit{loudness filter} then keeps the contrastive pairs whose clean-corrupted L2
+distance exceeds the median, $\|\mathbf{h}_{\text{clean}} -
+\mathbf{h}_{\text{corrupted}}\|_2 \geq p_{50}$, discarding pairs where the model barely
+separates the groups. On AccessEval this takes 4{,}164 expanded pairs down to
+2{,}083.
+
+\paragraph{The subspace.} At a circuit layer we take differences $\Delta \mathbf{h}_i =
+\mathbf{h}_i^{\text{corrupted}} - \mathbf{h}_i^{\text{clean}}$ at the last token, centre
+them, stack them into $\mathbf{M} \in \mathbb{R}^{n \times d}$, and factorise
+$\mathbf{M} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$. We steer with the top-$k$
+right singular vectors $\mathbf{V}_k$. As an object this decomposition is close to
+Linear Artificial Tomography \citep{zou2023representation}; what differs is that we use
+$k$ components rather than one. We set $k{=}40$, the rank reaching $80\%$ of the
+spectrum's variance on AccessEval. Section~\ref{sec:rank} shows that this choice is
+doing real work, and Section~\ref{sec:geometry} shows what the spectrum does not
+license us to infer from it.
+
+\paragraph{The intervention.} We project activations onto the orthogonal complement of
+$\mathbf{V}_k$ at the circuit layers with strength $\alpha$:
+\begin{equation}
+\mathbf{h}' = \mathbf{h} - \alpha \, \mathbf{V}_k \mathbf{V}_k^\top (\mathbf{h} - \boldsymbol{\mu})
+\label{eq:steer}
+\end{equation}
+At $\alpha{=}1$ this is pure orthogonal projection; $\alpha>1$ reflects and scales the
+in-subspace component. We report $\alpha{=}1$ throughout and sweep $\alpha$ only to
+locate the point at which the operator breaks (Section~\ref{sec:frontier}). Intervening
+at a single layer leaks, reducing medicalization by $16.8\%$; applying
+Eq.~\ref{eq:steer} at both circuit layers at once (L21 and L25 for AccessEval) reaches
+$71.6\%$. During prefill we steer only the last token, and during generation every newly
+produced token \citep{li2024inference,todd2024function}.
