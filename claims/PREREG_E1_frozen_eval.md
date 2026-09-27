@@ -194,3 +194,41 @@ as "working":
 **Also fixed in the write-up regardless of outcome.** The old label-concept rank-1 LEACE
 (d = −0.03) is a different operator and must not be placed on the same rank axis as the rank-k
 sweep. The matched rank-1 LEACE point is `exp3` at k = 1.
+
+### A3 — 2026-09-27, before any E1 arm has run: removal versus addition
+
+**Why.** With the spectral diagnostic falsified, the paper needs a mechanism for why the projection
+de-medicalizes without breaking text. The old sweep hints at one: the additive probe (α=9) debiases
+*harder* than the rank-40 projection (medicalization 0.034 vs 0.199) but writes *worse* (7.02 vs 7.59).
+Every method on the frontier that eventually breaks the text is additive. The hypothesis: **removing a
+bias component preserves quality better than pushing activations against it.**
+
+**Why the obvious comparison is not enough.** Comparing the additive probe at α=9 with the probe
+projection at α=1 would confound operator with *amount*: more debiasing costs more quality in any
+method, so removal could "win" by debiasing less. The comparison must be at **matched debiasing**.
+
+**Design.** Two directions, each tested as removal and as addition, all on the frozen set with the
+same fitted vectors (shared SVD cache, pool key checked):
+
+| direction | removal (α=1) | addition (four strengths) |
+|---|---|---|
+| supervised probe | `--proj_basis probe` | probe α ∈ {3, 5, 7, 9} |
+| mean difference | `--proj_basis meandiff` (new) | mean-diff α ∈ {3, 5, 7, 8} |
+
+Six additive strengths and one removal arm are added. Tier 1 is now 31 arms (23 invocations).
+
+**P7, with the procedure fixed now.** For each direction: take the removal arm's medicalization
+reduction d_rem and quality q_rem. Read the additive arm's quality at d = d_rem by linear interpolation
+between the two additive strengths whose d brackets it. The difference Δ = q_rem − q_add(d_rem), with a
+question-level bootstrap 95% CI (50 questions, 2,000 resamples). A call is "supported" only if **both
+judges** agree on its sign with CIs excluding 0.
+- If d_rem lies outside the additive curve's range of d, the direction is **unmatched**: report it as
+  such and do not extrapolate.
+
+**Outcomes named in advance.**
+- **(a) Removal preserves quality in both directions.** "Remove the bias, don't push against it" is the
+  paper's mechanism, and the method framing is built on it.
+- **(b) In one direction only.** Report it as direction-specific; no general principle is claimed.
+- **(c) In neither, or addition is better.** No removal advantage. The projection's quality advantage,
+  if it survives P1/P2, is attributed to the subspace (see P6), not to removal, and the principle is
+  not claimed anywhere in the paper.

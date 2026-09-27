@@ -431,6 +431,10 @@ def register_hooks(model, svd_data: Dict, alpha: float, mode: str, k: int = None
             # rank-1 PROJECTION along the supervised probe direction: same operator as the
             # SVD projection, same rank as the k=1 arm, only the direction differs
             hook_fn = make_projection_hook(svd_data[p_key].reshape(1, -1), alpha)
+        elif mode == 'projection' and basis == 'meandiff':
+            # rank-1 PROJECTION along the mean-difference direction: the removal counterpart of
+            # the additive mean-diff arm, same direction (amendment A3)
+            hook_fn = make_projection_hook(svd_data[sv_key].reshape(1, -1), alpha)
         elif mode == 'projection':
             if k is None:
                 V = svd_data[vk_key]                       # k_auto rows: original behaviour
@@ -501,9 +505,9 @@ def parse_args(argv=None):
     ap.add_argument("--meandiff_alphas", type=float, nargs="*", default=ALPHA_MEANDIFF)
     ap.add_argument("--k", type=int, default=None,
                     help="force the projection rank; default is k_auto from the 80%% threshold")
-    ap.add_argument("--proj_basis", choices=["svd", "probe"], default="svd",
-                    help="svd = top-k singular vectors (default); probe = rank-1 projection "
-                         "along the supervised probe direction (direction control for C5)")
+    ap.add_argument("--proj_basis", choices=["svd", "probe", "meandiff"], default="svd",
+                    help="svd = top-k singular vectors (default); probe / meandiff = rank-1 "
+                         "projection along that direction (C5 direction control; A3 removal vs addition)")
     ap.add_argument("--baseline_only", action="store_true",
                     help="generate the unsteered baseline for this seed and stop")
     e1.add_e1_args(ap)
@@ -514,8 +518,8 @@ def _arm_tag(args) -> str:
     """Distinct summary/record names for arms that share an --out_dir (and so one SVD fit)."""
     if args.baseline_only:
         return f"_baseline_seed{args.seed}"
-    if args.proj_basis == "probe":
-        return "_probebasis"
+    if args.proj_basis in ("probe", "meandiff"):
+        return f"_{args.proj_basis}basis"
     if args.k is not None:
         return f"_k{args.k}"
     return ""
@@ -525,8 +529,8 @@ def _run_sweep(model, tokenizer, prompts, svd_data, baseline_scores, mode, alpha
                basis="svd"):
     """One steering operator over a list of strengths. Identical to the three original loops."""
     sweep, best_d, best_alpha = {}, -999.0, None
-    if mode == "projection" and basis == "probe":
-        tag = f"{label}_probebasis"
+    if mode == "projection" and basis in ("probe", "meandiff"):
+        tag = f"{label}_{basis}basis"
     else:
         tag = f"{label}_k{k}" if (k is not None and mode == "projection") else label
     for alpha in alphas:
@@ -568,8 +572,8 @@ def main(argv=None):
     CKPT_DIR.mkdir(parents=True, exist_ok=True)
     if args.k is not None and not 1 <= args.k <= K_STORE:
         raise SystemExit(f"--k must be between 1 and {K_STORE}")
-    if args.proj_basis == "probe" and args.k is not None:
-        raise SystemExit("--proj_basis probe is rank 1 by construction; do not pass --k")
+    if args.proj_basis != "svd" and args.k is not None:
+        raise SystemExit(f"--proj_basis {args.proj_basis} is rank 1 by construction; do not pass --k")
 
     print(f"RTSD full-residual generation eval — {MODEL_NAME}")
     print(f"Layers: L{TRIGGER_LAYER}+L{AMPLIFIER_LAYER}, "
