@@ -34,8 +34,11 @@ ARMS = [
        [*E1, "--out_dir", "e1_outputs/cad_heldout", "--seed", str(s), "--baseline_only"])
       for s in (42, 43, 44)],
     ("sadi_s10", "G2", SADI, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/sadi", "--strengths", "10"]),
-    ("cad_heldout", "G2", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout",
-                                "--proj_alphas", "1.0", "--probe_alphas", "9.0", "--meandiff_alphas", "8.0"]),
+    # A3: additive probe and mean-diff at four strengths each, so each additive curve can be read
+    # at the SAME debiasing level its removal counterpart reaches (quality at matched d)
+    ("cad_heldout", "G2", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--proj_alphas", "1.0",
+                                "--probe_alphas", "3.0", "5.0", "7.0", "9.0",
+                                "--meandiff_alphas", "3.0", "5.0", "7.0", "8.0"]),
     ("cad_full_leak", "rest", CAD, [*E1, "--fit_pool", "full", "--out_dir", "e1_outputs/cad_full",
                                     "--proj_alphas", "1.0", *NO_CAD_SWEEPS]),
     *[(f"cad_rank_k{k}", "rest", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--k", str(k),
@@ -43,6 +46,8 @@ ARMS = [
       for k in (1, 5, 10, 20, 80)],
     ("cad_probebasis", "rest", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--proj_basis", "probe",
                                      "--proj_alphas", "1.0", *NO_CAD_SWEEPS]),
+    ("cad_meandiffbasis", "rest", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--proj_basis", "meandiff",
+                                        "--proj_alphas", "1.0", *NO_CAD_SWEEPS]),
     *[(f"leace_k{k}", "rest", LEACE, [*E1, "--out_dir", "e1_outputs/leace", "--k", str(k)])
       for k in (1, 5, 10, 20, 40, 80)],
     ("caa_heldout", "rest", CAA, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/caa_heldout",
