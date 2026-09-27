@@ -318,7 +318,11 @@ def main() -> int:
                 if strength is None:
                     strength = parse_strength(Path(fp).stem)
                 records.append({
+                    # "file" is the basename, kept for the analysis scripts that group on it;
+                    # "source" is the path, because E1 has arms in different directories with
+                    # the same basename (cad_heldout vs cad_full, caa_heldout vs caa_full)
                     "file": Path(fp).name,
+                    "source": str(fp),
                     "path": path,
                     "index": i,
                     "hash": h,
