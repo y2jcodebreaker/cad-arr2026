@@ -311,10 +311,21 @@ def compute_svd_and_probe(
     return V_k, k, float(cumvar[k - 1] * 100), probe, sv
 
 
-def load_svd_ckpt() -> Dict:
+def pool_key(pairs: List[Dict]) -> str:
+    """Order-independent identity of a fit pool: which pairs it contains."""
+    keys = sorted(hashlib.sha256(f"{p['clean_text']}\x00{p['corrupted_text']}".encode()).hexdigest()
+                  for p in pairs)
+    return hashlib.sha256("".join(keys).encode()).hexdigest()[:16]
+
+
+def load_svd_ckpt(expected_pool: str = None) -> Dict:
     p = CKPT_DIR / "svd_fullres.pt"
     if p.exists():
         data = torch.load(p, weights_only=True)
+        if expected_pool is not None and data.get('fit_pool_key') != expected_pool:
+            raise RuntimeError(
+                f"{p} was fit on pool {data.get('fit_pool_key')}, this run's pool is {expected_pool}. "
+                f"Refusing to reuse a subspace fit on different pairs; use a different --out_dir.")
         required = ['V_k_L21', 'V_k_L25', 'probe_L21', 'probe_L25',
                     'k_L21', 'k_L25', 'sv_L21', 'sv_L25']
         if all(k in data for k in required):
@@ -499,6 +510,17 @@ def parse_args(argv=None):
     return ap.parse_args(argv)
 
 
+def _arm_tag(args) -> str:
+    """Distinct summary/record names for arms that share an --out_dir (and so one SVD fit)."""
+    if args.baseline_only:
+        return f"_baseline_seed{args.seed}"
+    if args.proj_basis == "probe":
+        return "_probebasis"
+    if args.k is not None:
+        return f"_k{args.k}"
+    return ""
+
+
 def _run_sweep(model, tokenizer, prompts, svd_data, baseline_scores, mode, alphas, label, k=None,
                basis="svd"):
     """One steering operator over a list of strengths. Identical to the three original loops."""
@@ -542,7 +564,7 @@ def main(argv=None):
     torch.manual_seed(args.seed)
     if args.out_dir:
         CKPT_DIR = Path(args.out_dir)
-        OUTPUT_FILE = CKPT_DIR / "rtsd_fullres_results.json"
+        OUTPUT_FILE = CKPT_DIR / f"rtsd_fullres_results{_arm_tag(args)}.json"
     CKPT_DIR.mkdir(parents=True, exist_ok=True)
     if args.k is not None and not 1 <= args.k <= K_STORE:
         raise SystemExit(f"--k must be between 1 and {K_STORE}")
@@ -587,7 +609,7 @@ def main(argv=None):
     prompts = [format_prompt(p['corrupted_text']) for p in eval_pairs]
     print(f"  Eval set: {len(prompts)} pairs | SVD pool: {len(svd_pool)} pairs")
 
-    with e1.RunRecord(CKPT_DIR, "cad", args, fz) as rec:
+    with e1.RunRecord(CKPT_DIR, "cad", args, fz, name=f"run_record{_arm_tag(args)}") as rec:
         _run(args, model, tokenizer, prompts, filtered, svd_pool, fz, rec)
 
 
@@ -628,7 +650,8 @@ def _run(args, model, tokenizer, prompts, filtered, svd_pool, fz, rec):
 
     # ── SVD (full decoder space) on the fit pool ──────────────────────────────
     print("\n── SVD (full decoder, 80% variance) ──")
-    svd_data = load_svd_ckpt()
+    fit_key = pool_key(svd_pool) if fz else None
+    svd_data = load_svd_ckpt(expected_pool=fit_key)
     if not svd_data:
         all_corrupted = [format_prompt(p['corrupted_text']) for p in svd_pool]
         all_clean     = [format_prompt(p['clean_text'])     for p in svd_pool]
@@ -648,6 +671,8 @@ def _run(args, model, tokenizer, prompts, filtered, svd_pool, fz, rec):
             svd_data[f'V_k_{suffix}'], svd_data[f'k_{suffix}'] = V_k, k
             svd_data[f'probe_{suffix}'], svd_data[f'sv_{suffix}'] = probe, sv
             svd_data[f'V_top_{suffix}'], svd_data[f'S_{suffix}'] = V_top, S
+        if fit_key is not None:
+            svd_data['fit_pool_key'], svd_data['fit_pool_size'] = fit_key, len(svd_pool)
         save_svd_ckpt(svd_data)
         print(f"  Saved SVD checkpoint → {CKPT_DIR}/svd_fullres.pt")
     else:

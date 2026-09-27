@@ -89,8 +89,10 @@ class RunRecord:
     Written on entry too, so a run killed by the pod dying still leaves a record saying so.
     """
 
-    def __init__(self, out_dir: Path, runner: str, args: argparse.Namespace, fz: Optional[Dict]):
-        self.path = Path(out_dir) / "run_record.json"
+    def __init__(self, out_dir: Path, runner: str, args: argparse.Namespace, fz: Optional[Dict],
+                 name: str = "run_record"):
+        # arms that share a directory (e.g. the rank sweep reusing one SVD) need distinct names
+        self.path = Path(out_dir) / f"{name}.json"
         self.rec = {"runner": runner, "status": "running",
                     "started": _dt.datetime.now().isoformat(timespec="seconds"),
                     "host": platform.node(),
