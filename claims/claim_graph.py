@@ -120,7 +120,14 @@ CLAIMS: tuple[Claim, ...] = (
                       "S3's own argument: d on this metric can be earned by destroying text",
                       False, True),
               Control("rank dose-response (1,2,5,10,20,40,80)",
-                      "two points cannot show a trend", False, False))),
+                      "two points cannot show a trend", False, False),
+              Control("same LEACE concept at both ranks",
+                      "rank-1 point uses a LABEL concept, rank-40 an SVD-coordinate concept: "
+                      "two different operators on one axis", False, True),
+              Control("direction control: rank-1 projection along the probe",
+                      "SVD order puts the top-variance direction first, which is ~orthogonal to "
+                      "the bias (cos -0.001); Table 1's rank-1 probe already reaches d=0.335",
+                      False, True))),
 
     Claim("C6-geometry-is-construction", 2, "S6",
           "At n=13, varying only prompt diversity moves EVR1 22.1% -> 76.1%; permuted null "

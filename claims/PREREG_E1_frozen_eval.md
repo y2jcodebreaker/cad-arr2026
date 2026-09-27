@@ -151,3 +151,46 @@ threshold. G2's positive control (SADI zero-score rate ≥ 0.50) stands.
 Frozen set: `frozen_eval_v1.json`, sha256
 `153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658`, built by
 `build_frozen_eval.py` (seed 42), rebuild-verified identical, and pinned in `frozen_eval.py`.
+
+### A2 — 2026-09-27, before any E1 arm has run: the rank claim confounds rank with direction
+
+**What was found (by reading the code, no data).** §5 claims "nothing changed between those
+two numbers except the rank" for rank-1 LEACE (d = −0.03) vs rank-40 LEACE (d = 0.205). Beyond
+the different eval sets (A1), the two are **different operators**: the rank-1 point comes from
+`evaluate_leace_baseline.py`, whose LEACE concept is the *class label*; the rank-40 point comes
+from `exp3_leace_rank_k.py`, whose concept is the *top-40 SVD coordinates*. And ranking directions
+by SVD variance conflates *how many* directions with *which* ones: §6 already reports the top
+singular direction is nearly orthogonal to the bias probe (cos = −0.001). The paper's own Table 1
+shows a rank-1 method working: the CAD probe reaches d = 0.335 against the rank-40 projection's
+0.337. So "rank governs whether the intervention does anything at all" is contradicted by data
+already in the paper.
+
+**Added arm.** A rank-1 **projection** along the supervised probe direction (CAD runner,
+`--proj_basis probe --proj_alphas 1.0`). With the existing arms this gives three α = 1 projections
+that differ in one variable each:
+
+| arm | rank | direction |
+|---|---|---|
+| `svd_k1` | 1 | top-variance direction |
+| `probe_proj` | 1 | supervised bias direction |
+| `svd_k40` | 40 | top-variance subspace |
+
+`probe_proj` vs `svd_k1` isolates **direction** at fixed rank and operator.
+`svd_k40` vs `svd_k1` isolates **rank** at fixed direction family and operator.
+Tier 1 is now 24 arms.
+
+**P6 (decisive for C5), with every outcome named.** Using d on the frozen set with question-level
+bootstrap CIs, and requiring judged quality within 1.0 of the unsteered mean for any arm counted
+as "working":
+- **(a) Direction, not rank.** `probe_proj` d is within 0.10 of `svd_k40` d. Then one correctly
+  chosen direction suffices. §5 is rewritten: unsupervised SVD needs k ≈ 40 because its top
+  directions are not the bias, not because the bias is 40-dimensional. The conclusion's sentence
+  "that rank matters is a separate and simpler claim" is withdrawn.
+- **(b) Rank, not direction.** `probe_proj` d is no more than 0.05 above `svd_k1` d, while
+  `svd_k40` d exceeds both with non-overlapping CIs. Then rank matters beyond direction choice and
+  §5 stands, restated on the matched arms.
+- **(c) Both.** Anything in between. Report all three arms; no single-cause headline.
+
+**Also fixed in the write-up regardless of outcome.** The old label-concept rank-1 LEACE
+(d = −0.03) is a different operator and must not be placed on the same rank axis as the rank-k
+sweep. The matched rank-1 LEACE point is `exp3` at k = 1.
