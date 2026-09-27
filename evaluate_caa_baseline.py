@@ -31,6 +31,8 @@ Usage:
 """
 
 import torch
+
+import e1_common as e1
 import numpy as np
 import json
 import re
@@ -897,17 +899,25 @@ def evaluate_accesseval(
     model, tokenizer, caa_vectors: Dict[int, torch.Tensor],
     best_layers: List[int],
     filtered_pairs: List[Dict],
+    eval_pairs: List[Dict] = None,
+    alphas: List[float] = None,
 ) -> Dict:
-    """Evaluate CAA on AccessEval (Medicalization bias)."""
+    """Evaluate CAA on AccessEval (Medicalization bias).
+
+    eval_pairs: the frozen E1 set; None keeps the original random draw from filtered_pairs.
+    alphas: strengths to run; None keeps ALPHA_VALUES.
+    """
+    alphas = ALPHA_VALUES if alphas is None else alphas
     print()
     print("=" * 70)
     print("EVALUATING: AccessEval (Medicalization Bias)")
     print("=" * 70)
 
     # Sample disability prompts for generation evaluation (pairs already filtered)
-    eval_pairs_shuffled = filtered_pairs.copy()
-    random.shuffle(eval_pairs_shuffled)
-    eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
+    if eval_pairs is None:
+        eval_pairs_shuffled = filtered_pairs.copy()
+        random.shuffle(eval_pairs_shuffled)
+        eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
 
     # We evaluate on the DISABILITY (corrupted) prompts — measure if CAA
     # reduces medicalization in disability-context responses
@@ -929,7 +939,7 @@ def evaluate_accesseval(
         results['layers'][layer_key] = {}
         print(f"\n  ── Layer {layer} ──")
 
-        for alpha in ALPHA_VALUES:
+        for alpha in alphas:
             responses = generate_with_caa(
                 model, tokenizer, prompts_fmt,
                 caa_vectors[layer], layer, alpha,
@@ -975,7 +985,32 @@ def main():
                         help="Override layer selection with explicit layer indices "
                              "(e.g. --layer_override 13 14 15). Applies to all benchmarks "
                              "that are not skipped.")
+    parser.add_argument('--alphas', type=float, nargs='+', default=None,
+                        help="AccessEval strengths (default: ALPHA_VALUES)")
+    e1.add_e1_args(parser)
     args = parser.parse_args()
+    e1.check_e1_args(args)
+    if args.eval_set and not args.skip_discrimeval:
+        raise SystemExit("E1 is AccessEval only: pass --skip_discrimeval with --eval_set")
+    args.seed = RANDOM_SEED if args.seed is None else args.seed
+    out_dir = Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.dry_run:                                   # G0: no model
+        pairs = build_accesseval_pairs()
+        filtered = apply_loudness_filter(pairs, None, None, SIGNAL_PERCENTILE, LOUDNESS_LAYER)
+        fz, fit, ev = e1.frozen_split(filtered, args)
+        print(f"\nDRY RUN  runner=caa  git={str(e1.GIT_AT_IMPORT['commit'])[:12]}  "
+              f"dirty={e1.GIT_AT_IMPORT['dirty_tracked_files'] or 'none'}")
+        print(f"  filtered pool {len(filtered)} entries; loudness from {CHECKPOINT_DIR}")
+        if fz:
+            import frozen_eval as fe
+            print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
+            print(f"  CAA vectors fit on {len(fit)} unique pairs; eval {len(ev)} items")
+            print(f"  vector cache -> {out_dir / 'caa_vectors_accesseval.pt'}")
+        print(f"  layers {args.layer_override}  alphas {args.alphas or ALPHA_VALUES}")
+        return
 
     print("=" * 70)
     print("CAA BASELINE — Contrastive Activation Addition")
@@ -988,12 +1023,14 @@ def main():
     print(f"Timestamp: {datetime.now().isoformat()}")
     print()
 
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    torch.manual_seed(RANDOM_SEED)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Resolve output path (add layer suffix when override is active)
-    if args.layer_override:
+    if out_dir:
+        output_json = out_dir / "caa_results.json"
+    elif args.layer_override:
         layer_suffix = "_L" + "_".join(str(l) for l in args.layer_override)
         output_json = OUTPUT_DIR / f"caa_results{layer_suffix}.json"
     else:
@@ -1069,10 +1106,11 @@ def main():
         accesseval_filtered = apply_loudness_filter(
             accesseval_pairs, model, tokenizer, SIGNAL_PERCENTILE, LOUDNESS_LAYER
         )
+        fz, fit, ev = e1.frozen_split(accesseval_filtered, args)
         accesseval_vectors = compute_caa_vectors(
-            accesseval_filtered, model, tokenizer,
+            fit if fz else accesseval_filtered, model, tokenizer,
             format_accesseval_prompt,
-            CHECKPOINT_DIR / "caa_vectors_accesseval.pt",
+            (out_dir or CHECKPOINT_DIR) / "caa_vectors_accesseval.pt",
             desc="AccessEval",
         )
         accesseval_layers = args.layer_override or select_best_layers(accesseval_vectors, args.top_layers)
@@ -1093,10 +1131,15 @@ def main():
         )
 
     if not args.skip_accesseval:
-        all_results['accesseval'] = evaluate_accesseval(
-            model, tokenizer, accesseval_vectors, accesseval_layers,
-            accesseval_filtered,
-        )
+        with e1.RunRecord(out_dir or OUTPUT_DIR, "caa", args, fz) as rec:
+            all_results['accesseval'] = evaluate_accesseval(
+                model, tokenizer, accesseval_vectors, accesseval_layers,
+                accesseval_filtered, eval_pairs=ev if fz else None, alphas=args.alphas,
+            )
+            all_results['e1'] = e1.e1_metadata(args, fz, len(fit) if fz else None)
+            with open(output_json, 'w') as f:            # save inside the record
+                json.dump(all_results, f, indent=2, default=str)
+            rec.result(output=str(output_json))
 
     # ── Save results ────────────────────────────────────────────────────────
 

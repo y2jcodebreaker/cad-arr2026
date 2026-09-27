@@ -49,6 +49,7 @@ controls_checkpoints/
 gemma_generation_checkpoints/
 qwen_generation_checkpoints/
 leace_checkpoints/
+exp3_ckpt/
 e1_outputs/
 
 # Large tensors are regenerable from the model and too big for history.

@@ -27,6 +27,7 @@ Usage:
     python evaluate_rtsd_fullres_generation.py
 """
 
+import argparse
 import hashlib
 import json
 import random
@@ -38,6 +39,8 @@ import numpy as np
 import torch
 from datasets import load_dataset
 from sklearn.linear_model import LogisticRegression
+
+import e1_common as e1
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -88,6 +91,7 @@ BASELINE_CKPT   = Path("pincer_k40_checkpoints") / "baseline_responses.json"
 CKPT_DIR        = Path("rtsd_fullres_checkpoints")
 CKPT_DIR.mkdir(exist_ok=True)
 OUTPUT_FILE     = Path("rtsd_fullres_results.json")
+K_STORE         = 128   # top singular vectors kept in the SVD cache, so --k can go up to 128
 
 # ============================================================================
 # UTILITIES
@@ -265,7 +269,8 @@ def compute_svd_and_probe(
     clean_acts: torch.Tensor,
     corrupted_acts: torch.Tensor,
     var_threshold: float = VARIANCE_THRESHOLD,
-) -> Tuple[torch.Tensor, int, float, torch.Tensor, torch.Tensor]:
+    return_top: int = 0,
+):
     """
     SVD of mean-centered full-decoder differences.
 
@@ -274,7 +279,9 @@ def compute_svd_and_probe(
     V_k: top-k right singular vectors (k, D) — bias subspace from centered delta.
     probe: unit-norm LR probe direction pointing toward medicalization.
 
-    Returns (V_k, k_auto, cumvar_pct, probe, sv).
+    Returns (V_k, k_auto, cumvar_pct, probe, sv); with return_top > 0 also returns
+    (V_top, S): the first return_top right singular vectors and all singular values, so a
+    caller can take any rank without recomputing.
     """
     delta = (corrupted_acts - clean_acts).numpy().astype(np.float64)
     # Capture mean-diff BEFORE centering — used for CAD-guided CAA sweep
@@ -298,13 +305,27 @@ def compute_svd_and_probe(
     print(f"    k_auto={k}, cumvar@k={cumvar[k-1]:.1%}, top1_evr={top1_evr:.1%}, "
           f"probe_acc={acc:.1%}")
 
+    if return_top > 0:
+        V_top = torch.tensor(Vt[:return_top], dtype=torch.float32)
+        return V_k, k, float(cumvar[k - 1] * 100), probe, sv, V_top, torch.tensor(S)
     return V_k, k, float(cumvar[k - 1] * 100), probe, sv
 
 
-def load_svd_ckpt() -> Dict:
+def pool_key(pairs: List[Dict]) -> str:
+    """Order-independent identity of a fit pool: which pairs it contains."""
+    keys = sorted(hashlib.sha256(f"{p['clean_text']}\x00{p['corrupted_text']}".encode()).hexdigest()
+                  for p in pairs)
+    return hashlib.sha256("".join(keys).encode()).hexdigest()[:16]
+
+
+def load_svd_ckpt(expected_pool: str = None) -> Dict:
     p = CKPT_DIR / "svd_fullres.pt"
     if p.exists():
         data = torch.load(p, weights_only=True)
+        if expected_pool is not None and data.get('fit_pool_key') != expected_pool:
+            raise RuntimeError(
+                f"{p} was fit on pool {data.get('fit_pool_key')}, this run's pool is {expected_pool}. "
+                f"Refusing to reuse a subspace fit on different pairs; use a different --out_dir.")
         required = ['V_k_L21', 'V_k_L25', 'probe_L21', 'probe_L25',
                     'k_L21', 'k_L25', 'sv_L21', 'sv_L25']
         if all(k in data for k in required):
@@ -399,14 +420,27 @@ def make_probe_hook(probe: torch.Tensor, alpha: float):
     return hook
 
 
-def register_hooks(model, svd_data: Dict, alpha: float, mode: str) -> List:
+def register_hooks(model, svd_data: Dict, alpha: float, mode: str, k: int = None,
+                   basis: str = "svd") -> List:
     handles = []
     for layer, vk_key, p_key, sv_key in [
         (TRIGGER_LAYER,   'V_k_L21', 'probe_L21', 'sv_L21'),
         (AMPLIFIER_LAYER, 'V_k_L25', 'probe_L25', 'sv_L25'),
     ]:
-        if mode == 'projection':
-            hook_fn = make_projection_hook(svd_data[vk_key], alpha)
+        if mode == 'projection' and basis == 'probe':
+            # rank-1 PROJECTION along the supervised probe direction: same operator as the
+            # SVD projection, same rank as the k=1 arm, only the direction differs
+            hook_fn = make_projection_hook(svd_data[p_key].reshape(1, -1), alpha)
+        elif mode == 'projection':
+            if k is None:
+                V = svd_data[vk_key]                       # k_auto rows: original behaviour
+            else:
+                top_key = vk_key.replace('V_k_', 'V_top_')
+                if top_key not in svd_data:
+                    raise RuntimeError(f"--k {k} needs {top_key} in the SVD cache; delete "
+                                       f"{CKPT_DIR}/svd_fullres.pt so it is recomputed with K_STORE rows")
+                V = svd_data[top_key][:k]
+            hook_fn = make_projection_hook(V, alpha)
         elif mode == 'meandiff':
             hook_fn = make_probe_hook(svd_data[sv_key], alpha)
         else:
@@ -460,14 +494,103 @@ def generate_responses(model, tokenizer, prompts: List[str],
 # MAIN
 # ============================================================================
 
-def main():
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    torch.manual_seed(RANDOM_SEED)
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser(description="CAD (multi-rank projection) generation sweep")
+    ap.add_argument("--proj_alphas", type=float, nargs="*", default=ALPHA_PROJ)
+    ap.add_argument("--probe_alphas", type=float, nargs="*", default=ALPHA_PROBE)
+    ap.add_argument("--meandiff_alphas", type=float, nargs="*", default=ALPHA_MEANDIFF)
+    ap.add_argument("--k", type=int, default=None,
+                    help="force the projection rank; default is k_auto from the 80%% threshold")
+    ap.add_argument("--proj_basis", choices=["svd", "probe"], default="svd",
+                    help="svd = top-k singular vectors (default); probe = rank-1 projection "
+                         "along the supervised probe direction (direction control for C5)")
+    ap.add_argument("--baseline_only", action="store_true",
+                    help="generate the unsteered baseline for this seed and stop")
+    e1.add_e1_args(ap)
+    return ap.parse_args(argv)
+
+
+def _arm_tag(args) -> str:
+    """Distinct summary/record names for arms that share an --out_dir (and so one SVD fit)."""
+    if args.baseline_only:
+        return f"_baseline_seed{args.seed}"
+    if args.proj_basis == "probe":
+        return "_probebasis"
+    if args.k is not None:
+        return f"_k{args.k}"
+    return ""
+
+
+def _run_sweep(model, tokenizer, prompts, svd_data, baseline_scores, mode, alphas, label, k=None,
+               basis="svd"):
+    """One steering operator over a list of strengths. Identical to the three original loops."""
+    sweep, best_d, best_alpha = {}, -999.0, None
+    if mode == "projection" and basis == "probe":
+        tag = f"{label}_probebasis"
+    else:
+        tag = f"{label}_k{k}" if (k is not None and mode == "projection") else label
+    for alpha in alphas:
+        print(f"\n  alpha={alpha}")
+        ckpt = CKPT_DIR / f"{tag}_alpha{alpha}_responses.json"
+        handles = register_hooks(model, svd_data, alpha, mode=mode, k=k, basis=basis)
+        try:
+            responses = generate_responses(model, tokenizer, prompts, ckpt, f"{tag} α={alpha}")
+        finally:
+            for h in handles:
+                h.remove()
+        scores = [medicalization_score(r) for r in responses]
+        d = cohens_d(baseline_scores, scores)
+        red = (np.mean(baseline_scores) - np.mean(scores)) / abs(np.mean(baseline_scores)) * 100
+        degen = is_degenerate(responses)
+        n_empty = sum(1 for r in responses if len(r.split()) < 10)
+        print(f"  d={d:.3f}, ΔMed%={red:.1f}%, degenerate={degen}, n_empty={n_empty}")
+        sweep[alpha] = {'cohens_d': d, 'delta_med_pct': red,
+                        'steered_mean': float(np.mean(scores)),
+                        'steered_std': float(np.std(scores, ddof=1)),
+                        'degenerate': degen, 'n_empty': n_empty,
+                        'scores': [float(x) for x in scores]}
+        if not degen and d > best_d:
+            best_d, best_alpha = d, alpha
+    return sweep, best_d, best_alpha
+
+
+def main(argv=None):
+    global CKPT_DIR, OUTPUT_FILE
+    args = parse_args(argv)
+    e1.check_e1_args(args)
+    args.seed = RANDOM_SEED if args.seed is None else args.seed
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if args.out_dir:
+        CKPT_DIR = Path(args.out_dir)
+        OUTPUT_FILE = CKPT_DIR / f"rtsd_fullres_results{_arm_tag(args)}.json"
+    CKPT_DIR.mkdir(parents=True, exist_ok=True)
+    if args.k is not None and not 1 <= args.k <= K_STORE:
+        raise SystemExit(f"--k must be between 1 and {K_STORE}")
+    if args.proj_basis == "probe" and args.k is not None:
+        raise SystemExit("--proj_basis probe is rank 1 by construction; do not pass --k")
 
     print(f"RTSD full-residual generation eval — {MODEL_NAME}")
     print(f"Layers: L{TRIGGER_LAYER}+L{AMPLIFIER_LAYER}, "
-          f"variance_threshold={VARIANCE_THRESHOLD}")
+          f"variance_threshold={VARIANCE_THRESHOLD}, seed={args.seed}, k={args.k or 'auto'}")
+
+    # ── G0: dry run. Data and fit pool only; the model is never loaded. ─────────
+    if args.dry_run:
+        all_pairs = build_accesseval_pairs()
+        filtered = apply_loudness_filter(all_pairs)          # committed npz; no model needed
+        fz, fit, ev = e1.frozen_split(filtered, args)
+        print(f"\nDRY RUN  runner=cad  git={str(e1.GIT_AT_IMPORT['commit'])[:12]}  "
+              f"dirty={e1.GIT_AT_IMPORT['dirty_tracked_files'] or 'none'}")
+        print(f"  filtered pool {len(filtered)} entries")
+        if fz:
+            import frozen_eval as fe
+            print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
+            print(f"  eval prompts {len(ev)}  fingerprint "
+                  f"{_fingerprint([format_prompt(p['corrupted_text']) for p in ev])}")
+            print(f"  SVD/probe fit on {len(fit)} unique pairs")
+        print(f"  out_dir {CKPT_DIR}")
+        return
 
     model, tokenizer = load_model()
 
@@ -475,239 +598,137 @@ def main():
     print("\n── Data ──")
     all_pairs = build_accesseval_pairs()
     filtered = apply_loudness_filter(all_pairs, model, tokenizer)
-    eval_pairs = filtered.copy()
-    random.shuffle(eval_pairs)
-    eval_pairs = eval_pairs[:N_EVAL]
+    fz, fit, ev = e1.frozen_split(filtered, args)
+    if fz:
+        eval_pairs, svd_pool = ev, fit
+    else:                                           # original behaviour
+        eval_pairs = filtered.copy()
+        random.shuffle(eval_pairs)
+        eval_pairs = eval_pairs[:N_EVAL]
+        svd_pool = filtered
     prompts = [format_prompt(p['corrupted_text']) for p in eval_pairs]
-    print(f"  Eval set: {len(prompts)} pairs | SVD pool: {len(filtered)} pairs")
+    print(f"  Eval set: {len(prompts)} pairs | SVD pool: {len(svd_pool)} pairs")
 
-    # ── Baseline (reuse from pincer_k40_checkpoints) ───────────────────────
+    with e1.RunRecord(CKPT_DIR, "cad", args, fz, name=f"run_record{_arm_tag(args)}") as rec:
+        _run(args, model, tokenizer, prompts, filtered, svd_pool, fz, rec)
+
+
+def _run(args, model, tokenizer, prompts, filtered, svd_pool, fz, rec):
+    # ── Baseline ─────────────────────────────────────────────────────────────
     print("\n── Baseline ──")
-    baseline_responses = load_gen_ckpt(BASELINE_CKPT, prompts)
-    if len(baseline_responses) != len(prompts):
-        print(f"  Baseline checkpoint mismatch or missing — generating fresh baseline")
-        baseline_ckpt = CKPT_DIR / "baseline_responses.json"
+    if fz:   # E1: always generate on the frozen set; never reuse an old checkpoint
         baseline_responses = generate_responses(
-            model, tokenizer, prompts, baseline_ckpt, "Baseline"
-        )
+            model, tokenizer, prompts, CKPT_DIR / f"baseline_seed{args.seed}_responses.json",
+            f"Baseline seed={args.seed}")
     else:
-        print(f"  [CKPT] Reused baseline from {BASELINE_CKPT.name}")
+        baseline_responses = load_gen_ckpt(BASELINE_CKPT, prompts)
+        if len(baseline_responses) != len(prompts):
+            print(f"  Baseline checkpoint mismatch or missing — generating fresh baseline")
+            baseline_responses = generate_responses(
+                model, tokenizer, prompts, CKPT_DIR / "baseline_responses.json", "Baseline")
+        else:
+            print(f"  [CKPT] Reused baseline from {BASELINE_CKPT.name}")
     baseline_scores = [medicalization_score(r) for r in baseline_responses]
     print(f"  mean={np.mean(baseline_scores):.3f}, std={np.std(baseline_scores, ddof=1):.3f}")
 
-    # ── SVD (full decoder space) ───────────────────────────────────────────
+    meta = {
+        'model': MODEL_NAME, 'n_eval': len(prompts), 'n_filtered_pairs': len(filtered),
+        'svd_pool_size': len(svd_pool), 'random_seed': args.seed,
+        'prompt_fingerprint': _fingerprint(prompts),
+        'scoring': 'generation_word_count_log_odds',
+        'hook_target': f'model.model.layers[L] (full decoder, L={TRIGGER_LAYER},{AMPLIFIER_LAYER})',
+        'variance_threshold': VARIANCE_THRESHOLD, **e1.e1_metadata(args, fz, len(svd_pool)),
+    }
+    if args.baseline_only:
+        out = {'metadata': meta, 'baseline_mean': float(np.mean(baseline_scores)),
+               'baseline_std': float(np.std(baseline_scores, ddof=1)),
+               'baseline_scores': [float(x) for x in baseline_scores]}
+        OUTPUT_FILE.write_text(json.dumps(out, indent=2))
+        rec.result(output=str(OUTPUT_FILE), baseline_mean=out['baseline_mean'])
+        print(f"\nSaved → {OUTPUT_FILE}  (baseline only)")
+        return
+
+    # ── SVD (full decoder space) on the fit pool ──────────────────────────────
     print("\n── SVD (full decoder, 80% variance) ──")
-    svd_data = load_svd_ckpt()
+    fit_key = pool_key(svd_pool) if fz else None
+    svd_data = load_svd_ckpt(expected_pool=fit_key)
     if not svd_data:
-        all_corrupted = [format_prompt(p['corrupted_text']) for p in filtered]
-        all_clean     = [format_prompt(p['clean_text'])     for p in filtered]
+        all_corrupted = [format_prompt(p['corrupted_text']) for p in svd_pool]
+        all_clean     = [format_prompt(p['clean_text'])     for p in svd_pool]
         print(f"  Extracting full decoder outputs at L{TRIGGER_LAYER}/L{AMPLIFIER_LAYER} "
-              f"over {len(filtered)} filtered pairs...")
+              f"over {len(svd_pool)} pairs...")
         print("  Corrupted:")
         corr_acts = extract_full_decoder(
             model, tokenizer, all_corrupted, [TRIGGER_LAYER, AMPLIFIER_LAYER])
         print("  Clean:")
         clean_acts = extract_full_decoder(
             model, tokenizer, all_clean, [TRIGGER_LAYER, AMPLIFIER_LAYER])
-
         svd_data = {}
-        for layer, vk_key, k_key, prob_key, sv_key in [
-            (TRIGGER_LAYER,   'V_k_L21', 'k_L21', 'probe_L21', 'sv_L21'),
-            (AMPLIFIER_LAYER, 'V_k_L25', 'k_L25', 'probe_L25', 'sv_L25'),
-        ]:
+        for layer, suffix in [(TRIGGER_LAYER, 'L21'), (AMPLIFIER_LAYER, 'L25')]:
             print(f"  L{layer}:")
-            V_k, k, cv_pct, probe, sv = compute_svd_and_probe(
-                clean_acts[layer], corr_acts[layer])
-            svd_data[vk_key]   = V_k
-            svd_data[k_key]    = k
-            svd_data[prob_key] = probe
-            svd_data[sv_key]   = sv
+            V_k, k, cv_pct, probe, sv, V_top, S = compute_svd_and_probe(
+                clean_acts[layer], corr_acts[layer], return_top=K_STORE)
+            svd_data[f'V_k_{suffix}'], svd_data[f'k_{suffix}'] = V_k, k
+            svd_data[f'probe_{suffix}'], svd_data[f'sv_{suffix}'] = probe, sv
+            svd_data[f'V_top_{suffix}'], svd_data[f'S_{suffix}'] = V_top, S
+        if fit_key is not None:
+            svd_data['fit_pool_key'], svd_data['fit_pool_size'] = fit_key, len(svd_pool)
         save_svd_ckpt(svd_data)
         print(f"  Saved SVD checkpoint → {CKPT_DIR}/svd_fullres.pt")
     else:
-        for layer, vk_key, k_key in [
-            (TRIGGER_LAYER,   'V_k_L21', 'k_L21'),
-            (AMPLIFIER_LAYER, 'V_k_L25', 'k_L25'),
-        ]:
-            print(f"  L{layer}: k_auto={svd_data[k_key]}, "
-                  f"V_k={tuple(svd_data[vk_key].shape)}")
+        for layer, suffix in [(TRIGGER_LAYER, 'L21'), (AMPLIFIER_LAYER, 'L25')]:
+            print(f"  L{layer}: k_auto={svd_data[f'k_{suffix}']}, "
+                  f"V_k={tuple(svd_data[f'V_k_{suffix}'].shape)}")
+    meta['k_L21'], meta['k_L25'] = int(svd_data['k_L21']), int(svd_data['k_L25'])
+    meta['k_used'] = args.k if args.k is not None else 'auto'
+    meta['proj_basis'] = args.proj_basis
 
-    # ── Multi-rank projection sweep ────────────────────────────────────────
-    print("\n── Multi-rank projection sweep ──")
-    print("  h -= alpha * (h @ V_k.T) @ V_k  [full decoder, L21+L25]")
-    proj_sweep = {}
-    best_d_proj, best_alpha_proj = -999.0, None
+    # ── The three operators ──────────────────────────────────────────────────
+    runs = {}
+    for mode, alphas, label, heading in [
+        ('projection', args.proj_alphas, 'proj', "Multi-rank projection  h -= alpha * (h@Vk.T)@Vk"),
+        ('probe', args.probe_alphas, 'probe', "Rank-1 probe  h -= alpha * probe"),
+        ('meandiff', args.meandiff_alphas, 'meandiff',
+         "Mean-diff (CAD-guided CAA)  h -= alpha * sv, sv = unit-norm mean-diff"),
+    ]:
+        if not alphas:
+            continue
+        print(f"\n── {heading} ──")
+        runs[mode] = _run_sweep(model, tokenizer, prompts, svd_data, baseline_scores,
+                                mode, alphas, label, k=args.k,
+                                basis=args.proj_basis if mode == 'projection' else 'svd')
 
-    for alpha in ALPHA_PROJ:
-        print(f"\n  alpha={alpha}")
-        ckpt = CKPT_DIR / f"proj_alpha{alpha}_responses.json"
-        handles = register_hooks(model, svd_data, alpha, mode='projection')
-        try:
-            responses = generate_responses(model, tokenizer, prompts, ckpt, f"proj α={alpha}")
-        finally:
-            for h in handles:
-                h.remove()
-
-        scores = [medicalization_score(r) for r in responses]
-        d = cohens_d(baseline_scores, scores)
-        red = (np.mean(baseline_scores) - np.mean(scores)) / abs(np.mean(baseline_scores)) * 100
-        degen = is_degenerate(responses)
-        n_empty = sum(1 for r in responses if len(r.split()) < 10)
-        print(f"  d={d:.3f}, ΔMed%={red:.1f}%, degenerate={degen}, n_empty={n_empty}")
-
-        proj_sweep[alpha] = {
-            'cohens_d': d, 'delta_med_pct': red,
-            'steered_mean': float(np.mean(scores)),
-            'steered_std': float(np.std(scores, ddof=1)),
-            'degenerate': degen, 'n_empty': n_empty,
-            'scores': [float(s) for s in scores],
-        }
-        if not degen and d > best_d_proj:
-            best_d_proj, best_alpha_proj = d, alpha
-
-    # ── Rank-1 probe sweep (reference) ────────────────────────────────────
-    print("\n── Rank-1 probe sweep (reference — matches Pincer n250) ──")
-    print("  h -= alpha * probe  [full decoder, L21+L25]")
-    probe_sweep = {}
-    best_d_probe, best_alpha_probe = -999.0, None
-
-    for alpha in ALPHA_PROBE:
-        print(f"\n  alpha={alpha}")
-        ckpt = CKPT_DIR / f"probe_alpha{alpha}_responses.json"
-        handles = register_hooks(model, svd_data, alpha, mode='probe')
-        try:
-            responses = generate_responses(model, tokenizer, prompts, ckpt, f"probe α={alpha}")
-        finally:
-            for h in handles:
-                h.remove()
-
-        scores = [medicalization_score(r) for r in responses]
-        d = cohens_d(baseline_scores, scores)
-        red = (np.mean(baseline_scores) - np.mean(scores)) / abs(np.mean(baseline_scores)) * 100
-        degen = is_degenerate(responses)
-        n_empty = sum(1 for r in responses if len(r.split()) < 10)
-        print(f"  d={d:.3f}, ΔMed%={red:.1f}%, degenerate={degen}, n_empty={n_empty}")
-
-        probe_sweep[alpha] = {
-            'cohens_d': d, 'delta_med_pct': red,
-            'steered_mean': float(np.mean(scores)),
-            'steered_std': float(np.std(scores, ddof=1)),
-            'degenerate': degen, 'n_empty': n_empty,
-            'scores': [float(s) for s in scores],
-        }
-        if not degen and d > best_d_probe:
-            best_d_probe, best_alpha_probe = d, alpha
-
-    # ── Mean-diff additive sweep (CAD-guided CAA) ─────────────────────────
-    print("\n── Mean-diff additive sweep (CAD-guided CAA at circuit layers) ──")
-    print("  h -= alpha * sv  [full decoder, L21+L25] where sv = unit-norm mean-diff")
-    meandiff_sweep = {}
-    best_d_meandiff, best_alpha_meandiff = -999.0, None
-
-    for alpha in ALPHA_MEANDIFF:
-        print(f"\n  alpha={alpha}")
-        ckpt = CKPT_DIR / f"meandiff_alpha{alpha}_responses.json"
-        handles = register_hooks(model, svd_data, alpha, mode='meandiff')
-        try:
-            responses = generate_responses(
-                model, tokenizer, prompts, ckpt, f"meandiff α={alpha}")
-        finally:
-            for h in handles:
-                h.remove()
-
-        scores = [medicalization_score(r) for r in responses]
-        d = cohens_d(baseline_scores, scores)
-        red = (np.mean(baseline_scores) - np.mean(scores)) / abs(np.mean(baseline_scores)) * 100
-        degen = is_degenerate(responses)
-        n_empty = sum(1 for r in responses if len(r.split()) < 10)
-        print(f"  d={d:.3f}, ΔMed%={red:.1f}%, degenerate={degen}, n_empty={n_empty}")
-
-        meandiff_sweep[alpha] = {
-            'cohens_d': d, 'delta_med_pct': red,
-            'steered_mean': float(np.mean(scores)),
-            'steered_std': float(np.std(scores, ddof=1)),
-            'degenerate': degen, 'n_empty': n_empty,
-            'scores': [float(s) for s in scores],
-        }
-        if not degen and d > best_d_meandiff:
-            best_d_meandiff, best_alpha_meandiff = d, alpha
-
-    # ── Summary ───────────────────────────────────────────────────────────
-    print(f"\n{'='*62}")
-    print(f"  RTSD FULL-RESIDUAL GENERATION (n={N_EVAL})")
-    print(f"  Baseline: mean={np.mean(baseline_scores):.3f}, "
-          f"std={np.std(baseline_scores, ddof=1):.3f}")
-    print(f"  k_auto: L{TRIGGER_LAYER}={svd_data['k_L21']}, "
-          f"L{AMPLIFIER_LAYER}={svd_data['k_L25']}")
-
-    print(f"\n  [Projection]  h -= alpha * (h@Vk.T)@Vk")
-    print(f"  {'alpha':>6}  {'d':>6}  {'ΔMed%':>8}  degen")
-    print(f"  {'-'*40}")
-    for a in ALPHA_PROJ:
-        r = proj_sweep[a]
-        flag = " ← best" if a == best_alpha_proj else ""
-        print(f"  {a:>6.1f}  {r['cohens_d']:>6.3f}  {r['delta_med_pct']:>8.1f}%  "
-              f"{str(r['degenerate']):<5}{flag}")
-    print(f"  Projection best: alpha={best_alpha_proj}, d={best_d_proj:.3f}")
-
-    print(f"\n  [Rank-1 probe]  h -= alpha * probe")
-    print(f"  {'alpha':>6}  {'d':>6}  {'ΔMed%':>8}  degen")
-    print(f"  {'-'*40}")
-    for a in ALPHA_PROBE:
-        r = probe_sweep[a]
-        flag = " ← best" if a == best_alpha_probe else ""
-        print(f"  {a:>6.1f}  {r['cohens_d']:>6.3f}  {r['delta_med_pct']:>8.1f}%  "
-              f"{str(r['degenerate']):<5}{flag}")
-    print(f"  Probe best: alpha={best_alpha_probe}, d={best_d_probe:.3f}")
-
-    print(f"\n  [Mean-diff (CAD-guided CAA)]  h -= alpha * sv  (unit-norm mean-diff at L21+L25)")
-    print(f"  {'alpha':>6}  {'d':>6}  {'ΔMed%':>8}  degen")
-    print(f"  {'-'*40}")
-    for a in ALPHA_MEANDIFF:
-        r = meandiff_sweep[a]
-        flag = " ← best" if a == best_alpha_meandiff else ""
-        print(f"  {a:>6.1f}  {r['cohens_d']:>6.3f}  {r['delta_med_pct']:>8.1f}%  "
-              f"{str(r['degenerate']):<5}{flag}")
-    print(f"  Mean-diff best: alpha={best_alpha_meandiff}, d={best_d_meandiff:.3f}")
-    print(f"{'='*62}")
-
-    # ── Save ──────────────────────────────────────────────────────────────
-    out = {
-        'metadata': {
-            'model': MODEL_NAME,
-            'n_eval': N_EVAL,
-            'n_filtered_pairs': len(filtered),
-            'random_seed': RANDOM_SEED,
-            'scoring': 'generation_word_count_log_odds',
-            'hook_target': f'model.model.layers[L] (full decoder, L={TRIGGER_LAYER},{AMPLIFIER_LAYER})',
-            'variance_threshold': VARIANCE_THRESHOLD,
-            'k_L21': int(svd_data['k_L21']),
-            'k_L25': int(svd_data['k_L25']),
-        },
-        'baseline_mean': float(np.mean(baseline_scores)),
-        'baseline_std': float(np.std(baseline_scores, ddof=1)),
-        'projection': {
-            'best_alpha': best_alpha_proj,
-            'best_cohens_d': best_d_proj,
-            'sweep': {str(a): {k: v for k, v in r.items() if k != 'scores'}
-                      for a, r in proj_sweep.items()},
-        },
-        'probe': {
-            'best_alpha': best_alpha_probe,
-            'best_cohens_d': best_d_probe,
-            'sweep': {str(a): {k: v for k, v in r.items() if k != 'scores'}
-                      for a, r in probe_sweep.items()},
-        },
-        'meandiff': {
-            'best_alpha': best_alpha_meandiff,
-            'best_cohens_d': best_d_meandiff,
-            'description': 'CAD-guided CAA: unit-norm mean-diff at full decoder L21+L25',
-            'sweep': {str(a): {k: v for k, v in r.items() if k != 'scores'}
-                      for a, r in meandiff_sweep.items()},
-        },
-    }
+    # ── Save BEFORE any summary string is built ──────────────────────────────
+    keep_scores = bool(fz)       # E1 keeps per-item scores for paired, question-level analysis
+    out = {'metadata': meta,
+           'baseline_mean': float(np.mean(baseline_scores)),
+           'baseline_std': float(np.std(baseline_scores, ddof=1))}
+    if keep_scores:
+        out['baseline_scores'] = [float(x) for x in baseline_scores]
+    for mode, (sweep, best_d, best_alpha) in runs.items():
+        out[mode] = {'best_alpha': best_alpha, 'best_cohens_d': best_d,
+                     'sweep': {str(a): {k: v for k, v in r.items() if keep_scores or k != 'scores'}
+                               for a, r in sweep.items()}}
+    if 'meandiff' in out:
+        out['meandiff']['description'] = 'CAD-guided CAA: unit-norm mean-diff at full decoder L21+L25'
     OUTPUT_FILE.write_text(json.dumps(out, indent=2))
+    rec.result(output=str(OUTPUT_FILE), baseline_mean=out['baseline_mean'],
+               **{f"best_d_{m}": runs[m][1] for m in runs})
     print(f"\nSaved → {OUTPUT_FILE}")
+
+    # ── Summary (printed last, so a formatting error cannot lose results) ─────
+    print(f"\n{'='*62}\n  RTSD FULL-RESIDUAL GENERATION (n={len(prompts)})")
+    print(f"  Baseline: mean={np.mean(baseline_scores):.3f}, std={np.std(baseline_scores, ddof=1):.3f}")
+    print(f"  k_auto: L{TRIGGER_LAYER}={meta['k_L21']}, L{AMPLIFIER_LAYER}={meta['k_L25']}, "
+          f"k_used={meta['k_used']}")
+    for mode, (sweep, best_d, best_alpha) in runs.items():
+        print(f"\n  [{mode}]\n  {'alpha':>6}  {'d':>6}  {'ΔMed%':>8}  degen\n  {'-'*40}")
+        for a, r in sweep.items():
+            flag = " ← best" if a == best_alpha else ""
+            print(f"  {a:>6.1f}  {r['cohens_d']:>6.3f}  {r['delta_med_pct']:>8.1f}%  "
+                  f"{str(r['degenerate']):<5}{flag}")
+        print(f"  {mode} best: alpha={best_alpha}, d={best_d:.3f}")
+    print(f"{'='*62}")
 
 
 if __name__ == "__main__":

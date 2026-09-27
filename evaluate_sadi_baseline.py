@@ -45,6 +45,8 @@ Usage:
 """
 
 import torch
+
+import e1_common as e1
 import numpy as np
 import json
 import re
@@ -1071,16 +1073,20 @@ def evaluate_accesseval(
     model, tokenizer,
     sadi_elements: Dict,
     filtered_pairs: List[Dict],
+    eval_pairs: List[Dict] = None,
+    strengths: List[float] = None,
 ) -> Dict:
-    """Evaluate SADI on AccessEval (Medicalization bias)."""
+    """Evaluate SADI on AccessEval. eval_pairs/strengths default to the original behaviour."""
+    strengths = STRENGTH_VALUES if strengths is None else strengths
     print()
     print("=" * 70)
     print("EVALUATING: AccessEval (Medicalization Bias)")
     print("=" * 70)
 
-    eval_pairs_shuffled = filtered_pairs.copy()
-    random.shuffle(eval_pairs_shuffled)
-    eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
+    if eval_pairs is None:
+        eval_pairs_shuffled = filtered_pairs.copy()
+        random.shuffle(eval_pairs_shuffled)
+        eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
 
     prompts_fmt = [
         format_accesseval_prompt(p['corrupted_text']) for p in eval_pairs
@@ -1099,7 +1105,7 @@ def evaluate_accesseval(
         'strengths': {},
     }
 
-    for strength in STRENGTH_VALUES:
+    for strength in strengths:
         gen_ckpt = _gen_ckpt_path("accesseval", strength)
         if gen_ckpt.exists():
             print(f"  [CHECKPOINT] s={strength} loaded from {gen_ckpt.name}")
@@ -1147,7 +1153,37 @@ def main():
     parser.add_argument('--skip_accesseval', action='store_true')
     parser.add_argument('--top_k_hidden', type=int, default=128,
                         help="Top K hidden dims to select (default: 128)")
+    parser.add_argument('--strengths', type=float, nargs='+', default=None,
+                        help="AccessEval strengths (default: STRENGTH_VALUES)")
+    e1.add_e1_args(parser)
     args = parser.parse_args()
+    e1.check_e1_args(args)
+    if args.eval_set and not args.skip_discrimeval:
+        raise SystemExit("E1 is AccessEval only: pass --skip_discrimeval with --eval_set")
+    args.seed = RANDOM_SEED if args.seed is None else args.seed
+    global SADI_CHECKPOINT_DIR, OUTPUT_JSON
+    out_dir = Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        # element and activation caches are keyed only by benchmark: one dir per variant.
+        # CAA_CHECKPOINT_DIR is NOT moved: it holds the tracked loudness pin.
+        SADI_CHECKPOINT_DIR = out_dir
+        OUTPUT_JSON = out_dir / "sadi_results.json"
+
+    if args.dry_run:                                   # G0: no model
+        pairs = build_accesseval_pairs()
+        filtered = apply_loudness_filter(pairs, None, None, SIGNAL_PERCENTILE, LOUDNESS_LAYER)
+        fz, fit, ev = e1.frozen_split(filtered, args)
+        print(f"\nDRY RUN  runner=sadi  git={str(e1.GIT_AT_IMPORT['commit'])[:12]}  "
+              f"dirty={e1.GIT_AT_IMPORT['dirty_tracked_files'] or 'none'}")
+        print(f"  filtered pool {len(filtered)} entries; loudness from {CAA_CHECKPOINT_DIR}")
+        if fz:
+            import frozen_eval as fe
+            print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
+            print(f"  SADI elements fit on {len(fit)} unique pairs; eval {len(ev)} items")
+            print(f"  element cache -> {SADI_CHECKPOINT_DIR}")
+        print(f"  strengths {args.strengths or STRENGTH_VALUES}")
+        return
 
     top_k = args.top_k_hidden
 
@@ -1162,9 +1198,9 @@ def main():
     print(f"Timestamp: {datetime.now().isoformat()}")
     print()
 
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    torch.manual_seed(RANDOM_SEED)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Load model
     model, tokenizer = load_model()
@@ -1229,8 +1265,9 @@ def main():
         accesseval_filtered = apply_loudness_filter(
             accesseval_pairs, model, tokenizer, SIGNAL_PERCENTILE, LOUDNESS_LAYER
         )
+        fz, fit, ev = e1.frozen_split(accesseval_filtered, args)
         accesseval_elements = compute_sadi_critical_elements(
-            accesseval_filtered, model, tokenizer,
+            fit if fz else accesseval_filtered, model, tokenizer,
             format_accesseval_prompt,
             SADI_CHECKPOINT_DIR / "sadi_elements_accesseval.npz",
             desc="AccessEval",
@@ -1250,9 +1287,15 @@ def main():
         )
 
     if not args.skip_accesseval and accesseval_elements and accesseval_filtered:
-        all_results['accesseval'] = evaluate_accesseval(
-            model, tokenizer, accesseval_elements, accesseval_filtered,
-        )
+        with e1.RunRecord(out_dir or OUTPUT_DIR, "sadi", args, fz) as rec:
+            all_results['accesseval'] = evaluate_accesseval(
+                model, tokenizer, accesseval_elements, accesseval_filtered,
+                eval_pairs=ev if fz else None, strengths=args.strengths,
+            )
+            all_results['e1'] = e1.e1_metadata(args, fz, len(fit) if fz else None)
+            with open(OUTPUT_JSON, 'w') as f:            # save inside the record
+                json.dump(all_results, f, indent=2)
+            rec.result(output=str(OUTPUT_JSON))
 
     # ── Save results ────────────────────────────────────────────────────────
 
