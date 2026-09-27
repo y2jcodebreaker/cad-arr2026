@@ -34,6 +34,8 @@ Usage:
 """
 
 import torch
+
+import e1_common as e1
 import numpy as np
 import json
 import re
@@ -65,6 +67,9 @@ OUTPUT_DIR = BASE_DIR / "baseline_results"
 OUTPUT_DIR.mkdir(exist_ok=True)
 CHECKPOINT_DIR = OUTPUT_DIR / "angular_checkpoints"
 CHECKPOINT_DIR.mkdir(exist_ok=True)
+# Method caches (activations, directions, generations). Defaults to CHECKPOINT_DIR, which
+# also holds the tracked loudness pin; E1 points this at --out_dir and leaves the pin alone.
+ANGULAR_CACHE_DIR = CHECKPOINT_DIR
 OUTPUT_JSON = OUTPUT_DIR / "angular_results.json"
 
 # Batching
@@ -504,8 +509,8 @@ def compute_angular_directions(
 
     # ── L1 checkpoint: raw activations ──────────────────────────────────
     bench_suffix = checkpoint_path.stem.replace("angular_dirs_", "")
-    clean_ckpt = CHECKPOINT_DIR / f"activations_clean_{bench_suffix}.pt"
-    corrupt_ckpt = CHECKPOINT_DIR / f"activations_corrupt_{bench_suffix}.pt"
+    clean_ckpt = ANGULAR_CACHE_DIR / f"activations_clean_{bench_suffix}.pt"
+    corrupt_ckpt = ANGULAR_CACHE_DIR / f"activations_corrupt_{bench_suffix}.pt"
 
     if clean_ckpt.exists():
         print(f"    [CHECKPOINT L1] Loading clean activations from {clean_ckpt.name}")
@@ -947,7 +952,7 @@ def evaluate_target_a(
 
             for angle in ANGLE_VALUES:
                 # L3 checkpoint: per-config generation
-                gen_ckpt = CHECKPOINT_DIR / (
+                gen_ckpt = ANGULAR_CACHE_DIR / (
                     f"gen_targetA_{strategy}_L{layer}_m{adaptive_mode}_a{angle}.json"
                 )
                 if gen_ckpt.exists():
@@ -1045,7 +1050,7 @@ def evaluate_target_b(
             results[strat_key][mode_key] = {}
 
             for angle in ANGLE_VALUES:
-                gen_ckpt = CHECKPOINT_DIR / (
+                gen_ckpt = ANGULAR_CACHE_DIR / (
                     f"gen_targetB_{strategy}_L{layer}_m{adaptive_mode}_a{angle}.json"
                 )
                 if gen_ckpt.exists():
@@ -1088,16 +1093,25 @@ def evaluate_target_b(
 def evaluate_accesseval(
     model, tokenizer, directions: Dict,
     filtered_pairs: List[Dict],
+    eval_pairs: List[Dict] = None,
+    angles: List[float] = None,
+    strategies: List[str] = None,
+    modes: List[int] = None,
 ) -> Dict:
-    """Evaluate Angular Steering on AccessEval."""
+    """Evaluate Angular Steering on AccessEval. The new arguments default to the original
+    behaviour; strategies/modes/angles filter the full 2 x 2 x 6 grid."""
+    angles = ANGLE_VALUES if angles is None else angles
+    modes = ADAPTIVE_MODES if modes is None else modes
     print()
     print("=" * 70)
     print("EVALUATING: AccessEval (Medicalization Bias)")
     print("=" * 70)
 
-    eval_pairs_shuffled = filtered_pairs.copy()
-    random.shuffle(eval_pairs_shuffled)
-    eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
+    frozen = eval_pairs is not None
+    if not frozen:
+        eval_pairs_shuffled = filtered_pairs.copy()
+        random.shuffle(eval_pairs_shuffled)
+        eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
 
     prompts_fmt = [
         format_accesseval_prompt(p['corrupted_text']) for p in eval_pairs
@@ -1111,7 +1125,11 @@ def evaluate_accesseval(
         'strategies': {},
     }
 
+    import hashlib as _hl
+    prompt_fp = _hl.sha256("\x1e".join(prompts_fmt).encode()).hexdigest()[:16]
     for strategy, config in directions.items():
+        if strategies is not None and strategy not in strategies:
+            continue
         layer = config['layer']
         first_dir = config['first_direction']
         second_dir = config['second_direction']
@@ -1119,17 +1137,21 @@ def evaluate_accesseval(
         results['strategies'][strat_key] = {}
         print(f"\n  ── {strategy} (Layer {layer}) ──")
 
-        for adaptive_mode in ADAPTIVE_MODES:
+        for adaptive_mode in modes:
             mode_key = f"mode_{adaptive_mode}"
             results['strategies'][strat_key][mode_key] = {}
 
-            for angle in ANGLE_VALUES:
-                gen_ckpt = CHECKPOINT_DIR / (
+            for angle in angles:
+                gen_ckpt = ANGULAR_CACHE_DIR / (
                     f"gen_accesseval_{strategy}_L{layer}_m{adaptive_mode}_a{angle}.json"
                 )
                 if gen_ckpt.exists():
                     with open(gen_ckpt, 'r') as f:
                         cached = json.load(f)
+                    if frozen and cached.get('prompt_fingerprint') != prompt_fp:
+                        raise RuntimeError(
+                            f"{gen_ckpt} holds responses for different prompts "
+                            f"({cached.get('prompt_fingerprint')} != {prompt_fp}); refusing to reuse it")
                     print(f"    [CKPT L3] θ={angle:3.0f}° m={adaptive_mode}: "
                           f"Med={cached['avg_medicalization_score']:+.3f}")
                     results['strategies'][strat_key][mode_key][f"angle_{angle}"] = cached
@@ -1147,6 +1169,7 @@ def evaluate_accesseval(
                 std_score = float(np.std(med_scores))
 
                 entry = {
+                    'prompt_fingerprint': prompt_fp,
                     'avg_medicalization_score': avg_score,
                     'std_medicalization_score': std_score,
                     'scores': [float(s) for s in med_scores],
@@ -1174,11 +1197,46 @@ def main():
     parser = argparse.ArgumentParser(description="Angular Steering Baseline Evaluation")
     parser.add_argument('--skip_discrimeval', action='store_true')
     parser.add_argument('--skip_accesseval', action='store_true')
+    parser.add_argument('--angles', type=float, nargs='+', default=None,
+                        help="AccessEval angles in degrees (default: ANGLE_VALUES)")
+    parser.add_argument('--strategies', type=str, nargs='+', default=None,
+                        help="direction-selection strategies to run, e.g. max_sim (default: all)")
+    parser.add_argument('--modes', type=int, nargs='+', default=None,
+                        help="adaptive modes to run (default: ADAPTIVE_MODES)")
+    e1.add_e1_args(parser)
     args = parser.parse_args()
+    e1.check_e1_args(args)
+    if args.eval_set and not args.skip_discrimeval:
+        raise SystemExit("E1 is AccessEval only: pass --skip_discrimeval with --eval_set")
+    args.seed = RANDOM_SEED if args.seed is None else args.seed
+    if args.angles:   # keep "angle_150", not "angle_150.0": downstream parsers key on it
+        args.angles = [int(a) if float(a).is_integer() else a for a in args.angles]
+    global ANGULAR_CACHE_DIR, OUTPUT_JSON
+    out_dir = Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        ANGULAR_CACHE_DIR = out_dir          # CHECKPOINT_DIR keeps the loudness pin
+        OUTPUT_JSON = out_dir / "angular_results.json"
 
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    torch.manual_seed(RANDOM_SEED)
+    if args.dry_run:                                   # G0: no model
+        pairs = build_accesseval_pairs()
+        filtered = apply_loudness_filter(pairs, None, None, SIGNAL_PERCENTILE, LOUDNESS_LAYER)
+        fz, fit, ev = e1.frozen_split(filtered, args)
+        print(f"\nDRY RUN  runner=angular  git={str(e1.GIT_AT_IMPORT['commit'])[:12]}  "
+              f"dirty={e1.GIT_AT_IMPORT['dirty_tracked_files'] or 'none'}")
+        print(f"  filtered pool {len(filtered)} entries; loudness from {CHECKPOINT_DIR}")
+        if fz:
+            import frozen_eval as fe
+            print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
+            print(f"  directions fit on {len(fit)} unique pairs; eval {len(ev)} items")
+            print(f"  method caches -> {ANGULAR_CACHE_DIR}")
+        print(f"  strategies {args.strategies or 'all'}  modes {args.modes or ADAPTIVE_MODES}  "
+              f"angles {args.angles or ANGLE_VALUES}")
+        return
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     start_time = datetime.now()
     print(f"Angular Steering Baseline — {start_time.isoformat()}")
@@ -1223,7 +1281,7 @@ def main():
         target_a_dirs = compute_angular_directions(
             target_a_pairs, model, tokenizer,
             format_discrimeval_prompt,
-            CHECKPOINT_DIR / "angular_dirs_target_a.npy",
+            ANGULAR_CACHE_DIR / "angular_dirs_target_a.npy",
             desc="Target A (race)",
         )
 
@@ -1231,7 +1289,7 @@ def main():
         target_b_dirs = compute_angular_directions(
             target_b_pairs, model, tokenizer,
             format_discrimeval_prompt,
-            CHECKPOINT_DIR / "angular_dirs_target_b.npy",
+            ANGULAR_CACHE_DIR / "angular_dirs_target_b.npy",
             desc="Target B (heritage)",
         )
 
@@ -1243,10 +1301,11 @@ def main():
             SIGNAL_PERCENTILE, LOUDNESS_LAYER,
         )
 
+        fz, fit, ev = e1.frozen_split(accesseval_filtered, args)
         accesseval_dirs = compute_angular_directions(
-            accesseval_filtered, model, tokenizer,
+            fit if fz else accesseval_filtered, model, tokenizer,
             format_accesseval_prompt,
-            CHECKPOINT_DIR / "angular_dirs_accesseval.npy",
+            ANGULAR_CACHE_DIR / "angular_dirs_accesseval.npy",
             desc="AccessEval (disability)",
         )
 
@@ -1270,9 +1329,19 @@ def main():
         )
 
     if not args.skip_accesseval and accesseval_dirs is not None:
-        all_results['accesseval'] = evaluate_accesseval(
-            model, tokenizer, accesseval_dirs, accesseval_filtered,
-        )
+        with e1.RunRecord(out_dir or OUTPUT_DIR, "angular", args, fz) as rec:
+            all_results['accesseval'] = evaluate_accesseval(
+                model, tokenizer, accesseval_dirs, accesseval_filtered,
+                eval_pairs=ev if fz else None, angles=args.angles,
+                strategies=args.strategies, modes=args.modes,
+            )
+            # the direction-selection layer is chosen by the method on its fit pool; record it,
+            # because the published point is "max_sim at L23" and the held-out pool may differ
+            all_results['selected_layers'] = {k: v['layer'] for k, v in accesseval_dirs.items()}
+            all_results['e1'] = e1.e1_metadata(args, fz, len(fit) if fz else None)
+            with open(OUTPUT_JSON, 'w') as f:            # save inside the record
+                json.dump(all_results, f, indent=2, default=str)
+            rec.result(output=str(OUTPUT_JSON), selected_layers=all_results['selected_layers'])
 
     # ── Save results ────────────────────────────────────────────────────
     with open(OUTPUT_JSON, 'w') as f:
