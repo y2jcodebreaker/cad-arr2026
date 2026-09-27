@@ -132,6 +132,10 @@ CLAIMS: tuple[Claim, ...] = (
               Control("permutation null, 40 draws", "structure present in any stacked diffs",
                       True, True, "day3"),
               Control("cluster bootstrap", "pair-level CI overstating precision", True, True, "day3"),
+              Control("clusters = unique QUESTIONS, twins merged",
+                      "day3 resampled 292 base_query_ids as independent; they are 146 questions "
+                      "x 2 identical rows, so every cluster interval is too narrow",
+                      False, True),
               Control("direct test on Target A: ADD diversity, EVR1 should fall",
                       "argument by analogy from AccessEval to a different benchmark and layer",
                       False, False))),
@@ -155,8 +159,13 @@ CLAIMS: tuple[Claim, ...] = (
 SUPERSEDED: tuple[tuple[str, str, str], ...] = (
     ("211/250", "201/250 score 0.000, 0 empty", "SADI s=10: 'empty' was a misread of zero-score"),
     ("211 of 250", "201 of 250", "same"),
-    ("2,082 valid", "2,083", "loudness filter tie handling; 468 rows -> 4,164 -> 2,083"),
-    ("234 neutral queries", "468 dataset rows", "dataset row count"),
+    # AccessEval lists every question TWICE (row i == row i+234, verified 2026-09-27).
+    # The counts below treat the duplicates as independent. The ORIGINAL "234 queries /
+    # 2,082 pairs" was correct; the 2026-09-03 "correction" to 468 / 2,083 was wrong.
+    ("468 base queries", "234 unique questions", "dataset rows are duplicated"),
+    ("292 base queries", "146 unique questions", "twins carry two base_query_ids"),
+    ("4{,}164 expanded pairs", "2,082 unique pairs", "every expanded pair appears twice"),
+    ("resampling the 292", "resampling the 146 unique questions", "292 IDs are 146 questions x 2"),
     ("941 words", "1,048 (repeated text) / 945 mean", "FairSteer a=6"),
     ("6.0\\% artifacts", "unverified", "Angular artifact rate never regenerated"),
     ("$-$0.12", "-0.33", "AAAI judge column (matched in its original $-$x.xx form): result file never saved"),

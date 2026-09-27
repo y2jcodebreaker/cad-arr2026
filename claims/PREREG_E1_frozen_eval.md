@@ -109,4 +109,45 @@ Nothing is downloaded while still being written; archives are checksummed on bot
 
 ## Amendments
 
-(none yet)
+### A1 — 2026-09-27, before any E1 arm has run
+
+**What changed.** The frozen set is now **5 disability variants × 50 unique questions = 250
+items**, and every method is fit only on the **633 unique pairs of the other 96 questions**.
+Two arms are added: CAD projection α=1 and CAA α=1 fit on the **full 1,044-pair pool** (eval
+questions included), evaluated on the same 250 items. Tier 1 is now 23 arms.
+
+**Why, reason 1 — a fit/eval leak.** Every method in every earlier run was fit on the full
+loudness-filtered pool and evaluated on 250 items drawn from that same pool, so each steering
+direction was partly fit on the evaluation prompts' own activations. The leak is shared by all
+methods, so it does not bias the comparison between them, but it is a reviewer's question and E1
+is the cheap moment to close it. The user chose held-out fitting plus a leak control.
+
+**Why, reason 2 — AccessEval is duplicated.** Found while building the set, when the leak assert
+fired on 145 items and 23 items were duplicates. Dataset row *i* is identical to row *i*+234 for
+every *i*. So the benchmark has **234 unique questions and 2,082 unique pairs**; the filtered
+"2,083-pair pool" is **1,044 unique pairs**; the "292 base queries" are **146 unique questions**.
+The first amendment draft (2 variants × 125 base queries) assumed 292 independent units and would
+have left 38 pairs to fit on. Questions are now identified as `base_query_id % 234` and the pool is
+deduplicated before anything is drawn.
+
+**Consequences, stated before running.**
+- Eval spans 50 questions, not ~146. Intervals resample **questions** (50 units); they will be
+  wider than the earlier item-level intervals, which were too narrow.
+- Numbers from E1 are not directly comparable to the paper's current numbers: both the eval set
+  and the fit pool changed. That is intended; E1 replaces them.
+- The §6 cluster bootstrap (k 35.3 [33, 37] from 292 "clusters") double-counted and is being
+  re-run with 146 questions. Its result does not depend on E1.
+
+**Leak-control prediction and falsifier.**
+- **P5.** On the frozen set, fitting on the full pool raises d by less than 0.10 for both CAD
+  projection and CAA, relative to held-out fitting. **F5:** d rises by ≥ 0.10 for either.
+- Named outcomes. Rise < 0.05 for both: the leak was negligible and the earlier numbers stand on
+  that axis. Rise ≥ 0.10 for one method but not the other: the earlier *comparison* was biased and
+  must be restated from E1 alone.
+
+**Unchanged.** All gates G0–G3, predictions P1–P4, the second-judge requirement, and every
+threshold. G2's positive control (SADI zero-score rate ≥ 0.50) stands.
+
+Frozen set: `frozen_eval_v1.json`, sha256
+`153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658`, built by
+`build_frozen_eval.py` (seed 42), rebuild-verified identical, and pinned in `frozen_eval.py`.
