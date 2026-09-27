@@ -198,8 +198,15 @@ def text_key(text: str) -> str:
 # Judging
 # ---------------------------------------------------------------------------
 
-def build_prompt(response_text: str) -> str:
+def build_prompt(response_text: str, tokenizer=None, judge_model: str = MODEL_NAME) -> str:
+    """The Llama judge's prompt is kept BYTE-IDENTICAL to the one that produced
+    judge_scores.json. Any other judge model gets the same system and user text through its
+    own chat template, since Llama's special tokens mean nothing to another family."""
     user = USER_PREFIX + response_text[:RESPONSE_CHAR_CAP]
+    if judge_model != MODEL_NAME:
+        return tokenizer.apply_chat_template(
+            [{"role": "system", "content": JUDGE_SYSTEM}, {"role": "user", "content": user}],
+            tokenize=False, add_generation_prompt=True)
     return (
         "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
         f"{JUDGE_SYSTEM}<|eot_id|>"
@@ -209,12 +216,18 @@ def build_prompt(response_text: str) -> str:
     )
 
 
-def score_texts(model, tokenizer, texts: List[str], device: str) -> List[float]:
-    """Score a list of unique texts. Empty text bypasses the model (5.0)."""
+def score_texts(model, tokenizer, texts: List[str], device: str,
+                judge_model: str = MODEL_NAME, return_flags: bool = False):
+    """Score a list of unique texts. Empty text bypasses the model (5.0).
+
+    return_flags=True also returns, per text, whether the judge's output was actually parsed.
+    A parse failure is scored 5.0, indistinguishable from a real 5, so the flag is the only
+    way to measure a judge's failure rate rather than infer it."""
     import torch
     from tqdm import tqdm
 
     out: List[float] = [None] * len(texts)          # type: ignore[list-item]
+    parsed: List[bool] = [False] * len(texts)
     todo = [i for i, t in enumerate(texts) if t.strip()]
     for i, t in enumerate(texts):
         if not t.strip():
@@ -225,7 +238,7 @@ def score_texts(model, tokenizer, texts: List[str], device: str) -> List[float]:
 
     for b in tqdm(range(0, len(todo), JUDGE_BATCH_SIZE), desc="  judging"):
         idxs = todo[b:b + JUDGE_BATCH_SIZE]
-        prompts = [build_prompt(texts[i]) for i in idxs]
+        prompts = [build_prompt(texts[i], tokenizer, judge_model) for i in idxs]
         inp = tokenizer(prompts, return_tensors="pt", padding=True,
                         truncation=True, max_length=2048).to(device)
         with torch.no_grad():
@@ -240,6 +253,9 @@ def score_texts(model, tokenizer, texts: List[str], device: str) -> List[float]:
             m = SCORE_RE.search(txt)
             out[i] = (max(0.0, min(10.0, float(m.group(1))))
                       if m else PARSE_FAILURE_SCORE)
+            parsed[i] = m is not None
+    if return_flags:
+        return out, parsed
     return out                                       # type: ignore[return-value]
 
 
@@ -258,6 +274,8 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true",
                     help="report what would be judged; no model load, no GPU")
     ap.add_argument("--batch-size", type=int, default=JUDGE_BATCH_SIZE)
+    ap.add_argument("--judge_model", default=MODEL_NAME,
+                    help="judge model (default: the Llama judge that produced judge_scores.json)")
     ap.add_argument("--limit", type=int, default=None,
                     help="judge at most N unique texts (smoke test)")
     args = ap.parse_args()
@@ -343,13 +361,20 @@ def main() -> int:
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     scores: Dict[str, float] = {}
+    parsed: Dict[str, bool] = {}
     if out_path.exists():
         try:
             prev = json.loads(out_path.read_text())
-            scores = {k: float(v) for k, v in prev.get("scores_by_hash", {}).items()}
-            print(f"\n[resume] loaded {len(scores)} scores from {out_path.name}")
         except Exception as e:
             print(f"\n[resume] ignoring unreadable {out_path.name}: {e}")
+            prev = {}
+        if prev and prev.get("model") != args.judge_model:
+            raise SystemExit(f"{out_path} holds scores from {prev.get('model')}, not "
+                             f"{args.judge_model}. Resuming would mix judges; use a different --out.")
+        scores = {k: float(v) for k, v in prev.get("scores_by_hash", {}).items()}
+        parsed = {k: bool(v) for k, v in prev.get("parsed_by_hash", {}).items()}
+        if scores:
+            print(f"\n[resume] loaded {len(scores)} scores from {out_path.name}")
 
     pending = [h for h in unique if h not in scores]
     if args.limit:
@@ -362,31 +387,34 @@ def main() -> int:
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"\nLoading judge model on {device} ...")
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        tokenizer = AutoTokenizer.from_pretrained(args.judge_model)
         tokenizer.pad_token = tokenizer.eos_token
         tokenizer.padding_side = "left"
         try:
             model = AutoModelForCausalLM.from_pretrained(
-                MODEL_NAME, torch_dtype=torch.bfloat16, device_map="auto",
+                args.judge_model, torch_dtype=torch.bfloat16, device_map="auto",
                 attn_implementation="flash_attention_2")
         except Exception:
             model = AutoModelForCausalLM.from_pretrained(
-                MODEL_NAME, torch_dtype=torch.bfloat16, device_map="auto")
+                args.judge_model, torch_dtype=torch.bfloat16, device_map="auto")
         model.eval()
 
         t0 = time.time()
         for start in range(0, len(pending), CKPT_EVERY):
             chunk = pending[start:start + CKPT_EVERY]
-            vals = score_texts(model, tokenizer, [unique[h] for h in chunk], device)
+            vals, flags = score_texts(model, tokenizer, [unique[h] for h in chunk], device,
+                                      judge_model=args.judge_model, return_flags=True)
             scores.update(dict(zip(chunk, vals)))
+            parsed.update(dict(zip(chunk, flags)))
             out_path.write_text(json.dumps({
-                "model": MODEL_NAME,
+                "model": args.judge_model,
                 "rubric": "eval_all_methods_llama_judge.py (verbatim)",
                 "temperature": JUDGE_TEMPERATURE,
                 "response_char_cap": RESPONSE_CHAR_CAP,
                 "parse_failure_score": PARSE_FAILURE_SCORE,
                 "seed": RANDOM_SEED,
                 "scores_by_hash": scores,
+                "parsed_by_hash": parsed,
             }, indent=2))
             done = min(start + CKPT_EVERY, len(pending))
             rate = done / max(time.time() - t0, 1e-9)
@@ -402,7 +430,7 @@ def main() -> int:
         r["judge_score"] = s
 
     final = {
-        "model": MODEL_NAME,
+        "model": args.judge_model,
         "rubric": "eval_all_methods_llama_judge.py (verbatim)",
         "temperature": JUDGE_TEMPERATURE,
         "response_char_cap": RESPONSE_CHAR_CAP,
@@ -411,6 +439,8 @@ def main() -> int:
         "n_responses": total,
         "n_unique": len(unique),
         "scores_by_hash": scores,
+        "parsed_by_hash": parsed,
+        "parse_failure_rate": (sum(1 for v in parsed.values() if not v) / len(parsed)) if parsed else None,
         "records": records,
     }
     out_path.write_text(json.dumps(final, indent=2))
