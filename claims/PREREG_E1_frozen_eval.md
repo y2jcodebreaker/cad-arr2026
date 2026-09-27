@@ -232,3 +232,36 @@ judges** agree on its sign with CIs excluding 0.
 - **(c) In neither, or addition is better.** No removal advantage. The projection's quality advantage,
   if it survives P1/P2, is attributed to the subspace (see P6), not to removal, and the principle is
   not claimed anywhere in the paper.
+
+## Deviations (recorded during the run; these are not amendments)
+
+### D1 — 2026-09-27, found mid-run, after the `cad_heldout` arm had finished
+
+**What happened.** The design (table above, and A2's `svd_k40`) names a rank-40 projection. No arm
+passes `--k 40`: `cad_heldout` runs `k=auto`, which picks the rank reaching 80% variance. On the
+old 2,083-row pool that was ≈40, which is where "k=40" came from. On the 633-pair held-out fit
+pool it resolves to **33 at L21 and 36 at L25**. On the 1,044-pair full pool (`cad_full`) it is
+42 and 49. I wrote the arm list and did not check that `auto` still meant 40 on a smaller pool.
+
+**Already seen when this was written.** `cad_heldout` projection α=1 (k=33/36): d = 0.351, ΔMed
+71.1%. Rank arms k=1: 0.021, k=5: 0.238, k=10: 0.221. No judge scores had been looked at for
+any rank arm.
+
+**What is done about it.** The registered arm is added as `cad_rank_k40` (same SVD cache, same
+eval set, same α) and run after tier 1. **P3 and P6 are evaluated on `cad_rank_k40`**, as
+registered. The k=auto arm is reported beside it, labelled with its actual k, and is not
+substituted for k=40 whichever is better. Nothing else changes: no threshold, prediction or
+outcome is edited.
+
+**Observation, not a prediction.** k=auto moving from 33/36 to 42/49 when the fit pool grows from
+633 to 1,044 pairs, with the same questions and layers, is the §6 claim (the prescribed rank
+tracks the sample, not the bias) appearing again unprompted. It was not pre-registered, so it can be
+reported only as an observation.
+
+### D2 — 2026-09-27: judge records could not tell same-named files apart
+
+`judge_sweep_outputs.py` labelled each record by file *basename*. E1 has same-named files in
+different directories (`cad_heldout/` vs `cad_full/`, `caa_heldout/` vs `caa_full/`), which are
+exactly the P5 leak-control pairs. Scores are keyed by text hash, so no score is wrong or lost.
+Records now also carry `source` (the path), and the E1 analysis joins each response file to
+`scores_by_hash` directly by path. No score is recomputed.

@@ -5,6 +5,8 @@
     python run_e1.py tier1         # G0 -> G1 -> G2 -> judge -> G3 -> remaining arms -> judge
     python run_e1.py gate g1|g2|g3 # re-evaluate one gate from outputs already on disk
     python run_e1.py status        # which arms have finished
+    python run_e1.py arm NAME ...  # run named arms (deviations, re-runs), then judge
+    python run_e1.py judge         # judge everything on disk (resumes), then G3
 
 Criteria are copied from claims/PREREG_E1_frozen_eval.md and must not be edited after data
 exists; amend the pre-registration instead.
@@ -58,6 +60,10 @@ ARMS = [
                                "--layer_override", "29", "--threshold", "0.5", "--alphas", "2.0"]),
     ("angular", "rest", ANG, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/angular",
                               "--strategies", "max_sim", "--modes", "0", "--angles", "150"]),
+    # Deviation D1 (PREREG): the registered svd_k40 arm. cad_heldout uses k=auto, which on the
+    # 633-pair held-out pool resolves to 33/36, not 40. Not part of tier1; run with `arm`.
+    ("cad_rank_k40", "D1", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--k", "40",
+                                 "--proj_alphas", "1.0", *NO_CAD_SWEEPS]),
 ]
 
 JUDGE_GLOBS = ["e1_outputs/*/*_responses.json", "e1_outputs/leace/base_seed*.json",
@@ -165,6 +171,22 @@ def main() -> int:
             recs = sorted(out.glob("run_record*.json")) if out.exists() else []
             print(f"  [{stage:<4}] {name:<18} {len(recs)} record(s) in {out}")
         return 0
+    if cmd == "arm":
+        # one named arm, for deviations and re-runs: clean tree, dry run, run, then judge
+        require_clean_tree()
+        run([sys.executable, "build_frozen_eval.py", "--check"])
+        todo = [a for a in ARMS if a[0] in sys.argv[2:]]
+        if not todo or len(todo) != len(sys.argv[2:]):
+            sys.exit(f"unknown arm in {sys.argv[2:]}; see `python run_e1.py plan`")
+        for name, _, script, args in todo:
+            run([sys.executable, script, *args, "--dry_run"])
+        for name, _, script, args in todo:
+            run([sys.executable, script, *args])
+        judge_both()          # resumes: only the new texts are judged
+        return 0
+    if cmd == "judge":
+        judge_both()
+        return 0 if gate_g3() else 1
     if cmd == "tier1":
         require_clean_tree()
         run([sys.executable, "build_frozen_eval.py", "--check"])
