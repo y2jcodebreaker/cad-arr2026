@@ -90,9 +90,9 @@ def main(argv=None) -> int:
     e1.check_e1_args(args)
     k = args.k
     args.seed = RANDOM_SEED if args.seed is None else args.seed
-    if args.out_dir:
+    if args.out_dir:   # rank arms may share one dir (one activation extraction): name by k
         CKPT_DIR = Path(args.out_dir)
-        OUT = CKPT_DIR / "exp3_leace_rank_k_results.json"
+        OUT = CKPT_DIR / f"exp3_leace_rank_k{k}_results.json"
     CKPT_DIR.mkdir(parents=True, exist_ok=True)
 
     torch.manual_seed(args.seed); np.random.seed(args.seed)
@@ -127,7 +127,7 @@ def main(argv=None) -> int:
     steer_prompts = [format_prompt(p["corrupted_text"]) for p in eval_pairs]
     phash = hash_prompts(steer_prompts)
 
-    with e1.RunRecord(CKPT_DIR, "leace_rank_k", args, fz) as rec:
+    with e1.RunRecord(CKPT_DIR, "leace_rank_k", args, fz, name=f"run_record_k{k}") as rec:
         # --- Activations on the fit pool at L21 and L25 (clean+corrupted).
         # The cache lives in CKPT_DIR, which --out_dir makes unique per variant.
         act_ckpt = CKPT_DIR / "acts_L21_L25.pt"
