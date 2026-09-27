@@ -131,7 +131,7 @@ CLAIMS: tuple[Claim, ...] = (
 
     Claim("C6-geometry-is-construction", 2, "S6",
           "At n=13, varying only prompt diversity moves EVR1 22.1% -> 76.1%; permuted null "
-          "exceeds real data below n~250; cluster bootstrap k 35.3 [33,37] vs pair [40,41].",
+          "exceeds real data below n~250; question bootstrap k 30.1 [27,33] vs pair [40,41].",
           "controls_results/day3_subsample_results.json",
           "Restricting diversity on a second benchmark leaves EVR1 unchanged.",
           has_run=True,
@@ -142,7 +142,8 @@ CLAIMS: tuple[Claim, ...] = (
               Control("clusters = unique QUESTIONS, twins merged",
                       "day3 resampled 292 base_query_ids as independent; they are 146 questions "
                       "x 2 identical rows, so every cluster interval is too narrow",
-                      False, True),
+                      True, True, "controls_results/question_bootstrap_L21.json: 292-ID grouping "
+                      "reproduces 35.0 [33,37] (positive control); 146 questions give 30.1 [27,33]"),
               Control("direct test on Target A: ADD diversity, EVR1 should fall",
                       "argument by analogy from AccessEval to a different benchmark and layer",
                       False, False))),
@@ -173,6 +174,9 @@ SUPERSEDED: tuple[tuple[str, str, str], ...] = (
     ("292 base queries", "146 unique questions", "twins carry two base_query_ids"),
     ("4{,}164 expanded pairs", "2,082 unique pairs", "every expanded pair appears twice"),
     ("resampling the 292", "resampling the 146 unique questions", "292 IDs are 146 questions x 2"),
+    ("$35.3$ $[33, 37]$", "30.1 [27, 33]", "292-ID cluster bootstrap counted each question twice"),
+    ("$32.2$ $[31, 33]$", "28.2 [26, 30]", "same, L14"),
+    ("$10.6$ $[10, 11]$", "10.2 [9, 11]", "same, L0"),
     ("941 words", "1,048 (repeated text) / 945 mean", "FairSteer a=6"),
     ("6.0\\% artifacts", "unverified", "Angular artifact rate never regenerated"),
     ("$-$0.12", "-0.33", "AAAI judge column (matched in its original $-$x.xx form): result file never saved"),

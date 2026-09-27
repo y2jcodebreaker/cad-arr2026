@@ -76,8 +76,8 @@ Section~\ref{sec:geometry} reports the homogeneity ladder in the main text and s
 three further controls. This section gives those three, all on the AccessEval contrastive
 pool of 2{,}083 pairs on Llama-3.1-8B-Instruct.
 
-\paragraph{Cluster versus pair sampling.} AccessEval expands 468 base queries into 4{,}164
-pairs by substituting nine disability categories into templated queries, so pairs are
+\paragraph{Cluster versus pair sampling.} AccessEval expands 234 questions, each listed twice, into
+4{,}164 pairs by substituting nine disability categories into templated queries, so pairs are
 nested within base queries. Sampling 13 pairs uniformly gives $\mathrm{EVR}_1{=}21.5\%$;
 sampling 13 pairs by drawing whole base queries gives $72.2\%$. Same data, same $n$, same
 layer, a $3.4$-fold swing from the sampling structure alone. The gap closes as $n$ grows:
@@ -92,11 +92,14 @@ higher. The two curves separate only above $n \approx 250$
 with no contrastive structure at all, which is the regime the reported Target A profile
 sits in.
 
-\paragraph{Cluster bootstrap.} Resampling the 2{,}083 pairs directly gives
-$k@80\%{=}40$ with a $95\%$ interval of $[40, 41]$. Resampling the 292 base queries
-instead gives $k@80\%{=}35.3$ $[33, 37]$ at L21, $32.2$ $[31, 33]$ at L14, and
-$10.6$ $[10, 11]$ at L0. The pair-level and cluster-level intervals do not overlap, so
-the pair-level procedure is biased as well as over-precise.
+\paragraph{Cluster bootstrap.} Resampling the 2{,}083 pairs of the filtered pool
+directly gives $k@80\%{=}40$ with a $95\%$ interval of $[40, 41]$. The pairs are not
+independent: every pair is one of several disability variants of a question, and AccessEval
+lists each question twice, so the pool comes from only 146 distinct questions. Resampling
+those 146 questions instead gives $k@80\%{=}30.1$ $[27, 33]$ at L21, $28.2$ $[26, 30]$ at
+L14, and $10.2$ $[9, 11]$ at L0 (150 resamples each). The pair-level and question-level
+intervals do not overlap at L21, so the pair-level procedure is biased as well as
+over-precise.
 
 \begin{figure*}[t]
 \centering
