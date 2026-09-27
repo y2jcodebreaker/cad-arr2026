@@ -30,8 +30,8 @@ this layer-localization sense and do not perform edge-level attribution. A
 \textit{loudness filter} then keeps the contrastive pairs whose clean-corrupted L2
 distance exceeds the median, $\|\mathbf{h}_{\text{clean}} -
 \mathbf{h}_{\text{corrupted}}\|_2 \geq p_{50}$, discarding pairs where the model barely
-separates the groups. On AccessEval this takes 4{,}164 expanded pairs down to
-2{,}083.
+separates the groups. On AccessEval this keeps 2{,}083 of 4{,}164 pairs (1{,}044
+distinct; the dataset lists every question twice).
 
 \paragraph{The subspace.} At a circuit layer we take differences $\Delta \mathbf{h}_i =
 \mathbf{h}_i^{\text{corrupted}} - \mathbf{h}_i^{\text{clean}}$ at the last token, centre
