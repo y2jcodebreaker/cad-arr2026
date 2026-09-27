@@ -34,6 +34,8 @@ Usage:
 """
 
 import torch
+
+import e1_common as e1
 import numpy as np
 import json
 import re
@@ -1149,16 +1151,20 @@ def evaluate_accesseval(
     classifier: LogisticRegression,
     classifier_layer: int,
     thresholds: List[float],
+    eval_pairs: List[Dict] = None,
+    alphas: List[float] = None,
 ) -> Dict:
-    """Evaluate FairSteer on AccessEval."""
+    """Evaluate FairSteer on AccessEval. eval_pairs/alphas default to the original behaviour."""
+    alphas = ALPHA_VALUES if alphas is None else alphas
     print()
     print("=" * 70)
     print("EVALUATING: AccessEval (Medicalization Bias)")
     print("=" * 70)
 
-    eval_pairs_shuffled = filtered_pairs.copy()
-    random.shuffle(eval_pairs_shuffled)
-    eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
+    if eval_pairs is None:
+        eval_pairs_shuffled = filtered_pairs.copy()
+        random.shuffle(eval_pairs_shuffled)
+        eval_pairs = eval_pairs_shuffled[:ACCESSEVAL_N_SAMPLES]
 
     prompts_fmt = [
         format_accesseval_prompt(p['corrupted_text']) for p in eval_pairs
@@ -1182,7 +1188,7 @@ def evaluate_accesseval(
             results['layers'][layer_key][thresh_key] = {}
             print(f"\n  ── Layer {layer}, threshold={thresh} ──")
 
-            for alpha in ALPHA_VALUES:
+            for alpha in alphas:
                 alpha_key = f"alpha_{alpha}"
                 gen_ckpt = _gen_ckpt_path("accesseval", layer, thresh, alpha)
 
@@ -1264,7 +1270,37 @@ def main():
         '--threshold', type=float, nargs='+', default=None,
         help="Classifier thresholds to test (default: 0.3, 0.5, 0.7)"
     )
+    parser.add_argument('--alphas', type=float, nargs='+', default=None,
+                        help="AccessEval strengths (default: ALPHA_VALUES)")
+    e1.add_e1_args(parser)
     args = parser.parse_args()
+    e1.check_e1_args(args)
+    if args.eval_set and not args.skip_discrimeval:
+        raise SystemExit("E1 is AccessEval only: pass --skip_discrimeval with --eval_set")
+    args.seed = RANDOM_SEED if args.seed is None else args.seed
+    global FS_CHECKPOINT_DIR
+    out_dir = Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        # the classifier cache is keyed only by benchmark+layer: give each variant its own.
+        # CHECKPOINT_DIR is NOT moved: it holds the tracked loudness pin.
+        FS_CHECKPOINT_DIR = out_dir
+
+    if args.dry_run:                                   # G0: no model
+        pairs = build_accesseval_pairs()
+        filtered = apply_loudness_filter(pairs, None, None, SIGNAL_PERCENTILE, LOUDNESS_LAYER)
+        fz, fit, ev = e1.frozen_split(filtered, args)
+        print(f"\nDRY RUN  runner=fairsteer  git={str(e1.GIT_AT_IMPORT['commit'])[:12]}  "
+              f"dirty={e1.GIT_AT_IMPORT['dirty_tracked_files'] or 'none'}")
+        print(f"  filtered pool {len(filtered)} entries; loudness from {CHECKPOINT_DIR}")
+        if fz:
+            import frozen_eval as fe
+            print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
+            print(f"  CAA vector AND classifier fit on {len(fit)} unique pairs; eval {len(ev)} items")
+            print(f"  vector cache -> {out_dir / 'caa_vectors_accesseval.pt'}")
+            print(f"  classifier cache -> {FS_CHECKPOINT_DIR}")
+        print(f"  layers {args.layer_override}  thresholds {args.threshold}  alphas {args.alphas or ALPHA_VALUES}")
+        return
 
     thresholds = args.threshold if args.threshold else CLASSIFIER_THRESHOLDS
 
@@ -1279,12 +1315,14 @@ def main():
     print(f"Timestamp: {datetime.now().isoformat()}")
     print()
 
-    random.seed(RANDOM_SEED)
-    np.random.seed(RANDOM_SEED)
-    torch.manual_seed(RANDOM_SEED)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Resolve output path
-    if args.layer_override:
+    if out_dir:
+        output_json = out_dir / "fairsteer_results.json"
+    elif args.layer_override:
         layer_suffix = "_L" + "_".join(str(l) for l in args.layer_override)
         output_json = OUTPUT_DIR / f"fairsteer_results{layer_suffix}.json"
     else:
@@ -1437,7 +1475,10 @@ def main():
             accesseval_pairs, model, tokenizer, SIGNAL_PERCENTILE, LOUDNESS_LAYER
         )
 
-        ae_ckpt = CHECKPOINT_DIR / "caa_vectors_accesseval.pt"
+        fz, fit, ev = e1.frozen_split(accesseval_filtered, args)
+        vec_pairs = fit if fz else accesseval_filtered
+        # E1 must never reuse CAA's cached vector: it was fit on the full pool.
+        ae_ckpt = (out_dir or CHECKPOINT_DIR) / "caa_vectors_accesseval.pt"
         if ae_ckpt.exists():
             accesseval_vectors = load_caa_vectors(ae_ckpt)
         else:
@@ -1445,11 +1486,11 @@ def main():
             accesseval_vectors = {}
             clean_texts = [
                 format_accesseval_prompt(p['clean_text'])
-                for p in accesseval_filtered
+                for p in vec_pairs
             ]
             corrupted_texts = [
                 format_accesseval_prompt(p['corrupted_text'])
-                for p in accesseval_filtered
+                for p in vec_pairs
             ]
             clean_states = extract_hidden_states_batched(
                 clean_texts, model, tokenizer, list(range(N_LAYERS)),
@@ -1479,7 +1520,7 @@ def main():
 
         accesseval_classifier_layer = accesseval_layers[0]
         accesseval_classifier, ae_clf_report = train_bias_classifier(
-            accesseval_filtered, model, tokenizer,
+            vec_pairs, model, tokenizer,
             accesseval_classifier_layer,
             format_accesseval_prompt,
             "accesseval",
@@ -1501,11 +1542,17 @@ def main():
         )
 
     if not args.skip_accesseval:
-        all_results['accesseval'] = evaluate_accesseval(
-            model, tokenizer, accesseval_vectors, accesseval_layers,
-            accesseval_filtered, accesseval_classifier,
-            accesseval_classifier_layer, thresholds,
-        )
+        with e1.RunRecord(out_dir or OUTPUT_DIR, "fairsteer", args, fz) as rec:
+            all_results['accesseval'] = evaluate_accesseval(
+                model, tokenizer, accesseval_vectors, accesseval_layers,
+                accesseval_filtered, accesseval_classifier,
+                accesseval_classifier_layer, thresholds,
+                eval_pairs=ev if fz else None, alphas=args.alphas,
+            )
+            all_results['e1'] = e1.e1_metadata(args, fz, len(fit) if fz else None)
+            with open(output_json, 'w') as f:            # save inside the record
+                json.dump(all_results, f, indent=2, default=str)
+            rec.result(output=str(output_json))
 
     # ── Save results ────────────────────────────────────────────────────────
 
