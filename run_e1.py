@@ -78,12 +78,20 @@ ARMS = [
     # the lexical gap L and the Q1 existence test need. Output: baseline_seed42_neutral_responses.json
     ("neutral_seed42", "M1", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--seed", "42",
                                    "--baseline_only", "--eval_side", "neutral"]),
+    # A7 (PREREG): each baseline at its authors' own setting; own out_dirs, so nothing is overwritten
+    ("angular_adaptive", "A7", ANG, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/angular_adaptive",
+                                     "--strategies", "max_sim", "--modes", "1", "--angles", "150"]),
+    ("caa_m2", "A7", CAA, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/caa_m2",
+                           "--layer_override", "14", "--alphas", "2.0"]),
+    ("fairsteer_a1", "A7", FS, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/fairsteer_a1",
+                                "--layer_override", "29", "--threshold", "0.5", "--alphas", "1.0"]),
+    ("sadi_s5", "A7", SADI, ["--skip_discrimeval", *E1, "--out_dir", "e1_outputs/sadi_s5", "--strengths", "5"]),
 ]
 
 JUDGE_GLOBS = ["e1_outputs/*/*_responses.json", "e1_outputs/leace/base_seed*.json",
-               "e1_outputs/leace/dual_k*.json", "e1_outputs/sadi/sadi_results.json",
-               "e1_outputs/caa_*/caa_results.json", "e1_outputs/fairsteer/fairsteer_results.json",
-               "e1_outputs/angular/angular_results.json"]
+               "e1_outputs/leace/dual_k*.json", "e1_outputs/sadi*/sadi_results.json",
+               "e1_outputs/caa_*/caa_results.json", "e1_outputs/fairsteer*/fairsteer_results.json",
+               "e1_outputs/angular*/angular_results.json"]   # the * also picks up the A7 directories
 
 
 def run(cmd: list[str]) -> None:
