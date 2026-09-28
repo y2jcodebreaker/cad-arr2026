@@ -49,6 +49,10 @@ MATCHED_SET = Control(
     "varies 0.509-0.712 across the runs this claim uses (within-run sd 0.038)",
     done=False, blocking=True)
 
+E1_SET = Control(
+    "one frozen eval set for every arm", "differences caused by prompt draw", True, True,
+    "results/e1 (frozen_eval_v1 153439a6); G1 seed sd 0.0065")
+
 CLAIMS: tuple[Claim, ...] = (
     Claim("C1-degenerate-scores-zero", 1, "S3 audit",
           "Three methods reach medicalization ~0.000 via three distinct degeneration modes "
@@ -65,19 +69,19 @@ CLAIMS: tuple[Claim, ...] = (
               Control("human audit of a disagreement sample", "both judges sharing a bias",
                       False, False))),
 
-    Claim("C2-published-points-cost", 2, "S4.1 + Table 1",
-          "Every method loses judged quality at its published setting; the cost spans 10x "
-          "(CAD proj -0.33 to SADI -4.73).",
-          "frontier sweep, Mann-Whitney Holm, rank-biserial",
-          "On matched items with a second judge, SADI's drop is not the largest, or CAD's is "
-          "not the smallest.",
+    Claim("C2-published-points-cost", 2, "S5 (Table e1)",
+          "At published settings every method loses judged quality, in the order SADI > Angular > "
+          "FairSteer > CAA > CAD projection under both judges; the top-d arm (Angular 0.74) overshoots.",
+          "E1 P1: analysis-output/e1/e1_scores.json",
+          "On the frozen set, SADI's drop is not the largest or the projection's not the smallest "
+          "on either judge.",
           has_run=True,
           controls=(
-              MATCHED_SET,
+              E1_SET,
               Control("parse-failure sensitivity", "the 5.0 default flattering degenerate points",
                       True, False, "0.00% of 2,500 clean scores are 5.0"),
               Control("second judge on the same items", "Llama self-preference",
-                      False, True, "GPT-5.5 used different items and CAD n=197"))),
+                      True, True, "E1: Qwen2.5-7B, rho 0.642; same order (P1)"))),
 
     Claim("C3-clean-frontier-is-CAD", 2, "S4.2 + Fig 1",
           "Clean Pareto front: 12 configs, 10 CAD; all 4 with >=50% reduction are CAD.",
@@ -89,45 +93,51 @@ CLAIMS: tuple[Claim, ...] = (
               Control("threshold sensitivity (27 combos)", "arbitrary degeneracy cut-offs",
                       True, False, "front identical in all 27"))),
 
-    Claim("C4-paired-quality", 2, "S4.3",
-          "Matched n=250: CAD 7.616 vs CAA 7.264, paired +0.352 [0.176, 0.534], p=2.5e-4.",
-          "paired_quality_test_results.json",
-          "A second judge on the same pairs gives a difference whose CI includes 0 or is negative.",
+    Claim("C4-paired-quality", 2, "S5",
+          "At matched debiasing (d 0.34 vs 0.37) the CAD projection and CAA are NOT distinguishable "
+          "in quality: paired +0.22 [-0.12, 0.57] Llama, +0.06 [-0.03, 0.15] Qwen. (The earlier "
+          "+0.352 [0.176, 0.534] used response-level CIs; E1 P2 failed.)",
+          "E1 P2: analysis-output/e1/e1_scores.json",
+          "A question-level interval on a larger frozen set excludes 0 in either direction.",
           has_run=True,
           controls=(
-              Control("matched items, shared baseline", "prompt-draw confound", True, True,
-                      "paired_quality_test_results.json"),
-              Control("audit of instrument DISAGREEMENT (judge says CAD, VADER says CAA)",
-                      "one instrument being wrong; currently 'reported both' without auditing",
-                      False, True),
-              Control("second LLM judge on the same pairs", "Llama self-preference",
-                      False, True))),
+              E1_SET,
+              Control("second LLM judge on the same pairs", "Llama self-preference", True, True,
+                      "E1 Qwen judge"),
+              Control("intervals over questions, not responses", "nested variants", True, True,
+                      "question bootstrap, 50 clusters"),
+              Control("audit of VADER disagreement", "VADER no longer supports any claim",
+                      False, False))),
+    Claim("C5-rank-matters", 2, "S5.2",
+          "Projection d rises with rank (k1 0.02, k40 0.34, k80 0.45) as quality cost rises "
+          "(Llama -0.03 to -0.92); LEACE same trend weaker, k1 vs k40 CIs overlap (P3 fails); "
+          "rank-1 probe-direction removal d 0.08 (P6 outcome c).",
+          "E1 P3/P6: analysis-output/e1/e1_scores.json",
+          "On the frozen set, rank-1 and rank-40 projection are indistinguishable.",
+          has_run=True,
+          controls=(
+              E1_SET,
+              Control("judged quality for every rank arm", "d earned by destroying text", True, True,
+                      "both judges"),
+              Control("rank dose-response (1,5,10,20,40,80)", "two points cannot show a trend",
+                      True, False, "E1 rank sweep, both operators"),
+              Control("same LEACE concept at every rank", "two operators on one axis", True, True,
+                      "exp3 at all k"),
+              Control("direction control: rank-1 projection along the probe", "rank vs direction",
+                      True, True, "cad_proj_probe d 0.08"))),
 
-    Claim("C5-rank-matters", 2, "S5",
-          "Holding layer, data and operator fixed, rank-1 LEACE d=-0.03, rank-40 LEACE d=0.205, "
-          "unwhitened rank-40 projection d=0.337.",
-          "leace_results.json (base 0.509), exp3_leace_rank_k_results.json (base 0.531, pool 2082), "
-          "projection from a third run",
-          "On one eval set, rank-1 and rank-40 are indistinguishable, or the rank-40 gain comes "
-          "with a quality collapse.",
+    Claim("C9-prompting", 2, "S5.1",
+          "An explicit system prompt removes 13% (d 0.06); the projection adds 0.28 [0.14, 0.44]; "
+          "prompt + projection reaches d 0.51 [0.37, 0.66], 97%, intact.",
+          "E1 A4/P8: analysis-output/e1/e1_scores.json",
+          "A pre-registered prompt matches the projection's d at no greater quality cost.",
           has_run=True,
           controls=(
-              Control("one frozen eval set for all rank arms",
-                      "the text says ONLY rank changed; the eval set also changed "
-                      "(baselines 0.509 / 0.531 / 0.593, pools 2082 / 2083)",
-                      False, True),
-              Control("judged quality for every rank arm",
-                      "S3's own argument: d on this metric can be earned by destroying text",
-                      False, True),
-              Control("rank dose-response (1,2,5,10,20,40,80)",
-                      "two points cannot show a trend", False, False),
-              Control("same LEACE concept at both ranks",
-                      "rank-1 point uses a LABEL concept, rank-40 an SVD-coordinate concept: "
-                      "two different operators on one axis", False, True),
-              Control("direction control: rank-1 projection along the probe",
-                      "SVD order puts the top-variance direction first, which is ~orthogonal to "
-                      "the bias (cos -0.001); Table 1's rank-1 probe already reaches d=0.335",
-                      False, True))),
+              E1_SET,
+              Control("prompt wording fixed before any output", "prompt tuned to lose", True, True,
+                      "PREREG A4, names only in code"),
+              Control("more than one prompt", "one wording", True, False, "min + explicit"),
+              Control("prompt + other methods (CAA)", "combination specific to CAD", False, False))),
 
     Claim("C6-geometry-is-construction", 2, "S6",
           "At n=13, varying only prompt diversity moves EVR1 22.1% -> 76.1%; permuted null "
@@ -164,7 +174,7 @@ CLAIMS: tuple[Claim, ...] = (
 )
 
 # (old value, new value, why) — scanned against the paper
-SUPERSEDED: tuple[tuple[str, str, str], ...] = (
+SUPERSEDED: tuple[tuple, ...] = (  # (old, new, why[, files allowed to quote it as history])
     ("211/250", "201/250 score 0.000, 0 empty", "SADI s=10: 'empty' was a misread of zero-score"),
     ("211 of 250", "201 of 250", "same"),
     # AccessEval lists every question TWICE (row i == row i+234, verified 2026-09-27).
@@ -179,9 +189,19 @@ SUPERSEDED: tuple[tuple[str, str, str], ...] = (
     ("$10.6$ $[10, 11]$", "10.2 [9, 11]", "same, L0"),
     ("941 words", "1,048 (repeated text) / 945 mean", "FairSteer a=6"),
     ("6.0\\% artifacts", "unverified", "Angular artifact rate never regenerated"),
-    ("$-$0.12", "-0.33", "AAAI judge column (matched in its original $-$x.xx form): result file never saved"),
+    ("$-$0.12", "-0.33", "AAAI judge column (matched in its original $-$x.xx form): result file never saved",
+     ("A_e1_arms.tex",)),  # generated from E1; its -0.12 is a genuine interval bound
     ("$-$0.54", "-0.63", "AAAI judge column (matched in its original $-$x.xx form): result file never saved"),
     ("$-$4.42", "-4.73", "AAAI judge column (matched in its original $-$x.xx form): result file never saved"),
+    # E1 (2026-09-27): the paired quality advantage did not replicate with question-level CIs
+    ("roughly half", "no reliable difference (E1 P2)", "paired +0.35 used response-level CIs"),
+    ("roughly halved", "no reliable difference (E1 P2)", "same"),
+    ("$[0.176, 0.534]$", "E1 P2: +0.22 [-0.12, 0.57] Llama", "response-level CI; kept only in app:earlier",
+     ("A_e1.tex",)),
+    ("$+0.352$", "E1 P2", "same", ("A_e1.tex",)),
+    # A2: label-concept rank-1 LEACE is a different operator from rank-k SVD-coordinate LEACE
+    ("${-}0.03$", "E1 leace_k1 d 0.01", "not on the rank axis (A2)"),
+    ("$d{=}0.205$", "E1 leace_k40 d 0.17", "earlier eval set; superseded by E1"),
 )
 
 
@@ -189,8 +209,10 @@ def scan_superseded() -> list[str]:
     hits = []
     for tex in sorted(PAPER.glob("*.tex")):
         body = tex.read_text()
-        for old, new, why in SUPERSEDED:
-            if old in body:
+        for entry in SUPERSEDED:
+            old, new, why = entry[:3]
+            allowed = entry[3] if len(entry) > 3 else ()
+            if old in body and tex.name not in allowed:
                 hits.append(f"RETIRED NUMBER: '{old}' in {tex.name} -> use {new} ({why})")
     return hits
 

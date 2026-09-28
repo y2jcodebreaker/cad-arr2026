@@ -1,0 +1,131 @@
+% Pre-registered frozen-set test (E1 + A4) and the earlier evaluation it supersedes.
+% Sources: claims/PREREG_E1_frozen_eval.md, claims/E1_RESULTS.md,
+% analysis-output/e1/e1_scores.json (e1_analysis.py), sections/A_e1_arms.tex (e1_tables.py).
+
+\section{The pre-registered frozen-set test}
+\label{app:e1}
+
+\paragraph{Pre-registration.} Predictions, falsifiers, every named outcome and four stopping
+gates were written and committed before any arm ran. Four amendments were recorded before
+the arms they concern had run: the design below (A1), a rank-1 projection along the probe
+direction to separate rank from direction (A2), additive arms at four strengths to compare
+removal with addition at matched debiasing (A3), and the prompting arms (A4). Two
+deviations were recorded during the run. The registered rank-40 projection had been
+launched with the rank chosen at $80\%$ variance, which is 33 and 36 on the held-out pool;
+a fixed $k{=}40$ arm was added and every rank prediction is scored on it (D1). The judge
+output labelled records by file name, which could not separate the leak-control arms from
+their held-out counterparts; scores are keyed by text and were unaffected (D2).
+
+\paragraph{The evaluation set.} AccessEval lists every question twice (row $i$ equals row
+$i{+}234$), so the unit is the distinct question. The loudness-filtered pool holds 1{,}044
+distinct pairs from 146 questions. We drew 50 questions, allocated across the six
+domains in proportion to the pool, and five disability variants of each, balancing the
+nine categories (27 or 28 items each). The remaining 96 questions give 633 distinct pairs
+for fitting. The set is stored with its SHA-256, and every runner refuses to run on
+anything else.
+
+\paragraph{Gates.} G1: three unsteered seeds give mean medicalization $0.597$, $0.603$ and
+$0.590$ (between-seed s.d.\ $0.007$, criterion $\leq 0.06$). G2: SADI at $s{=}10$ still
+scores exactly zero on $58\%$ of responses (criterion $\geq 50\%$), and the projection at
+$\alpha{=}1$ is intact. G3: the two judges agree per item at Spearman $\rho{=}0.64$ over
+3{,}247 texts (criterion $\geq 0.5$). Parse failures are $0.75\%$ for the Llama judge and
+$0.22\%$ for Qwen over all 8{,}995 distinct texts.
+
+\paragraph{Verdicts.} Table~\ref{tab:verdicts} lists every prediction. P4, a claim about
+the full frontier, needs the complete sweep on the frozen set and was not run.
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{@{}lp{6.2cm}p{7.2cm}@{}}
+\toprule
+& Prediction & Result \\
+\midrule
+P1 & SADI loses the most quality of the five published points and the projection the
+least, under both judges & \textbf{Supported.} Same order under both judges \\
+P2 & Projection minus CAA quality, paired, Qwen interval excludes 0 & \textbf{Not
+supported.} $+0.06$ $[-0.03, 0.15]$ Qwen; $+0.22$ $[-0.12, 0.57]$ Llama \\
+P3 & For projection and LEACE, $d$ at rank 40 exceeds rank 1 with separate intervals, and
+rank-40 quality within 1.0 of unsteered & \textbf{Not supported.} Holds for the
+projection; LEACE intervals overlap by $0.03$ \\
+P5 & Fitting on the full pool raises $d$ by less than $0.10$ & \textbf{Supported.}
+$+0.004$ projection, $+0.001$ CAA \\
+P6 & Direction versus rank: probe-direction rank-1 projection against SVD ranks 1 and 40 &
+\textbf{Outcome (c), both.} $0.08$ against $0.02$ and $0.34$; one direction does not
+suffice \\
+P7 & Removal versus addition at matched $d$ & \textbf{Not testable.} Rank-1 removal
+($d \leq 0.08$) lies below every additive point, and the rule forbids extrapolating \\
+P8 & Prompting against the projection, and combined & \textbf{Outcomes (b) and (c).}
+Projection exceeds the explicit prompt by $0.28$ $[0.14, 0.44]$; combined arm exceeds the
+projection by $0.08$ to $0.26$ \\
+\bottomrule
+\end{tabular}
+\caption{Every pre-registered prediction of the frozen-set test and its outcome.}
+\label{tab:verdicts}
+\end{table*}
+
+\input{sections/A_e1_arms}
+
+\section{The earlier evaluation}
+\label{app:earlier}
+
+Before the frozen-set test, the projection and CAA were compared on one matched $n{=}250$
+AccessEval sample with a shared unsteered baseline. The projection averaged $7.616$ in
+judged quality against CAA's $7.264$, a paired difference of $+0.352$ with a bootstrap
+interval of $[0.176, 0.534]$ over responses (Wilcoxon $p = 2.5 \times 10^{-4}$), at
+effect sizes of $d{=}0.369$ and $0.388$. VADER sentiment ran the other way, CAA $0.931$
+against $0.881$ ($-0.050$ $[-0.097, -0.006]$), and negative regard showed no reliable
+difference. That sample was drawn from the pool both methods were fit on, and its interval
+treated the 250 responses as independent, although they come from far fewer questions.
+The frozen-set test removes both issues and finds no reliable quality difference
+(Section~\ref{sec:confirm}). A GPT-5.5 judge scoring the published points of the sweep reproduced the ordering at both ends
+(CAD $-0.08$, SADI $-5.26$, Angular $-2.23$) and swapped CAA and FairSteer in the middle.
+Table~\ref{tab:earlier} gives the earlier single-setting numbers, and
+Figure~\ref{fig:collapse} the strength sweeps of Section~\ref{sec:frontier}.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrrrrl}
+\toprule
+Method & AE\,$d$ & $\Delta$Med\% & VADER $\Delta$ & Reg(neg) $\Delta$ & Judge $\Delta$ & Window \\
+\midrule
+\multicolumn{7}{@{}l}{\textit{Intact output}} \\
+\midrule
+\textbf{CAD projection ($k$=40)} & $0.337$ & $71.6$ & $+0.030$ & $-1.80$\,pp & $\mathbf{-0.33}$ & $\alpha{=}1$ \\
+CAD-guided mean-diff. & $0.437$ & $99.7$ & $-0.031$ & $-0.85$\,pp & $-0.72$ & $\alpha{=}8$ \\
+CAD reading vector & $0.472$ & $99.3$ & $-0.079$ & $-0.12$\,pp & --- & $\alpha{=}10$ \\
+CAD probe & $0.335$ & $94.3$ & --- & --- & $-0.90$ & $\alpha{=}9$ \\
+CAA (L14, $\alpha$=1) & $0.341$ & $77.8$ & $-0.017$ & $-2.46$\,pp & $-0.63$ & $\alpha{=}1$ \\
+FairSteer (L29, $\alpha$=2) & $0.191$ & $6.7$ & $-0.004$ & $-1.02$\,pp & $-1.24$ & partial \\
+Shifting Perspectives & $0.061$ & $-37.7$ & $+0.007$ & $-0.17$\,pp & --- & none \\
+RepE (LAT rank-1) & $0.164$ & $33.9$ & $+0.035$ & $-5.02$\,pp & --- & clean $\alpha{\leq}10$ \\
+LEACE rank-1 (L21+L25) & $-0.03$ & $-6.7$ & --- & --- & --- & closed-form \\
+LEACE rank-40 & $0.205$ & --- & --- & --- & --- & closed-form \\
+\midrule
+\multicolumn{7}{@{}l}{\textit{Degraded output}} \\
+\midrule
+Angular Steering ($150^\circ$) & $0.668$ & $150$ & $-0.090$ & $+3.15$\,pp & $-1.86$ & 1 angle \\
+SADI ($s$=10) & $0.467$ & $83.8$ & $-0.740$ & $-6.94$\,pp & $\mathbf{-4.73}$ & $s{=}10$ \\
+\bottomrule
+\end{tabular}
+\caption{The earlier, exploratory single-setting evaluation, kept for the record. AE\,$d$,
+$\Delta$Med\%, VADER $\Delta$ and Reg(neg) $\Delta$ come from a matched $n{=}250$
+evaluation fit on the full pool; Judge $\Delta$ comes from the sweep of
+Section~\ref{sec:frontier} against an unsteered reference of $7.92$. The two LEACE rows
+erase different concepts (the class label for rank 1, the top-40 SVD coordinates for rank
+40) and are not a rank comparison; Section~\ref{sec:rank} gives the matched one.
+Table~\ref{tab:e1} supersedes this table for every quantity both report.}
+\label{tab:earlier}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure-02-collapse-and-cost.pdf}
+\caption{(a) Judged quality against steering strength, one configuration family per
+method so that only strength varies. Strengths are in each method's own units and
+compare in shape rather than magnitude. Angular Steering is excluded because its
+parameter is an angle and has no monotone ordering: $270^\circ$ is not a stronger dose
+than $150^\circ$. (b) Quality change at each published setting, with bootstrap $95\%$
+intervals.}
+\label{fig:collapse}
+\end{figure}

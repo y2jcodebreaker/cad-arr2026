@@ -1,29 +1,17 @@
 \section*{Limitations}
 \label{sec:limitations}
 
-\paragraph{Scope.} Sections~\ref{sec:audit} and \ref{sec:frontier} use one benchmark,
-AccessEval, which measures medicalization of disability-related queries in English, on
-7B- and 8B-parameter instruction-tuned models. We do not claim the collapse thresholds or
-the ordering transfer to other metrics, other demographic axes, or larger models. The
-claim that does not depend on the benchmark is narrower: a metric scoring the absence of
-a vocabulary can be satisfied by removing the text.
+\paragraph{Scope.} All results use one benchmark, AccessEval, in English, on 7B- and
+8B-parameter instruction-tuned models. We do not claim the thresholds or the ordering
+transfer to other metrics, demographic axes or model scales.
 
-\paragraph{The frontier is unpaired.} Sweep points come from independently drawn
-250-prompt subsets, and four of the five implementations save no prompt text, so the
-overlap cannot be checked. The frontier therefore supports the ordering and the shape of
-the curve; the matched-item test in Section~\ref{sec:paired} is what supports the
-quality claim.
+\paragraph{Judges.} Quality is scored by two language-model judges, not by people. The
+judges agree on the ordering and differ in scale, and Llama-3.1-8B scores outputs of its
+own family.
 
-\paragraph{The judge and the baselines are ours.} Llama-3.1-8B-Instruct scores its own
-outputs, which risks rewarding its own failure modes. An independent GPT-5.5 judge
-reproduces the ordering at both ends and reverses CAA and FairSteer in the middle, so we
-treat the endpoints as stable and the middle as not. Baseline numbers come from our
-implementations, which we sweep across each method's full published range rather than
-evaluating a single setting.
+\paragraph{What the held-out test covers.} It evaluates each baseline at its published
+setting and the projection at one strength, not the full frontier. Two prompts were
+tested, worded once and not tuned, and a better prompt may remove more bias. The combined
+arm uses one prompt and one rank.
 
-\paragraph{What Section~\ref{sec:geometry} does not show.} We did not re-run the original
-pipelines of methods that set an intervention rank from a spectrum, so we do not claim
-their published numbers are wrong. The claim is that the statistic does not license the
-inference drawn from it.
-
-Appendix~\ref{app:judge}--\ref{app:repro} give the supporting detail.
+Appendices~\ref{app:judge}--\ref{app:e1} give the supporting detail.

@@ -1,12 +1,8 @@
 % APPENDIX. Does not count toward the 8-page content limit (verified from the ARR CFP).
 % Everything here is reproducible from the artifacts named in each section.
-% TODO still to port from paper_aaai2027/main.tex supplementary:
-%   - Unfiltered evaluation on n=250
-%   - Per-disability-category stratification
-%   - Mechanistic accounts of baselines (propagation metrics)
-%   - Phase 1 vocabulary threshold robustness
-%   - Why SVD, not PCA or ICA
-%   - Qualitative examples (6 prompt types) and the cross-method comparison table
+% TODO (plan item 6) still to port from paper_aaai2027/main.tex supplementary:
+%   - Per-disability-category stratification, qualitative examples, vocabulary threshold
+%     robustness. Re-derive any number from results/ before porting.
 
 \section{Judge protocol}
 \label{app:judge}
@@ -51,9 +47,11 @@ resulting interval on a point mean has a median half-width of $0.18$. And our CA
 records medicalization in aggregate rather than per response, so the CAD points in
 Figure~\ref{fig:frontier} carry no interval on the horizontal axis.
 
-The unpaired and matched designs agree on the comparison they share. The frontier gives
-$+0.30$ with interval $[0.07, 0.53]$ for the projection against CAA; the matched-item
-test in Section~\ref{sec:paired} gives $+0.35$ with $[0.18, 0.53]$.
+These procedures apply to the exploratory sweep. The frozen-set test
+(Appendix~\ref{app:e1}) instead pairs every arm on the same 250 items and bootstraps over
+the 50 questions they come from, which is why its intervals are wider: the sweep's
+projection-minus-CAA difference of $+0.30$ $[0.07, 0.53]$ becomes $+0.22$
+$[-0.12, 0.57]$ there.
 
 \section{Sensitivity of the degeneracy criterion}
 \label{app:thresholds}

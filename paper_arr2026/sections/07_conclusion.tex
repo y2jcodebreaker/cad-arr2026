@@ -2,25 +2,21 @@
 \label{sec:conclusion}
 
 A model asked about exercise by a user who mentions a disability answers a different
-question, one about risk and supervision. Removing that behaviour at inference time is a
-reasonable goal, and the field measures progress toward it with a metric that counts the
-clinical vocabulary the model stops producing.
+question, one about risk and supervision. The field measures progress on removing that
+behaviour with a metric that counts the clinical vocabulary the model stops producing,
+and that metric cannot tell a model that stopped medicalizing from one that stopped
+writing. The methods with the best scores in our comparison are the ones that damage the
+output, and this holds on held-out questions, under a pre-registered design, with judges
+from two model families.
 
-That metric cannot tell the difference between a model that stopped medicalizing and a
-model that stopped writing. We found three methods sitting at settings where it reports
-success and the responses are corrupted, looped, or truncated, and the failure modes
-differ enough that no single filter on emptiness, length or uniqueness catches them all.
-The method with the lowest score in our comparison is the one that damages the output
-most.
+Once quality is measured, the picture is usable. Prompting alone leaves most of the bias
+in place. Several steering operators remove a large share of it with intact text, and
+they are closer to one another than our exploratory sweep suggested. Adding an explicit
+instruction to a multi-rank projection removes nearly all of it without degeneration,
+which makes steering and prompting complements rather than competitors on this task.
 
-Measuring quality alongside the target metric changes the ranking and leaves a usable
-picture: a narrow band of configurations that reduce medicalization while leaving the
-text intact, occupied almost entirely by multi-rank projection at the operating point its
-rank prescribes. That rank matters is a separate and simpler claim than the one we set
-out to make, and it survives the control experiments that the stronger claim does not.
-
-The practical recommendation is small and cheap. Report a quality measure beside the
-target metric, since a vocabulary-absence score is satisfied by absence of any kind. And
-report the number of independent base prompts alongside the number of contrastive pairs,
-since the spectral statistics read off those pairs move further under a change of prompt
-diversity than under a change of bias.
+The recommendations are cheap. Report a quality measure beside any target metric that
+scores the absence of a vocabulary. Compute intervals over the questions a benchmark is
+built from rather than over the responses. And report the number of independent base
+prompts beside the number of contrastive pairs, since the spectral statistics read off
+those pairs move further under a change of prompt diversity than under a change of bias.

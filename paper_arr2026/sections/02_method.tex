@@ -40,9 +40,9 @@ $\mathbf{M} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$. We steer with the t
 right singular vectors $\mathbf{V}_k$. As an object this decomposition is close to
 Linear Artificial Tomography \citep{zou2023representation}; what differs is that we use
 $k$ components rather than one. We set $k{=}40$, the rank reaching $80\%$ of the
-spectrum's variance on AccessEval. Section~\ref{sec:rank} shows that this choice is
-doing real work, and Section~\ref{sec:geometry} shows what the spectrum does not
-license us to infer from it.
+spectrum's variance on the full AccessEval pool, and keep it fixed in the pre-registered
+test. Section~\ref{sec:rank} measures what rank does, and Section~\ref{sec:geometry}
+shows why the spectrum cannot be used to choose it.
 
 \paragraph{The intervention.} We project activations onto the orthogonal complement of
 $\mathbf{V}_k$ at the circuit layers with strength $\alpha$:
@@ -52,8 +52,9 @@ $\mathbf{V}_k$ at the circuit layers with strength $\alpha$:
 \end{equation}
 At $\alpha{=}1$ this is pure orthogonal projection; $\alpha>1$ reflects and scales the
 in-subspace component. We report $\alpha{=}1$ throughout and sweep $\alpha$ only to
-locate the point at which the operator breaks (Section~\ref{sec:frontier}). Intervening
-at a single layer leaks, reducing medicalization by $16.8\%$; applying
-Eq.~\ref{eq:steer} at both circuit layers at once (L21 and L25 for AccessEval) reaches
-$71.6\%$. During prefill we steer only the last token, and during generation every newly
+locate the point at which the operator breaks (Section~\ref{sec:frontier}). In the exploratory
+runs, intervening at a single layer reduced medicalization by $16.8\%$ and applying
+Eq.~\ref{eq:steer} at both circuit layers at once (L21 and L25 for AccessEval) by
+$71.6\%$; on the held-out set of Section~\ref{sec:confirm} the two-layer projection
+removes $66\%$. During prefill we steer only the last token, and during generation every newly
 produced token \citep{li2024inference,todd2024function}.
