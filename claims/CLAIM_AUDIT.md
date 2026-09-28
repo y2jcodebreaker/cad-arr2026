@@ -41,9 +41,65 @@ Status: **in progress**. Sections below are complete unless marked otherwise.
 | 03.039 | projection α=5: 75 empty responses | **FLAG: unverifiable.** File gives parse-fail 0.404 (101/250); the CAD per-response texts of that sweep were lost | same |
 | Fig 1 caption | median CI half-width 0.18 | ✅ | same |
 
-## C. Still to audit
-Remaining numbers in §4 (margins 3.0×/2.0×/…; +0.30 [0.07, 0.53]; Qwen d 0.392 and collapse at α=2),
-§5 (all E1/A4 numbers against `e1_scores.json`), §6 (all geometry numbers against
-`controls_results/`), §3 single-layer 16.8% / 71.6%, and every citation's specific claim
-(Turner, Rimsky, Monroe, Wang 2022, Conmy, Zou, Li 2024, Todd, Siddique, RePS, Geiger, Cunningham,
-Bolukbasi, Ravfogel, Belrose, Welleck, AxBench, Macocco, Scalena).
+## C. Remaining numbers (§3, §4, §5, §6)
+
+| Sentence | Claim | Status | Source / note |
+|---|---|---|---|
+| 03.034 | margins 3.0× / 2.0× / 2.0× / 1.9× / 1.2× / 1.0× (first strength with quality < 6.0) | ✅ numbers reproduce | `sweep_points.json`. **But** they are measured from "the setting an author recommends" (FLAG, A7): from the E1 settings for baselines and our own choices for CAD |
+| 03.036 | SADI s=5: 7.5, "removes little bias" | ✅ (med 0.593 vs ~0.66) | same |
+| 03.037 | "no intermediate setting in the published sweep" | wording FLAG ("published") | swept 1, 2, 5, 10: true within our sweep |
+| 03.027 | projection vs CAA +0.30 [0.07, 0.53] | ✅ (+0.298 [0.072, 0.530], MW p = 0.0014) | `analysis-output/stats-appendix.md` |
+| 03.043 | Qwen d = 0.392 at α=1, no degenerate output; collapse at α=2 | ✅ with caveats: 1 empty response at α=1; α=2 flagged with 16 empty. Lexical metric only; no quality judge on Qwen | `results/qwen_generation_results.json` |
+| 02m.019 | single layer 16.8%, two layers 71.6% | **FLAG.** Neither is in a committed file. 16.8% (notes) was an **additive probe** at L21, not the projection; the committed two-layer projection run gives **66.4%** | `results/rtsd_fullres_results.json` (α=1: 66.4%) |
+| 03.005 | "full published range" | **FLAG.** Ranges are ours | runner configs |
+| 04.* | every §5 number (19 checks: d, CIs, ΔMed, ΔQ, P2, P5, P8, rank sweep, LEACE overlap 0.03, probe removal) | ✅ all match | `analysis-output/e1/e1_scores.json`; gate values G2 0.580, G3 0.642 from `results/e1/e1_tier1.log` |
+| 04.024 | leak raises d by 0.004 / 0.001 | ✅ numbers; **FLAG interpretation**: the CAD leak control compares two k=auto fits whose rank also changed (33/36 → 42/49), so fit pool and rank are confounded | `e1_scores.json`, D1 |
+| 05.011–014 | homogeneity ladder L21 (22.1/7.0 … 76.1/1.7, CIs [17.8, 28.4], [62.0, 87.5]); L14 22.9 [18.1, 28.6] → 69.4 [54.3, 80.4] | ✅ all | `controls_results/day3_subsample_results.json` |
+| 05.016 | "13 pairs by drawing whole base queries": 21.5% → 72.2% | ✅ values; **FLAG** the cluster draw averages **16.8** pairs at the 13 target | same, `curves.L21_cluster` |
+| 05.017 | null 26.2% vs real 21.5% at n=13 | ✅ | same |
+| 05.017 | "separates from it only above n ≈ 250" | **FLAG.** 95% intervals overlap at every n ≤ 500 and separate only at n = 1,000. The null is above the real data at every n | same, `curves.L21_pair/L21_null` |
+| 05.018 | pair bootstrap k 40 [40, 41] | **FLAG: not in a committed file** (printed in the 2026-09-27 rerun log only) | re-run and commit |
+| 05.018 | question bootstrap 30.1 [27, 33] | ✅ | `controls_results/question_bootstrap_L21.json` |
+| 05.020 | k_auto 33/36 held-out vs 42/49 full | ✅ | E1 run logs, `svd_fullres.pt` (`fits/`) |
+| Tab 3 + 05.010 | "profile the paper reports for DiscrimEval Target A" 67.9% / k=2 | **FLAG.** Only source is a constant in `plot_controls_figure.py`; it refers to our own earlier, unpublished paper (anonymity problem in a double-blind submission) | — |
+| 05.025 | cos(v1, probe) = −0.001 at L21 | **FLAG.** Not reproducible from committed fits: −0.07 (held-out) / −0.13 (full) at L21. "Close to orthogonal" holds. Also: **65% of the probe direction lies inside the top-40 SVD subspace** (held-out fit), which the text should say | `fits/e1_outputs/*/svd_fullres.pt` |
+| 05.006 | "pool of 2,083 pairs" | ✅, but 1,044 distinct (duplicated rows); say so | `frozen_eval_v1.json` |
+
+## D. Citations: does the cited work say what the sentence says?
+
+| Citation | Claim in draft | Status | Checked against |
+|---|---|---|---|
+| accesseval2024 | medicalization term "following" it | **FLAG** (A2) | arXiv 2509.22703 |
+| accesseval2024 | a disability-bias benchmark | ✅ | same |
+| monroe2008fightin | the medicalization *score* is its log-odds | **FLAG** (A3): Monroe gives the vocabulary method; the score is a 20-word count ratio | `evaluate_rtsd_fullres_generation.py` |
+| turner2023activation, rimsky2024steering | steering edits activations at inference, no retraining | ✅ | abstracts |
+| wang2022interpretability, conmy2023automated | activation patching | ✅ (generic) | — |
+| zou2023representation (LAT) | PCA over representation differences | ✅ "the inputs to PCA are {A(i)−A(j)} … first principal component … 'reading vector'" | ar5iv 2310.01405 |
+| zou2023representation | "It is common … to describe how many dimensions a bias occupies from the spectrum" | **FLAG**: RepE uses the first PC, it does not estimate dimensionality; no second instance found. Say it was our own practice | — |
+| li2024inference (ITI) | steer every generated token | ✅ "repeated for each next token prediction autoregressively" | ar5iv 2306.03341 |
+| todd2024function | steer the last prompt token | ✅ "the hidden state residual stream at the final token of a given prompt" | ar5iv 2310.15213 |
+| li2025fairsteer | classifier gate | ✅ | arXiv 2504.14492 |
+| siddique2025shifting | "per-axis PCA vectors from BBQ" | ⚠ per-axis vectors on a BBQ training subset ✅; "PCA" not verified. Venue Findings EACL 2026 ✅ (bib correct) | ACL Anthology 2026.findings-eacl.41 |
+| wu2025reps | "requires training-time gradients" | ⚠ true (trained with a preference objective) but say it that way; note it also does concept **suppression** | arXiv 2505.20809 |
+| pham2026hidra, he2025saessv, doan-etal-2026-causal | descriptions | ✅ abstract level | arXiv, ACL Anthology |
+| wu2025axbench | prompting outperforms steering at injection | ✅ | PMLR v267 |
+| macocco2026tradeoff | steering costs fluency; prompting weaker at removal | ✅ both in abstract | arXiv 2606.12234 |
+| scalena-etal-2024-multi | per-step strength from KL(unsteered ‖ steered), capped at 2 | ✅; "a direct response to the failure we measure" **FLAG** (overclaims; say it targets the same trade-off) | arXiv 2406.17563 html |
+| geiger2024das, cunningham2024sae, bolukbasi2016man, ravfogel2020null, belrose2023leace, welleck-etal-2019-neural | generic descriptions | ✅ (standard characterisations) | — |
+
+## E. Wording that asserts facts about the field
+
+"leaderboard" (01.015, 03.041), "published setting/operating point/methods/numbers/range/ranking"
+(ABS.005, 01.019, 01.021, 02.019–020, 03.002, 03.005, 03.011, 03.021, 03.029, 03.035–037, 04.006,
+04.017–018, 06.009, Lim.005), "the field measures" (07.002), "It is common" (01.028), "The usual
+estimator" (05.003): **all FLAG** under A1/A7. There is no leaderboard for this metric; "published"
+is false for all four baseline settings.
+
+## F. Summary
+
+- Sentences checked: all 224. Numbers checked against files: 45; 38 reproduce, 7 do not or are
+  untraceable (SADI mean 0.000, 75 empty, 16.8%, 71.6%, pair bootstrap 40 [40, 41], cos −0.001,
+  Target A 67.9%).
+- Foundational problems: A1–A9. Interpretive claims that rest on the lexical metric (removal of
+  "medicalization", "% reduction", "past neutral") wait for M1.
+- Nothing in the paper has been edited yet. The rewrite follows M1 and A7.
