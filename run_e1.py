@@ -64,6 +64,15 @@ ARMS = [
     # 633-pair held-out pool resolves to 33/36, not 40. Not part of tier1; run with `arm`.
     ("cad_rank_k40", "D1", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--k", "40",
                                  "--proj_alphas", "1.0", *NO_CAD_SWEEPS]),
+    # A4 (PREREG): prompting baseline. Same out_dir, so the combo arm reuses the tier-1 SVD fit;
+    # every output name carries _sys<name>, so nothing collides with the E1 reference baseline.
+    ("prompt_min", "A4", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--seed", "42",
+                               "--baseline_only", "--system_prompt", "min"]),
+    ("prompt_explicit", "A4", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--seed", "42",
+                                    "--baseline_only", "--system_prompt", "explicit"]),
+    ("prompt_explicit_cad_k40", "A4", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--k", "40",
+                                            "--proj_alphas", "1.0", *NO_CAD_SWEEPS,
+                                            "--system_prompt", "explicit"]),
 ]
 
 JUDGE_GLOBS = ["e1_outputs/*/*_responses.json", "e1_outputs/leace/base_seed*.json",
