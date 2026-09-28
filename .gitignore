@@ -81,3 +81,12 @@ baseline_results/angular_checkpoints/*
 # per-response texts from the first frontier sweep were lost this way (left on
 # a pod that was shut down); only their judge scores survived.
 # Nothing to ignore here; listed so nobody adds results/ above by accident.
+
+# --- Local-only artefacts ----------------------------------------------------
+# fits/: fitted directions and activation caches downloaded from the pod (tensors, 196 MB
+# archive). Regenerable exactly from the model + frozen fit pool; kept locally so a new pod
+# can skip the refit. Their sha256 are in LEDGER.jsonl.
+fits/
+# download archives and driver logs made on the pod; the evidence inside is copied into results/
+*.tgz
+e1_*.log
