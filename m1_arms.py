@@ -49,6 +49,11 @@ ARM_FILES: dict[str, tuple[str, tuple, str]] = {
     "sadi_s5": ("sadi_s5/sadi_results.json", ("accesseval", "strengths", "strength_5.0", "responses"), "disability"),
 }
 A7_ARMS = ("angular_adaptive", "caa_m2", "fairsteer_a1", "sadi_s5")
+# M1-A2: the A8 framing-contrast arms (PREREG_A8), scored like every other arm once they exist
+A8_ARMS = ("fc_remove_a1", "fc_remove_a2", "fc_add_a4", "fc_add_a8", "fc_prompt_remove_a1", "fc_remove_a1_L21L25")
+for _a in A8_ARMS:
+    ARM_FILES[_a] = (f"a8/{_a}_responses.json", _RESP, "disability")
+OPTIONAL_ARMS = A7_ARMS + A8_ARMS
 
 
 def _texts(raw: list) -> list[str]:

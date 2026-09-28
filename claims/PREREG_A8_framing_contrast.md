@@ -80,3 +80,16 @@ prompt and against CAA; `fc_remove_a1` against `fc_remove_a1_L21L25` (does the l
 ## 7. Already seen
 
 M1 and all earlier results. No A8 answer, label, activation, direction or selected layer exists.
+
+## Amendments
+
+### A8-A1 — 2026-09-28, before any A8 answer, label or activation exists
+
+**What changed.** The layer rule (section 3.4) and gate GA8-2 use **balanced accuracy** (mean of the
+per-class recalls; chance = 0.50 whatever the class balance) instead of accuracy. Threshold unchanged
+at 0.60.
+
+**Why.** Found by the synthetic test of the layer rule: with about 30% medicalizing answers, a
+classifier that always predicts "clean" scores 0.70 accuracy, so GA8-2 (accuracy ≥ 0.60) could not
+fail, and plain accuracy also rewards layers where the classifier leans on the majority class. No A8
+data existed when this was found.
