@@ -73,3 +73,24 @@ Numbers below are generated from `analysis-output/m1/m1_scores.json`.
 - What reduces medicalization on both judges: the explicit system prompt (no quality cost, no erasure), CAA (no erasure), Angular (erases; costs quality), and prompt + projection (largest reduction; erases).
 - A4's lexical conclusion that prompting barely debiases does not survive a valid measure.
 - A5 is not re-scoped: its pre-registered condition (Q2 shows the projection reduces J) is not met.
+
+## A7 / P12 — each baseline at its authors' setting (scored 2026-09-28, `a7_p12.py`)
+
+Generated from `analysis-output/a7/p12.json`. Arms at 9537a91 (evidence 467eb1d).
+
+| method | authors' arm | outcome (registered rule) | text flags | M1 U-rate L/Q | ΔQ access. authors | ΔQ access. E1 setting | lexical d authors (E1) | M1 ΔJ L/Q | M1 call | echo drop |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Angular | `angular_adaptive` | (b) broken at the authors' setting too | overshoot | 0.00 / 0.00 | -1.98 / -0.68 | -2.07 / -0.66 | 0.70 (0.74) | -0.16 / -0.13 | reduces | 0.56 |
+| CAA | `caa_m2` | (b) broken at the authors' setting too | overshoot | 0.00 / 0.00 | -2.20 / -0.69 | -0.80 / -0.30 | 0.71 (0.37) | -0.40 / -0.23 | reduces | 0.61 |
+| FairSteer | `fairsteer_a1` | (a) intact at the authors' setting | — | 0.00 / 0.00 | -0.30 / -0.13 | -1.31 / -0.61 | 0.05 (0.28) | -0.00 / -0.02 | no change | 0.15 |
+| SADI | `sadi_s5` | (a) intact at the authors' setting | — | 0.00 / 0.00 | +0.00 / -0.05 | -3.93 / -2.38 | -0.13 (0.30) | +0.00 / +0.06 | no change | 0.04 |
+
+**Caveat (not pre-registered).** The (b) calls for CAA and Angular rest partly on the lexical 'overshoot' flag, which the claim
+audit found invalid (A4: zero is not the neutral level). Without that flag neither meets (a): CAA's quality loss is larger than
+at its E1 setting on both judges, Angular's is larger under Qwen. Both would be (c). Both readings are reported.
+
+**Reading.** At their authors' settings FairSteer and SADI keep the text intact but do not reduce medicalization on the valid
+measure (M1 no change on both judges). CAA (multiplier 2) and Angular (adaptive default) reduce it but lose about two quality
+points (Llama judge) and erase the user's disability (echo drop 0.61 and 0.56). Angular's recommended adaptive variant does not
+change its picture. No baseline, at either its authors' setting or the E1 setting, reduces medicalization while keeping the
+text intact and the disability named.
