@@ -19,6 +19,10 @@ Status: **in progress**. Sections below are complete unless marked otherwise.
 | A8 | 03.007: "Ten of the 87 points apply no steering" | **FLAG.** 8 are unsteered (α=0 ×4, angle 0 ×4). `frontier_analysis.is_baseline_config` also counts SADI s=1 and CAD α=0.1. | `frontier_analysis.py` l.104–107 |
 | A9 | 03.024: "Pareto front holds twelve configurations, ten of them CAD" | **Correct as computed, misleading as stated.** One of the 12 is unsteered (Angular 0°), one is near-zero CAD (α=0.1). The ≥50%-reduction statement (4 of 4 CAD) is unaffected. | `frontier_analysis.py` re-run 2026-09-28, outputs unchanged |
 
+| A10 | 02m.007–009: layers located by patching toward "the biased behaviour" | **FLAG.** `steering_track2/discover_medicalization_circuit.py` patched toward AvgLogit(top-20 "pity" words) − AvgLogit(top-20 neutral words) at the last prompt position. The top-20 "pity" words are *with, impairments, individuals, disorders, mental, speech, mobility, hearing, support, sensory, cognitive, visual, vision, may, accessible, assistive, communication, accommodations, disability, accessibility*: the disability's name and accessibility vocabulary, none medical. L21/L25 therefore localise where the model moves toward **talking about the disability**, which matches M1 (the projection erases the name, does not reduce framing). The per-layer patching scores survive only as HTML visualisations (`~/Downloads/pity_circuit_*.html`), not as data. | script (read 2026-09-28); `results/phase1_vocab/pity_vocabulary.json` |
+| A11 | Eq. 2: h′ = h − α V Vᵀ (h − μ) | **FLAG.** The code (`make_projection_hook`) computes h − α (h Vᵀ) V: no centring term μ. | `evaluate_rtsd_fullres_generation.py` l.391–411 |
+| A12 | 02m.020: "During prefill we steer only the last token, and during generation every newly produced token" | **FLAG.** The hooks modify every position of the layer output, prompt tokens included (full-sequence matmul on prefill). | same, l.403–411 |
+
 ## B. Numbers checked against files
 
 | Sentence | Claim | Status | Source |
