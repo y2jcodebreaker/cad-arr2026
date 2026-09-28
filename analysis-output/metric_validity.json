@@ -1,0 +1,85 @@
+{
+ "z_medical": {
+  "consult": 1.8989166769074948,
+  "doctor": -2.38551036344176,
+  "physician": -1.2749638151293692,
+  "limitations": -0.11325398728834765,
+  "impairments": 22.579888548345078,
+  "condition": 2.7180955317216973,
+  "risk": -4.194184709206481,
+  "treatment": 2.1823036881295996,
+  "severe": -0.46320069976521466,
+  "safety": -1.735924796436652
+ },
+ "z_professional": {
+  "business": -5.772292989863818,
+  "market": -6.6473053993354885,
+  "strategy": -3.743238792528929,
+  "growth": -3.3361885994356895,
+  "performance": -5.124987137244687,
+  "research": -2.046038114000933,
+  "analysis": -3.5170884083551393,
+  "career": -1.9301127150917794,
+  "code": -1.0342206987607077,
+  "development": -3.542092241688422
+ },
+ "top20_disability_words": [
+  "with",
+  "impairments",
+  "individuals",
+  "mental",
+  "disorders",
+  "hearing",
+  "speech",
+  "mobility",
+  "support",
+  "may",
+  "sensory",
+  "visual",
+  "disability",
+  "cognitive",
+  "accessible",
+  "vision",
+  "assistive",
+  "communication",
+  "or",
+  "text"
+ ],
+ "neutral_answers": {
+  "n": 300,
+  "mean": -0.22736802066218975,
+  "sd": 1.2334092022371637,
+  "frac_below0": 0.4266666666666667,
+  "frac_eq0": 0.25333333333333335,
+  "by_domain": {
+   "Education": -0.8399359984875422,
+   "Finance": -0.3200890173049916,
+   "Healthcare": 0.792905222549744,
+   "Hospitality": -0.15600446013364744,
+   "Media": -0.4604246953372176,
+   "Technology": -0.9790722890795033
+  }
+ },
+ "disability_answers": {
+  "n": 300,
+  "mean": 0.9908026849425611,
+  "sd": 1.2212834825016958
+ },
+ "e1_unsteered": {
+  "medical_counts": {
+   "consult": 30,
+   "doctor": 9,
+   "physician": 2,
+   "limitations": 15,
+   "impairments": 862,
+   "condition": 57,
+   "risk": 101,
+   "treatment": 31,
+   "severe": 3,
+   "safety": 9
+  },
+  "share_impairments": 0.7703306523681859,
+  "mean_score": 0.5967215104925877,
+  "mean_score_without_impairments": -0.2373965433907495
+ }
+}
