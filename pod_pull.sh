@@ -35,7 +35,7 @@ restore_on_failure() {
 trap restore_on_failure EXIT
 
 # --- 0. Never change code under a running job -------------------------------
-RUNNING=$(pgrep -f "python.*(evaluate_|judge_sweep|judge_medicalization|exp3_leace|paired_quality|day1_extract|e1_|run_e1)" | tr '\n' ',' | sed 's/,$//')
+RUNNING=$(pgrep -i -f "python.*(evaluate_|judge_sweep|judge_medicalization|exp3_leace|paired_quality|day1_extract|e1_|run_e1)" | tr '\n' ',' | sed 's/,$//')
 if [ -n "$RUNNING" ]; then
   echo "A run is in progress:"
   ps -o pid=,args= -p "$RUNNING" | sed 's/^/  /'
