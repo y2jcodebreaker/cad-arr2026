@@ -268,7 +268,11 @@ Records now also carry `source` (the path), and the E1 analysis joins each respo
 
 ## Amendments after tier 1
 
-### A4 — 2026-09-28, before any prompting arm has run: the prompting baseline
+### A4 — 2026-09-27, before any prompting arm has run: the prompting baseline
+
+*(Date corrected on 2026-09-27: this heading first said 2026-09-28, a typo. The commit that
+recorded A4, 9cdfc56, is timestamped 2026-09-27 20:39 PDT and is authoritative; the A4 arms
+ran at f754161, after it, and their evidence was committed at 21:26.)*
 
 **Why.** AxBench (Wu et al., ICML 2025) reports that prompting beats every representation-steering
 method, and Macocco et al. (BlackboxNLP 2026) that steering buys effectiveness at a cost to fluency.
