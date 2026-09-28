@@ -525,14 +525,23 @@ def parse_args(argv=None):
     ap.add_argument("--system_prompt", choices=sorted(SYSTEM_PROMPTS), default="default",
                     help="A4: system prompt for the EVAL generations only; directions are always "
                          "fit on the default prompt. Non-default names go into every output name")
+    ap.add_argument("--eval_side", choices=["disability", "neutral"], default="disability",
+                    help="M1: 'neutral' answers each frozen item's NEUTRAL question (clean_text) "
+                         "instead of its disability question. Unsteered only (--baseline_only)")
     e1.add_e1_args(ap)
     return ap.parse_args(argv)
 
 
 def _ptag(args) -> str:
-    """Suffix for a non-default system prompt. Without it a prompted baseline would share (and,
-    on a fingerprint mismatch, regenerate over) the E1 reference baseline file."""
-    return "" if args.system_prompt == "default" else f"_sys{args.system_prompt}"
+    """Suffix for a non-default system prompt or the neutral side. Without it such a baseline would
+    share (and, on a fingerprint mismatch, regenerate over) the E1 reference baseline file."""
+    tag = "" if args.system_prompt == "default" else f"_sys{args.system_prompt}"
+    return tag + ("_neutral" if getattr(args, "eval_side", "disability") == "neutral" else "")
+
+
+def _eval_text(p: Dict, args) -> str:
+    """The question the model answers: the disability question (E1) or its neutral form (M1)."""
+    return p["clean_text"] if args.eval_side == "neutral" else p["corrupted_text"]
 
 
 def _arm_tag(args) -> str:
@@ -594,6 +603,8 @@ def main(argv=None):
     CKPT_DIR.mkdir(parents=True, exist_ok=True)
     if args.k is not None and not 1 <= args.k <= K_STORE:
         raise SystemExit(f"--k must be between 1 and {K_STORE}")
+    if args.eval_side == "neutral" and not args.baseline_only:
+        raise SystemExit("--eval_side neutral is for the unsteered reference only; add --baseline_only")
     if args.proj_basis != "svd" and args.k is not None:
         raise SystemExit(f"--proj_basis {args.proj_basis} is rank 1 by construction; do not pass --k")
 
@@ -614,7 +625,8 @@ def main(argv=None):
             print(f"  {fe.describe(fz, full=args.fit_pool == 'full')}")
             sysp = SYSTEM_PROMPTS[args.system_prompt]
             print(f"  eval prompts {len(ev)}  system={args.system_prompt}  fingerprint "
-                  f"{_fingerprint([format_prompt(p['corrupted_text'], sysp) for p in ev])}")
+                  f"{_fingerprint([format_prompt(_eval_text(p, args), sysp) for p in ev])}"
+                  f"  side={args.eval_side}")
             print(f"  SVD/probe fit on {len(fit)} unique pairs")
         print(f"  out_dir {CKPT_DIR}")
         return
@@ -633,7 +645,7 @@ def main(argv=None):
         random.shuffle(eval_pairs)
         eval_pairs = eval_pairs[:N_EVAL]
         svd_pool = filtered
-    prompts = [format_prompt(p['corrupted_text'], SYSTEM_PROMPTS[args.system_prompt])
+    prompts = [format_prompt(_eval_text(p, args), SYSTEM_PROMPTS[args.system_prompt])
                for p in eval_pairs]
     print(f"  Eval set: {len(prompts)} pairs | SVD pool: {len(svd_pool)} pairs | "
           f"system prompt: {args.system_prompt}")

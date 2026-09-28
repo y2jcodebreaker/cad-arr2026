@@ -167,3 +167,22 @@ only if Q2 shows the projection reduces J. The Oct 1 hard stop on method work st
 The lexical findings in §1. No J, L or echo score on any E1 text has been computed. The Phase-1
 log-odds z-scores of the *old* 10-word list were seen; the new candidate list above was written
 after that, and the validation rule is what decides which candidates survive.
+
+## Deviations
+
+### D1 — 2026-09-28, during the stand-in test of `m1_analysis.py`, before any M1 judge call
+
+The pipeline test used fake judge ratings and fake neutral answers, but three quantities in it are
+computed from **real** saved texts, so they were seen before the judge run:
+
+- **Lexicon validation (L).** On the 234 held-out Phase-1 pairs, only 3 of the 35 candidates pass
+  z > 2: *patients, symptoms, therapists*. L is therefore a sparse measure. The rule is unchanged.
+- **Echo rate (Q3).** Drop in mentions of the item's own disability name relative to unsteered:
+  projection k=40 0.61, k=80 0.67, k=auto 0.58, prompt + projection 0.69, Angular 0.61, CAA 0.31,
+  FairSteer 0.39, prompts 0.13–0.17 (point estimates; by the Q3 rule the first five "erase").
+- **Q4, lexical side.** Across steered arms, Spearman between the E1 lexical d and the echo drop is
+  0.89. The J side of Q4 is not known.
+
+Not seen: any J rating (Q1, Q2, Q5, the J side of Q4) and the L gap against real neutral answers
+(the test used seed-43 disability answers as stand-in neutral answers). No criterion, threshold or
+outcome is changed. Q3 and the echo side of Q4 are reported as **not blind** in the paper.
