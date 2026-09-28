@@ -1,0 +1,38 @@
+{
+ "runner": "fairsteer",
+ "status": "ok",
+ "started": "2026-09-28T19:07:57",
+ "host": "721dd136ef09",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "skip_discrimeval": true,
+  "skip_accesseval": false,
+  "top_layers": 3,
+  "layer_override": [
+   29
+  ],
+  "threshold": [
+   0.5
+  ],
+  "alphas": [
+   1.0
+  ],
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/fairsteer_a1",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "9537a91b4bee969cc5ac80d11095db30fb8a8983",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/fairsteer_a1/fairsteer_results.json"
+ },
+ "finished": "2026-09-28T19:15:55",
+ "git_changed_during_run": false
+}

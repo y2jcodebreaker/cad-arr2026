@@ -1,0 +1,8 @@
+{
+  "n_train": 1012,
+  "n_test": 254,
+  "train_accuracy": 1.0,
+  "test_accuracy": 1.0,
+  "test_prob_mean_class0": 0.00036671804264187813,
+  "test_prob_mean_class1": 0.9997120499610901
+}

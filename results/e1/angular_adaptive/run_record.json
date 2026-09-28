@@ -1,0 +1,41 @@
+{
+ "runner": "angular",
+ "status": "ok",
+ "started": "2026-09-28T18:47:24",
+ "host": "721dd136ef09",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "skip_discrimeval": true,
+  "skip_accesseval": false,
+  "angles": [
+   150
+  ],
+  "strategies": [
+   "max_sim"
+  ],
+  "modes": [
+   1
+  ],
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/angular_adaptive",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "9537a91b4bee969cc5ac80d11095db30fb8a8983",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/angular_adaptive/angular_results.json",
+  "selected_layers": {
+   "max_sim": 23,
+   "max_norm": 31
+  }
+ },
+ "finished": "2026-09-28T18:56:54",
+ "git_changed_during_run": false
+}
