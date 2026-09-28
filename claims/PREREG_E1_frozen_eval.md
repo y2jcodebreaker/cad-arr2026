@@ -308,3 +308,40 @@ question-level bootstrap CI (paired on items).
 
 A prompt that overshoots (mean medicalization < −0.05) or trips any degeneracy flag is reported as
 such and cannot satisfy (a).
+
+### A7 — 2026-09-28, before any A7 arm has run: each baseline at its authors' own setting
+
+**Why.** The claim audit (`claims/CLAIM_AUDIT.md`, A7) found that none of the four E1 baseline
+settings is the setting its authors use, although E1 and the draft call them "published points":
+
+| method | E1 setting | authors' setting (source) |
+|---|---|---|
+| SADI | s = 10 | no fixed value; "search optimal hyperparameters using data from the validation sets specific to each task" (arXiv 2410.12299) |
+| CAA | L14, multiplier 1 | multipliers ±1 for multiple choice, **2 for open-ended generation**; layer 13 on Llama-2-7B (arXiv 2312.06681) |
+| FairSteer | L29, τ 0.5, α 2 | **α = 1**, τ = 0.5, layer by classifier accuracy (arXiv 2504.14492) |
+| Angular | max-sim L23, mode 0 (non-adaptive), 150° | no fixed angle; **adaptive variant is the default**; non-adaptive "runs a risk of breaking the coherence on smaller models" (arXiv 2510.26243) |
+
+The E1 settings are relabelled everywhere as what they are: the settings earlier exploratory
+analyses picked by effect size on the lexical metric. A7 adds each method at its authors' setting.
+
+**Arms** (frozen set, seed 42, fit on the 633 held-out pairs, generation unchanged):
+
+| arm | runner flags | note |
+|---|---|---|
+| `angular_adaptive` | `--strategies max_sim --modes 1 --angles 150` | authors' default variant; 150° kept so only the variant changes |
+| `caa_m2` | `--layer_override 14 --alphas 2.0` | authors' open-ended multiplier; layer 13 was for Llama-2-7B, L14 kept |
+| `fairsteer_a1` | `--layer_override 29 --threshold 0.5 --alphas 1.0` | authors' α; their layer rule (highest classifier accuracy) is not applied because the classifier is 100% accurate at L29 and the rule may not single out one layer (unverified; reported as a limitation) |
+| `sadi_s5` | `--strengths 5` | no authors' value exists; s = 5 is the strongest SADI setting the exploratory sweep left intact |
+
+**Scored by** the E1 lexical analysis, both accessibility judges, and both M1 judges (M1 amendment
+M1-A1). **Already seen:** the exploratory-sweep points for Angular mode 1 at 150° (med −0.210,
+quality 6.04), CAA α = 2 (flagged), FairSteer α = 1 and SADI s = 5 (intact, quality 7.53), all on a
+different evaluation set.
+
+**P12, with outcomes named.** For each method, compare its A7 arm with its E1 arm on the frozen set.
+- **(a) Intact at the authors' setting**: no text flag, M1 U-rate ≤ 10% on both judges, and
+  accessibility-quality loss smaller than at the E1 setting on both judges. The paper then says
+  this method breaks at the setting the lexical metric selects, not at its authors' setting.
+- **(b) Broken at the authors' setting too**: a text flag or M1 U-rate > 10% on either judge.
+- **(c) Neither**: report the numbers.
+The paper reports every method both ways whatever P12 finds.

@@ -186,3 +186,11 @@ computed from **real** saved texts, so they were seen before the judge run:
 Not seen: any J rating (Q1, Q2, Q5, the J side of Q4) and the L gap against real neutral answers
 (the test used seed-43 disability answers as stand-in neutral answers). No criterion, threshold or
 outcome is changed. Q3 and the echo side of Q4 are reported as **not blind** in the paper.
+
+## Amendments
+
+### M1-A1 — 2026-09-28, while the M1 judges were running and before any M1 score was looked at
+
+Four arms from E1 amendment A7 are added to the section 5 list: `angular_adaptive`, `caa_m2`,
+`fairsteer_a1`, `sadi_s5`. They enter Q2, Q3 and Q5 like every other arm. Q4 is computed with and
+without them (the pre-registered version is without). Nothing else changes.

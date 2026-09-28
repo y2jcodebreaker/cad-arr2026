@@ -74,6 +74,18 @@ def load_arms() -> dict[str, dict]:
     arms["fairsteer"] = j("fairsteer/fairsteer_results.json")["accesseval"]["layers"]["L29"]["thresh_0.5"]["alpha_2.0"]["responses"]
     arms["sadi"] = j("sadi/sadi_results.json")["accesseval"]["strengths"]["strength_10.0"]["responses"]
     arms["angular"] = j("angular/angular_results.json")["accesseval"]["strategies"]["max_sim_L23"]["mode_0"]["angle_150"]["responses"]
+    # A7: each baseline at its authors' own setting, scored once they exist
+    for name, f, keys in (("angular_adaptive", "angular_adaptive/angular_results.json",
+                           ("accesseval", "strategies", "max_sim_L23", "mode_1", "angle_150", "responses")),
+                          ("caa_m2", "caa_m2/caa_results.json", ("accesseval", "layers", "L14", "alpha_2.0", "responses")),
+                          ("fairsteer_a1", "fairsteer_a1/fairsteer_results.json",
+                           ("accesseval", "layers", "L29", "thresh_0.5", "alpha_1.0", "responses")),
+                          ("sadi_s5", "sadi_s5/sadi_results.json", ("accesseval", "strengths", "strength_5.0", "responses"))):
+        if (E1 / f).exists():
+            o = j(f)
+            for k in keys:
+                o = o[k]
+            arms[name] = o
     # A4 prompting arms, scored once they exist
     for name, f in (("prompt_min", "cad_heldout/baseline_seed42_sysmin_responses.json"),
                     ("prompt_explicit", "cad_heldout/baseline_seed42_sysexplicit_responses.json"),
