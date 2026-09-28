@@ -1,0 +1,30 @@
+{
+ "runner": "leace_rank_k",
+ "status": "ok",
+ "started": "2026-09-27T23:54:12",
+ "host": "3fbbbe75d3b7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "k": 80,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/leace",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "3c365ccb564de82e1de7a7989d0acf22ff808dfd",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/leace/exp3_leace_rank_k80_results.json",
+  "cohens_d": 0.27633332355872764,
+  "baseline_mean": 0.5729592654253431,
+  "steered_mean": 0.21194883529867029
+ },
+ "finished": "2026-09-28T00:04:43",
+ "git_changed_during_run": false
+}
