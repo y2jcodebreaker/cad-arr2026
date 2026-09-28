@@ -74,6 +74,12 @@ def load_arms() -> dict[str, dict]:
     arms["fairsteer"] = j("fairsteer/fairsteer_results.json")["accesseval"]["layers"]["L29"]["thresh_0.5"]["alpha_2.0"]["responses"]
     arms["sadi"] = j("sadi/sadi_results.json")["accesseval"]["strengths"]["strength_10.0"]["responses"]
     arms["angular"] = j("angular/angular_results.json")["accesseval"]["strategies"]["max_sim_L23"]["mode_0"]["angle_150"]["responses"]
+    # A4 prompting arms, scored once they exist
+    for name, f in (("prompt_min", "cad_heldout/baseline_seed42_sysmin_responses.json"),
+                    ("prompt_explicit", "cad_heldout/baseline_seed42_sysexplicit_responses.json"),
+                    ("prompt_explicit_cad_k40", "cad_heldout/proj_k40_sysexplicit_alpha1.0_responses.json")):
+        if (E1 / f).exists():
+            arms[name] = j(f)["responses"]
     out = {}
     for name, raw in arms.items():
         assert len(raw) == 250, f"{name}: {len(raw)} responses"
@@ -265,6 +271,36 @@ def main() -> int:
         outcome = {2: "(a) removal preserves quality in both directions",
                    1: "(b) one direction only"}.get(n_rem, "(c) neither")
     verdicts["P7"] = dict(detail=p7, outcome=outcome)
+
+    # ---- P8 (A4): prompting baseline
+    if "prompt_explicit" in arms:
+        pe, ck = arms["prompt_explicit"], arms["cad_proj_k40"]
+        dd = S["cad_proj_k40"]["d"] - S["prompt_explicit"]["d"]
+        dd_ci = ci(ck["_bd"] - pe["_bd"])
+        qd = {}
+        for j in ("llama", "qwen"):
+            diff = pe[f"q_{j}"] - ck[f"q_{j}"]
+            qd[j] = dict(mean=float(diff.mean()), ci=ci([diff[i].mean() for i in boots]))
+        clean = not S["prompt_explicit"]["degenerate"]
+        a_ = clean and dd <= 0.05 and all(v["mean"] >= 0 for v in qd.values())
+        b_ = dd >= 0.05 and dd_ci[0] > 0
+        p8 = dict(delta_d_cad_minus_prompt=dd, delta_d_ci=dd_ci, quality_prompt_minus_cad=qd,
+                  prompt_flags=S["prompt_explicit"]["degenerate"],
+                  prompt_min=dict(d=S["prompt_min"]["d"], dq_llama=S["prompt_min"]["dq_llama"],
+                                  dq_qwen=S["prompt_min"]["dq_qwen"]) if "prompt_min" in S else None)
+        outcomes = ["(a) prompting at least as good"] if a_ else []
+        outcomes += ["(b) steering adds debiasing beyond prompting"] if b_ else []
+        if "prompt_explicit_cad_k40" in arms:
+            co = arms["prompt_explicit_cad_k40"]
+            best = "prompt_explicit" if S["prompt_explicit"]["d"] >= S["cad_proj_k40"]["d"] else "cad_proj_k40"
+            gain_ci = ci(co["_bd"] - arms[best]["_bd"])
+            qok = all(abs(S["prompt_explicit_cad_k40"][f"dq_{j}"]) <= QUALITY_WINDOW for j in ("llama", "qwen"))
+            c_ = S["prompt_explicit_cad_k40"]["d"] > S[best]["d"] and gain_ci[0] > 0 and qok
+            p8["combo"] = dict(d=S["prompt_explicit_cad_k40"]["d"], gain_over=best, gain_ci=gain_ci,
+                               quality_within_1=qok, complementary=c_)
+            outcomes += ["(c) complementary"] if c_ else []
+        p8["outcome"] = outcomes or ["(d) inconclusive"]
+        verdicts["P8"] = p8
 
     # ---- baseline replicates: how much does d move with the reference draw alone?
     alt = {}
