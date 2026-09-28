@@ -1,0 +1,36 @@
+{
+ "runner": "cad",
+ "status": "ok",
+ "started": "2026-09-27T22:56:36",
+ "host": "3fbbbe75d3b7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "proj_alphas": [
+   1.0
+  ],
+  "probe_alphas": [],
+  "meandiff_alphas": [],
+  "k": null,
+  "proj_basis": "meandiff",
+  "baseline_only": false,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/cad_heldout",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "3c365ccb564de82e1de7a7989d0acf22ff808dfd",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/cad_heldout/rtsd_fullres_results_meandiffbasis.json",
+  "baseline_mean": 0.5967215104925877,
+  "best_d_projection": 0.053322963159548625
+ },
+ "finished": "2026-09-27T23:01:01",
+ "git_changed_during_run": false
+}

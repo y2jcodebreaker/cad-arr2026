@@ -1,0 +1,32 @@
+{
+ "runner": "sadi",
+ "status": "ok",
+ "started": "2026-09-27T19:16:55",
+ "host": "3fbbbe75d3b7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "skip_discrimeval": true,
+  "skip_accesseval": false,
+  "top_k_hidden": 128,
+  "strengths": [
+   10.0
+  ],
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/sadi",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "3c365ccb564de82e1de7a7989d0acf22ff808dfd",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/sadi/sadi_results.json"
+ },
+ "finished": "2026-09-27T19:48:49",
+ "git_changed_during_run": false
+}
