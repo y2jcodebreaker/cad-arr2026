@@ -194,3 +194,9 @@ outcome is changed. Q3 and the echo side of Q4 are reported as **not blind** in 
 Four arms from E1 amendment A7 are added to the section 5 list: `angular_adaptive`, `caa_m2`,
 `fairsteer_a1`, `sadi_s5`. They enter Q2, Q3 and Q5 like every other arm. Q4 is computed with and
 without them (the pre-registered version is without). Nothing else changes.
+
+### M1-A2 — 2026-09-28, after M1 was scored, before any A8 arm exists
+
+The six A8 arms (`claims/PREREG_A8_framing_contrast.md`) are added to the M1 arm list so the M1 judges
+score them with the frozen rubric. They are optional arms like the A7 ones and never enter the
+pre-registered Q4. A8's success criteria are its own (section 6 of PREREG_A8).

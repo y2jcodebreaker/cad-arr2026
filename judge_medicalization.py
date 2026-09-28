@@ -113,6 +113,16 @@ def greedy_decode(model, input_ids, attention_mask, eos_ids, pad_id, max_new_tok
     return torch.stack(steps, dim=1)
 
 
+def build_items_from_file(path: Path, arm: str = "a8_fit") -> tuple[list[dict], dict[str, tuple[str, str]]]:
+    """(question, answer) pairs from a JSON list such as e1_outputs/a8/fit_items.json (A8 training answers)."""
+    records, unique = [], {}
+    for it in json.loads(Path(path).read_text()):
+        k = key(it["question"], it["answer"])
+        unique.setdefault(k, (it["question"], it["answer"]))
+        records.append({"arm": arm, "item": it["item"], "key": k})
+    return records, unique
+
+
 def make_generate(model_name: str):
     """Returns (generate, measure): generate(batch of (question, answer)) -> raw strings;
     measure(question, answer) -> prompt length in tokens, for length-sorted token-budget batching."""
@@ -210,18 +220,25 @@ def main(argv=None) -> int:
     ap.add_argument("--base", default="e1_outputs")
     ap.add_argument("--out", default=None)
     ap.add_argument("--dry_run", action="store_true")
+    ap.add_argument("--items", default=None,
+                    help="judge a JSON list of {item, question, answer} instead of the M1 arms (A8 fit answers)")
     ap.add_argument("--token_budget", type=int, default=TOKEN_BUDGET,
                     help="padded tokens per batch; 48k lets two judges share an 80 GB A100 (lower it on OOM; resume keeps work)")
     ap.add_argument("--max_batch", type=int, default=MAX_BATCH)
     args = ap.parse_args(argv)
-    records, unique = build_items(Path(args.base), required=not args.dry_run)
+    if args.items:
+        records, unique = build_items_from_file(Path(args.items))
+    else:
+        records, unique = build_items(Path(args.base), required=not args.dry_run)
     arms = sorted({r["arm"] for r in records})
     print(f"rubric sha256 {RUBRIC_SHA[:16]} | {len(arms)} arms, {len(records)} records, {len(unique)} unique texts")
     if args.dry_run:
         q, a = next(iter(unique.values()))
         print("--- example prompt ---\n" + USER.format(question=q, answer=cap(a))[:900] + "\n...")
         return 0
-    out = Path(args.out or f"{args.base}/m1_judge_{args.judge}.json")
+    default = (Path(args.items).parent / f"m1_judge_{args.judge}_fit.json" if args.items
+               else Path(f"{args.base}/m1_judge_{args.judge}.json"))
+    out = Path(args.out) if args.out else default
     gen, measure = make_generate(JUDGES[args.judge])
     st = run(out, JUDGES[args.judge], records, unique, gen, measure, args.token_budget, args.max_batch)
     print(f"wrote {out}  missing (unparseable) rate {st['missing_rate']:.4f}")
