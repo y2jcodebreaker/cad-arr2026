@@ -73,6 +73,10 @@ ARMS = [
     ("prompt_explicit_cad_k40", "A4", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--k", "40",
                                             "--proj_alphas", "1.0", *NO_CAD_SWEEPS,
                                             "--system_prompt", "explicit"]),
+    # M1 (PREREG_M1): unsteered answers to the frozen items' NEUTRAL questions, the reference that
+    # the lexical gap L and the Q1 existence test need. Output: baseline_seed42_neutral_responses.json
+    ("neutral_seed42", "M1", CAD, [*E1, "--out_dir", "e1_outputs/cad_heldout", "--seed", "42",
+                                   "--baseline_only", "--eval_side", "neutral"]),
 ]
 
 JUDGE_GLOBS = ["e1_outputs/*/*_responses.json", "e1_outputs/leace/base_seed*.json",
