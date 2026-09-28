@@ -10,10 +10,9 @@ output, and this holds on held-out questions, under a pre-registered design, wit
 from two model families.
 
 Once quality is measured, the picture is usable. Prompting alone leaves most of the bias
-in place. Several steering operators remove a large share of it with intact text, and
-they are closer to one another than our exploratory sweep suggested. Adding an explicit
-instruction to a multi-rank projection removes nearly all of it without degeneration,
-which makes steering and prompting complements rather than competitors on this task.
+in place, several steering operators remove much of it with intact text, and a prompt
+added to a multi-rank projection removes nearly all of it: on this task prompting and
+steering are complements.
 
 The recommendations are cheap. Report a quality measure beside any target metric that
 scores the absence of a vocabulary. Compute intervals over the questions a benchmark is
