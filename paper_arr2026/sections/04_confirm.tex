@@ -25,7 +25,7 @@ Section~\ref{sec:frontier}.
 
 \begin{table}[t]
 \centering\footnotesize
-\setlength{\tabcolsep}{3.2pt}
+\setlength{\tabcolsep}{2.4pt}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 & \multicolumn{1}{c}{$d$ \scriptsize[95\% CI]} & $\Delta$Med & \multicolumn{2}{c}{$\Delta$Quality} \\
@@ -33,18 +33,18 @@ Section~\ref{sec:frontier}.
 & & \% & Llama & Qwen \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Prompting only}} \\
-Minimal prompt & $-0.04$ \scriptsize$[-.14,.06]$ & $-8$ & $-0.03$ & $-0.03$ \\
-Explicit prompt & $0.06$ \scriptsize$[-.02,.15]$ & $13$ & $+0.01$ & $+0.07$ \\
+Minimal & $-0.04$ \scriptsize$[-.14,.06]$ & $-8$ & $-0.03$ & $-0.03$ \\
+Explicit & $0.06$ \scriptsize$[-.02,.15]$ & $13$ & $+0.01$ & $+0.07$ \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Steering, intact output}} \\
-CAD projection & $0.34$ \scriptsize$[.21,.48]$ & $66$ & $\mathbf{-0.59}$ & $-0.23$ \\
-CAD mean-diff.\ $\alpha{=}7$ & $0.43$ \scriptsize$[.32,.56]$ & $91$ & $-0.72$ & $-0.24$ \\
+Projection & $0.34$ \scriptsize$[.21,.48]$ & $66$ & $\mathbf{-0.59}$ & $-0.23$ \\
+Mean-diff.\ $\alpha{=}7$ & $0.43$ \scriptsize$[.32,.56]$ & $91$ & $-0.72$ & $-0.24$ \\
 CAA & $0.37$ \scriptsize$[.24,.51]$ & $77$ & $-0.80$ & $-0.30$ \\
 FairSteer & $0.28$ \scriptsize$[.15,.42]$ & $59$ & $-1.31$ & $-0.61$ \\
 LEACE, rank 40 & $0.17$ \scriptsize$[.05,.29]$ & $37$ & $-0.43$ & $-0.23$ \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Prompt and steering combined}} \\
-Explicit + projection & $\mathbf{0.51}$ \scriptsize$[.37,.66]$ & $\mathbf{97}$ & $-0.70$ & $\mathbf{-0.20}$ \\
+Prompt + proj. & $\mathbf{0.51}$ \scriptsize$[.37,.66]$ & $\mathbf{97}$ & $-0.70$ & $\mathbf{-0.20}$ \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Degenerate output}} \\
 SADI $s{=}10$ & $0.30$ \scriptsize$[.10,.53]$ & $49$ & $-3.93$ & $-2.38$ \\

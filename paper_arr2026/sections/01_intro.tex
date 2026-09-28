@@ -48,15 +48,11 @@ which withholds medical information from users who asked for it.
 These methods sit at the top of a leaderboard. None of them has reduced
 medicalization bias.
 
-This is the problem we address. The metric counts an absence, and an
-intervention can produce that absence either by removing the bias or by
-destroying the answer. Nothing in the standard evaluation separates the two,
-and the degenerate outputs are not obviously degenerate: they are fluent in
-shape, correctly formatted, and longer than the baseline responses they
-replace. A practitioner comparing published numbers would select one of these
-methods, deploy it, and ship a model that answers disability-related queries
-with corrupted or repeated text. The users who carry that cost are the ones
-the intervention was meant to protect.
+The metric counts an absence, and an intervention can produce that absence either by
+removing the bias or by destroying the answer. The degenerate outputs are not obviously
+degenerate: they are fluent in shape and longer than the responses they replace. A
+practitioner comparing published numbers would deploy one of these methods, and the users
+who carry that cost are the ones the intervention was meant to protect.
 
 Because this comparison was exploratory, we then pre-registered its central predictions
 and tested them on one frozen set of held-out questions, with two judges from different

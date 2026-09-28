@@ -45,13 +45,9 @@ an overcomplete monosemantic basis. Section~\ref{sec:geometry} concerns one use 
 decomposition, reading the dimensionality of a behaviour off its spectrum; the statistic
 is sensitive to how the contrastive set was assembled, and reporting the number of
 independent base prompts alongside the number of pairs is cheap enough to apply anywhere
-it is used.
-
-\paragraph{Subspace methods for fairness.} Earlier subspace work debiases static word
-embeddings \citep{bolukbasi2016man, ravfogel2020null} or learns closed-form erasure
-projections from training data \citep{belrose2023leace}. We apply the same family of
-operator to activation differences at inference time and use rank-$k$ LEACE in
-Section~\ref{sec:rank} as a second operator with the same rank axis.
+it is used. Earlier subspace work debiases static word embeddings
+\citep{bolukbasi2016man, ravfogel2020null} or erases concepts in closed form
+\citep{belrose2023leace}.
 
 \paragraph{Degenerate text and its measurement.} Repetition and collapse under
 open-ended generation are well documented \citep{welleck-etal-2019-neural}. The
