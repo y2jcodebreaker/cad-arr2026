@@ -13,36 +13,47 @@
 \citep{turner2023activation} and CAA \citep{rimsky2024steering} compute mean-difference
 vectors from contrastive pairs and add them at inference. FairSteer
 \citep{li2025fairsteer} adds a classifier gate, and Shifting Perspectives
-\citep{siddique2025shifting} trains per-axis PCA vectors from BBQ. Methods that go
-beyond a single direction commit to a structure without checking it: SADI
+\citep{siddique2025shifting} trains per-axis PCA vectors from BBQ. SADI
 \citep{wang2025sadi} and Angular Steering \citep{vu2025angular} both reach high
 target-metric scores at settings that damage the text, and RePS \citep{wu2025reps}
-requires training-time gradients. Our comparison differs in what it holds fixed. We
-sweep each method across its published range and score response quality at every point,
-which is what separates a method that removed the bias from one that removed the answer.
+requires training-time gradients. Other recent work steers with more than one direction:
+in a random high-dimensional lift of the activations \citep{pham2026hidra}, in a small
+supervised subspace of sparse-autoencoder features \citep{he2025saessv}, or through a
+sparse set of learned mediators \citep{doan-etal-2026-causal}. None of these sets the
+rank from a spectrum, and Section~\ref{sec:geometry} is not addressed to them.
+
+\paragraph{How steering is evaluated.} Our results sit beside two recent evaluations of
+steering against other ways of conditioning a model. AxBench
+\citep{wu2025axbench} finds that prompting outperforms every representation-steering
+method at injecting a concept, and \citet{macocco2026tradeoff} find that steering buys
+effectiveness at a steep cost to fluency and that prompting is weaker at removing a
+concept than at injecting one. Our prompting result agrees with the second finding on a
+removal task. What we add is specific to debiasing: a target metric that scores the
+absence of a vocabulary is satisfied by degenerate output, published fairness methods
+reach their best scores that way, and the reversal survives a pre-registered test on
+held-out questions. Dynamic Activation Composition \citep{scalena-etal-2024-multi} sets the
+steering strength at each step from the divergence between steered and unsteered
+next-token distributions to protect fluency, which is a direct response to the failure
+we measure; we did not evaluate it here.
 
 \paragraph{Reading structure off contrastive activations.} Closest to our decomposition
 is Representation Engineering's Linear Artificial Tomography \citep{zou2023representation},
 which takes principal components of representation \textit{differences} over contrastive
 pairs. Distributed Alignment Search \citep{geiger2024das} learns a rotated basis aligning
 causal variables with subspaces, and sparse autoencoders \citep{cunningham2024sae} learn
-an overcomplete monosemantic basis. Several recent bias-steering methods go further and
-set the rank or the target subspace of an intervention from statistics of that
-decomposition.% TODO: cite HiDRA, SAE-SSV, CAS-BiPO here once BibTeX is verified.
-Section~\ref{sec:geometry} is addressed to that step specifically. We do not claim these
-methods are wrong; we show that the statistic they read is sensitive to how the
-contrastive set was assembled, which means it cannot by itself distinguish one bias from
-another. The practical recommendation there, reporting the number of independent base
-prompts alongside the number of pairs, is cheap enough to apply to any of them.
+an overcomplete monosemantic basis. Section~\ref{sec:geometry} concerns one use of such a
+decomposition, reading the dimensionality of a behaviour off its spectrum; the statistic
+is sensitive to how the contrastive set was assembled, and reporting the number of
+independent base prompts alongside the number of pairs is cheap enough to apply anywhere
+it is used.
 
 \paragraph{Subspace methods for fairness.} Earlier subspace work debiases static word
 embeddings \citep{bolukbasi2016man, ravfogel2020null} or learns closed-form erasure
 projections from training data \citep{belrose2023leace}. We apply the same family of
-operator to activation differences at inference time, and Section~\ref{sec:rank} uses
-LEACE directly as the control that isolates rank.
+operator to activation differences at inference time and use rank-$k$ LEACE in
+Section~\ref{sec:rank} as a second operator with the same rank axis.
 
 \paragraph{Degenerate text and its measurement.} Repetition and collapse under
 open-ended generation are well documented \citep{welleck-etal-2019-neural}. The
-observation in this paper is not that steering can degrade text, which is expected, but
-that a fairness metric built on vocabulary absence scores that degradation as success,
-and that the methods sitting at the top of the leaderboard are the ones it affects most.
+observation here is not that steering can degrade text, which is expected, but that a
+fairness metric built on vocabulary absence scores that degradation as success.

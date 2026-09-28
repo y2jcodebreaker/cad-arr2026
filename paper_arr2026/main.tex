@@ -37,29 +37,29 @@
 \maketitle
 
 \begin{abstract}
-Activation steering for bias is judged by a target metric that counts how often a model
-produces the vocabulary marking the bias. We show that this metric can be satisfied by
-destroying the response instead of debiasing it, and that the methods reporting the
-strongest results are the ones this affects most. Sweeping five steering methods across
-their published strength ranges on a disability-bias benchmark, 87 configurations and
-21{,}750 generations, we score every response for quality alongside the target metric.
-Three methods reach the metric's value for unbiased text while emitting corrupted or
-repeated text, by three failure modes that no single filter on emptiness, length or
-uniqueness detects. At its published setting one of them scores 201 of 250 responses as
-perfectly unbiased while judged quality falls from $7.9$ to $3.2$ out of ten. Holding
-quality constant reorders the comparison, and a multi-rank projection reaches comparable
-debiasing at roughly half the quality cost (paired difference $+0.35$, $95\%$ CI
-$[0.18, 0.53]$). We further find that the spectral statistic several recent methods use
-to set an intervention's rank reports how the contrastive set was built rather than how
-the bias is represented: holding the number of pairs at 13 and varying only prompt
-diversity moves the top explained-variance ratio from $22\%$ to $76\%$.
+Activation steering for social bias is judged by a target metric that rewards the absence
+of the vocabulary marking the bias. We show that broken text satisfies this metric, and
+that the methods with the strongest reported scores are the ones it flatters most. An
+exploratory sweep of five steering methods on a disability-bias benchmark (21{,}750
+generations) finds three that reach the metric's value for
+unbiased text while emitting corrupted or repeated responses, through failure modes that
+no single filter on emptiness, length or uniqueness detects. A pre-registered test on 50
+held-out questions, scored by judges from two model families, confirms this. The method with
+the largest effect size pushes the model past neutral and loses two points of judged
+quality out of ten, and SADI's published setting leaves a fifth of its responses
+unparseable, under both judges. A system prompt instructing the model not to medicalize
+removes only $13\%$ of the bias, so steering is still needed, and the two combine: the
+prompt together with a multi-rank projection removes $97\%$ of medicalization with no
+degenerate output, more than any single method achieves intact. Finally, the spectral
+statistic used to describe a bias's dimensionality reports how the contrast set was built: holding 13 pairs fixed and varying only prompt diversity moves the top
+explained-variance ratio from $22\%$ to $76\%$.
 \end{abstract}
 
 \input{sections/01_intro}
 \input{sections/02_audit}
 \input{sections/02_method}
 \input{sections/03_frontier}
-\input{sections/04_rank}
+\input{sections/04_confirm}
 \input{sections/05_geometry}
 \input{sections/06_related}
 \input{sections/07_conclusion}
@@ -71,5 +71,6 @@ diversity moves the top explained-variance ratio from $22\%$ to $76\%$.
 
 \appendix
 \input{sections/A_appendix}
+\input{sections/A_e1}
 
 \end{document}

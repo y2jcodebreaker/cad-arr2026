@@ -1,0 +1,127 @@
+% Section 5: the pre-registered frozen-set test (E1 + amendment A4).
+% Every number is from analysis-output/e1/e1_scores.json, written by e1_analysis.py from
+% results/e1/ (evidence commits 370fe66 and ac8a93e). Pre-registration and deviations:
+% claims/PREREG_E1_frozen_eval.md; verdicts: claims/E1_RESULTS.md.
+\section{A pre-registered test on held-out questions}
+\label{sec:confirm}
+
+The sweep in Section~\ref{sec:frontier} was exploratory. Its settings were chosen after
+earlier results were seen, every method was fit on the same pool its 250 evaluation
+prompts came from, each method drew its own evaluation prompts, and intervals were
+computed over responses although AccessEval's pairs are nested: each question appears
+with several disability categories, and the dataset lists every question twice. Before
+generating anything further we wrote down predictions, falsifiers and stopping gates, and
+ran them on one frozen evaluation set (Appendix~\ref{app:e1}).
+
+\paragraph{Design.} The frozen set holds five disability variants of each of 50
+questions, 250 items. Every method is fit only on the 633 distinct pairs of the other 96
+questions; as a leak control, the projection and CAA are also fit on the full pool. Each
+baseline runs at its published setting, the projection at $\alpha{=}1$ with $k{=}40$.
+Quality is scored by two judges from different model families, Llama-3.1-8B-Instruct and
+Qwen2.5-7B-Instruct, with the same rubric; they agree per item at Spearman
+$\rho{=}0.64$. Intervals are bootstrapped over the 50 questions. Three unsteered seeds
+agree to within $0.013$ in mean medicalization, and the degeneracy flags are those of
+Section~\ref{sec:frontier}.
+
+\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{1}{c}{$d$ \scriptsize[95\% CI]} & $\Delta$Med & \multicolumn{2}{c}{$\Delta$Quality} \\
+\cmidrule(l){4-5}
+& & \% & Llama & Qwen \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Prompting only}} \\
+Minimal prompt & $-0.04$ \scriptsize$[-.14,.06]$ & $-8$ & $-0.03$ & $-0.03$ \\
+Explicit prompt & $0.06$ \scriptsize$[-.02,.15]$ & $13$ & $+0.01$ & $+0.07$ \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Steering, intact output}} \\
+CAD projection & $0.34$ \scriptsize$[.21,.48]$ & $66$ & $\mathbf{-0.59}$ & $-0.23$ \\
+CAD mean-diff.\ $\alpha{=}7$ & $0.43$ \scriptsize$[.32,.56]$ & $91$ & $-0.72$ & $-0.24$ \\
+CAA & $0.37$ \scriptsize$[.24,.51]$ & $77$ & $-0.80$ & $-0.30$ \\
+FairSteer & $0.28$ \scriptsize$[.15,.42]$ & $59$ & $-1.31$ & $-0.61$ \\
+LEACE, rank 40 & $0.17$ \scriptsize$[.05,.29]$ & $37$ & $-0.43$ & $-0.23$ \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Prompt and steering combined}} \\
+Explicit + projection & $\mathbf{0.51}$ \scriptsize$[.37,.66]$ & $\mathbf{97}$ & $-0.70$ & $\mathbf{-0.20}$ \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Degenerate output}} \\
+SADI $s{=}10$ & $0.30$ \scriptsize$[.10,.53]$ & $49$ & $-3.93$ & $-2.38$ \\
+Angular $150^\circ$ & $0.74$ \scriptsize$[.58,.95]$ & $143$ & $-2.07$ & $-0.66$ \\
+\bottomrule
+\end{tabular}
+\caption{The frozen-set test: 250 items from 50 held-out questions, one shared
+unsteered reference (medicalization $0.597$; quality $7.85$ Llama, $6.70$ Qwen).
+$\Delta$Med above 100 means the model was pushed past neutral. Bold marks the best value
+among intact arms that remove at least half the medicalization. Every arm is in Appendix~\ref{app:e1}.}
+\label{tab:e1}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figure-02-e1-frozen-set.pdf}
+\caption{Every arm of the frozen-set test under both judges. Horizontal: debiasing; vertical:
+change in judged quality against the unsteered reference. Lines join strengths or ranks of
+one operator. Hollow markers are flagged degenerate from the text alone. Error bars are
+$95\%$ intervals over the 50 questions. The two judges differ in scale but agree on the
+ordering, and the highest-$d$ point in both panels is broken output.}
+\label{fig:e1}
+\end{figure*}
+
+\paragraph{The highest scores still belong to broken output.} Angular Steering has the
+largest effect size of any arm, $d{=}0.74$, by pushing medicalization past neutral to
+$-0.26$, and it loses $2.07$ points of judged quality. SADI at its published setting
+scores exactly zero on $58\%$ of responses, and a fifth of its responses cannot be parsed
+by the judge. Ordered by quality loss, the five published methods fall in the same order
+under both judges, as pre-registered: SADI, Angular, FairSteer, CAA, and the projection.
+Ordered by $d$, Angular comes first and SADI ranks above FairSteer.
+
+\paragraph{What did not replicate.} The sweep suggested that the projection loses less
+quality than CAA at comparable debiasing. On held-out questions the paired difference is
+$+0.22$ $[-0.12, 0.57]$ under the Llama judge and $+0.06$ $[-0.03, 0.15]$ under Qwen, and
+debiasing is $0.34$ against $0.37$. The point estimates favour the projection and the
+intervals include zero, so we treat the two as equally intact at matched debiasing. The
+earlier significant result (Appendix~\ref{app:earlier}) computed intervals over
+responses, treating variants of one question as independent, which is the error
+Section~\ref{sec:geometry} finds in spectral estimates. The leak did not matter: fitting
+on the full pool, evaluation questions included, raises $d$ by $0.004$ for the projection
+and $0.001$ for CAA.
+
+\subsection{Prompting does not remove the bias, and combines with steering}
+\label{sec:prompting}
+
+Prompting outperforms representation steering on AxBench \citep{wu2025axbench}, so we
+added two system prompts, worded before any prompted output existed. The minimal one asks
+the model to mention a disability only where it changes the answer; the explicit one
+tells it not to assume a disabled person needs medical treatment, diagnosis or therapy.
+Neither costs quality, and neither removes much bias: the minimal prompt leaves
+medicalization where it was ($d{=}{-}0.04$) and the explicit one removes $13\%$
+($d{=}0.06$). The projection removes more than the explicit prompt by $0.28$
+$[0.14, 0.44]$. Concept removal is where \citet{macocco2026tradeoff} also find prompting
+weakest.
+
+The two combine. With the explicit prompt in place, the projection reaches $d{=}0.51$
+$[0.37, 0.66]$ and removes $97\%$ of medicalization with no flagged output, $0.08$ to
+$0.26$ more than the projection alone, at a quality cost of $0.70$ (Llama) and $0.20$
+(Qwen). No intact arm reaches a higher $d$ (Figure~\ref{fig:e1}). The directions were fit
+under the default prompt and still act under the new one.
+
+\subsection{What rank does}
+\label{sec:rank}
+
+Removing more directions removes more medicalization and costs more quality
+(Figure~\ref{fig:e1}, dark blue line). The projection goes from $d{=}0.02$ at rank 1 to
+$0.34$ at rank 40 and $0.45$ at rank 80, while the quality change under the Llama judge
+goes from $-0.03$ to $-0.59$ to $-0.92$. Rank-$k$ LEACE \citep{belrose2023leace}, erasing
+the same top-$k$ coordinates with whitening, shows the same trend more weakly: $0.01$,
+$0.17$ $[0.05, 0.29]$ and $0.30$. Its rank-1 and rank-40 intervals overlap by $0.03$, so
+the pre-registered prediction that rank 40 beats rank 1 for both operators fails on
+LEACE. Removing the single direction of a supervised probe gives $d{=}0.08$
+$[-0.01, 0.18]$: one well-chosen direction, removed, does not reproduce the effect of
+forty.
+
+What survives is narrower than a claim about the dimensionality of the bias. A single
+removed direction does little, and beyond that rank behaves like a strength setting with
+the same trade-off every other strength parameter shows. Section~\ref{sec:geometry}
+explains why the rank cannot instead be read off the data.
