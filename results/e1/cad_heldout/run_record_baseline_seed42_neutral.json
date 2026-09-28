@@ -1,0 +1,66 @@
+{
+ "runner": "cad",
+ "status": "ok",
+ "started": "2026-09-28T18:18:00",
+ "host": "721dd136ef09",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "proj_alphas": [
+   0.1,
+   0.3,
+   0.5,
+   1.0,
+   2.0,
+   3.0,
+   5.0,
+   7.0,
+   9.0
+  ],
+  "probe_alphas": [
+   1.0,
+   3.0,
+   5.0,
+   7.0,
+   9.0,
+   11.0,
+   13.0,
+   15.0,
+   17.0
+  ],
+  "meandiff_alphas": [
+   1.0,
+   2.0,
+   3.0,
+   5.0,
+   7.0,
+   8.0,
+   9.0,
+   10.0,
+   15.0,
+   20.0
+  ],
+  "k": null,
+  "proj_basis": "svd",
+  "baseline_only": true,
+  "system_prompt": "default",
+  "eval_side": "neutral",
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/cad_heldout",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "9587d8ed9777035874844a50bd0ebd0d7896322e",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "output": "e1_outputs/cad_heldout/rtsd_fullres_results_baseline_seed42_neutral.json",
+  "baseline_mean": -0.7493009615733007
+ },
+ "finished": "2026-09-28T18:22:08",
+ "git_changed_during_run": false
+}

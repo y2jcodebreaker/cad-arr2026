@@ -1,0 +1,16 @@
+nohup: ignoring input
+rubric sha256 a5ec3d922f23739f | 34 arms, 8500 records, 8498 unique texts
+Downloading shards:   0%|          | 0/4 [00:00<?, ?it/s]Downloading shards:  25%|██▌       | 1/4 [00:07<00:22,  7.61s/it]Downloading shards:  50%|█████     | 2/4 [00:14<00:14,  7.30s/it]Downloading shards:  75%|███████▌  | 3/4 [00:21<00:07,  7.02s/it]Downloading shards: 100%|██████████| 4/4 [00:28<00:00,  6.99s/it]Downloading shards: 100%|██████████| 4/4 [00:28<00:00,  7.08s/it]
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:04,  1.43s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.15s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:03<00:01,  1.16s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.06s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.11s/it]
+8498 unique texts, 8498 to judge with Qwen/Qwen2.5-7B-Instruct
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+  [ckpt] 1009/8498  5.5 texts/s  ETA 23 min
+  [ckpt] 2059/8498  6.0 texts/s  ETA 18 min
+  [ckpt] 3064/8498  6.3 texts/s  ETA 14 min
+  [ckpt] 4084/8498  6.4 texts/s  ETA 11 min
+  [ckpt] 5119/8498  6.6 texts/s  ETA 9 min
+  [ckpt] 6167/8498  6.7 texts/s  ETA 6 min
+  [ckpt] 7236/8498  6.7 texts/s  ETA 3 min
+  [ckpt] 8258/8498  6.8 texts/s  ETA 1 min
+  [ckpt] 8498/8498  6.8 texts/s  ETA 0 min
+wrote e1_outputs/m1_judge_qwen.json  missing (unparseable) rate 0.0316
