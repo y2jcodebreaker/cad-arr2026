@@ -128,7 +128,16 @@ def main(argv=None) -> int:
     base = Path(args.base)
 
     items = fe.eval_pairs(fe.load())
-    arms = m1_arms.load(base)
+    arms = m1_arms.load(base, required=False)
+    missing = sorted(set(m1_arms.ARM_FILES) - set(arms))
+    if set(missing) - set(m1_arms.A7_ARMS):
+        raise SystemExit(f"required M1 arms missing: {sorted(set(missing) - set(m1_arms.A7_ARMS))}")
+    judged = {r["arm"] for r in json.loads((base / "m1_judge_llama.json").read_text())["records"]}
+    for a in list(arms):
+        if a not in judged:      # A7 texts present but not yet judged: leave them out, say so
+            missing.append(a)
+            arms.pop(a)
+    print(f"arms scored: {len(arms)}; absent (M1-A1 arms not yet run or judged): {missing or 'none'}")
     J = {j: load_judge(base / f"m1_judge_{j}.json") for j in JUDGES}
     R = {}
     # ---- gates
@@ -201,7 +210,8 @@ def main(argv=None) -> int:
 
     # ---- Q4: does the lexical score track framing (J) or naming (echo)?
     med = {a: np.array([medicalization_score(t) for t in arms[a]["texts"]]) for a in arms}
-    steered = [a for a in dis_arms if not a.startswith("unsteered")]
+    # the pre-registered Q4 excludes the A7 arms (M1-A1); a with-A7 version is added when they exist
+    steered = [a for a in dis_arms if not a.startswith("unsteered") and a not in m1_arms.A7_ARMS]
 
     def rhos(idx):
         d = [cohens_d(med[ref][idx], med[a][idx]) for a in steered]
@@ -220,6 +230,7 @@ def main(argv=None) -> int:
         q4[j] = {"rho_lexical_vs_J_reduction": pt[j], "echo_minus_J": pt["echo"] - pt[j], "ci": ci(diff),
                  "lexical_measured_naming": bool(ci(diff)[0] is not None and ci(diff)[0] > 0)}
     R["Q4"] = q4
+    R["absent_arms"] = missing
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
