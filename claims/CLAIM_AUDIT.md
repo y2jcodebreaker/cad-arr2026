@@ -62,7 +62,7 @@ Status: **in progress**. Sections below are complete unless marked otherwise.
 | 05.016 | "13 pairs by drawing whole base queries": 21.5% → 72.2% | ✅ values; **FLAG** the cluster draw averages **16.8** pairs at the 13 target | same, `curves.L21_cluster` |
 | 05.017 | null 26.2% vs real 21.5% at n=13 | ✅ | same |
 | 05.017 | "separates from it only above n ≈ 250" | **FLAG.** 95% intervals overlap at every n ≤ 500 and separate only at n = 1,000. The null is above the real data at every n | same, `curves.L21_pair/L21_null` |
-| 05.018 | pair bootstrap k 40 [40, 41] | **FLAG: not in a committed file** (printed in the 2026-09-27 rerun log only) | re-run and commit |
+| 05.018 | pair bootstrap k 40 [40, 41] | ✅ **resolved 2026-09-28**: re-run gives 40.7 [40, 41] (text should say 40.7); L14 35.9 [35, 37], L0 11.0 [11, 11] | `controls_results/pair_bootstrap.json` (script 9537a91) |
 | 05.018 | question bootstrap 30.1 [27, 33] | ✅ | `controls_results/question_bootstrap_L21.json` |
 | 05.020 | k_auto 33/36 held-out vs 42/49 full | ✅ | E1 run logs, `svd_fullres.pt` (`fits/`) |
 | Tab 3 + 05.010 | "profile the paper reports for DiscrimEval Target A" 67.9% / k=2 | **FLAG.** Only source is a constant in `plot_controls_figure.py`; it refers to our own earlier, unpublished paper (anonymity problem in a double-blind submission) | — |
