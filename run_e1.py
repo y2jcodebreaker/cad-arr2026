@@ -6,6 +6,7 @@
     python run_e1.py gate g1|g2|g3 # re-evaluate one gate from outputs already on disk
     python run_e1.py status        # which arms have finished
     python run_e1.py arm NAME ...  # run named arms (deviations, re-runs), then judge
+                                   # (add --no_judge to skip the accessibility judges)
     python run_e1.py judge         # judge everything on disk (resumes), then G3
 
 Criteria are copied from claims/PREREG_E1_frozen_eval.md and must not be edited after data
@@ -188,14 +189,16 @@ def main() -> int:
         # one named arm, for deviations and re-runs: clean tree, dry run, run, then judge
         require_clean_tree()
         run([sys.executable, "build_frozen_eval.py", "--check"])
-        todo = [a for a in ARMS if a[0] in sys.argv[2:]]
-        if not todo or len(todo) != len(sys.argv[2:]):
-            sys.exit(f"unknown arm in {sys.argv[2:]}; see `python run_e1.py plan`")
+        names = [a for a in sys.argv[2:] if a != "--no_judge"]
+        todo = [a for a in ARMS if a[0] in names]
+        if not todo or len(todo) != len(names):
+            sys.exit(f"unknown arm in {names}; see `python run_e1.py plan`")
         for name, _, script, args in todo:
             run([sys.executable, script, *args, "--dry_run"])
         for name, _, script, args in todo:
             run([sys.executable, script, *args])
-        judge_both()          # resumes: only the new texts are judged
+        if "--no_judge" not in sys.argv:   # M1 scores its own texts with judge_medicalization.py
+            judge_both()      # resumes: only the new texts are judged
         return 0
     if cmd == "judge":
         judge_both()
