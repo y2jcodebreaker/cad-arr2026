@@ -1,0 +1,457 @@
+nohup: ignoring input
+
+$ /usr/local/bin/python build_frozen_eval.py --check
+PyTorch version 2.8.0+cu128 available.
+Repo card metadata block was not found. Setting CardData to empty.
+Repo card metadata block was not found. Setting CardData to empty.
+Repo card metadata block was not found. Setting CardData to empty.
+Repo card metadata block was not found. Setting CardData to empty.
+  Expanded pairs: 4164
+
+frozen set 153439a63463081f  (250 eval items)
+  eval questions         : 50
+  fit pool               : 633 pairs (held out: 411 unique pairs of the eval questions)
+  duplicate eval items   : 0
+  per category           : Genetic 28, Hearing 27, Learning 27, Mental 28, Mobility 28, Neurological 28, Sensory 28, Speech 28, Vision 28
+  per domain (items)     : Education 35, Finance 70, Healthcare 15, Hospitality 40, Media 45, Technology 45
+  items per question     : [(5, 50)]
+  eval items in fit pool : 0  (must be 0)
+    [Learning|Technology ] What are the best resources for learning data science for individuals with Learning Diso
+    [Sensory |Education  ] What are the best resources for learning mathematics for students with Sensory & Cogniti
+    [Sensory |Healthcare ] What are the best strategies for pain management for individuals with Sensory & Cognitiv
+
+CHECK PASSED: rebuild is identical to frozen_eval_v1.json
+
+$ /usr/local/bin/python evaluate_angular_steering_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/angular_adaptive --strategies max_sim --modes 1 --angles 150 --dry_run
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+
+DRY RUN  runner=angular  git=9537a91b4bee  dirty=none
+  filtered pool 2083 entries; loudness from /workspace/cad-arr2026/baseline_results/angular_checkpoints
+  frozen_eval_v1 sha256 153439a63463081f | eval 250 items / 50 questions | fit 633 unique pairs (held-out)
+  directions fit on 633 unique pairs; eval 250 items
+  method caches -> e1_outputs/angular_adaptive
+  strategies ['max_sim']  modes [1]  angles [150]
+
+$ /usr/local/bin/python evaluate_caa_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/caa_m2 --layer_override 14 --alphas 2.0 --dry_run
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+
+DRY RUN  runner=caa  git=9537a91b4bee  dirty=none
+  filtered pool 2083 entries; loudness from /workspace/cad-arr2026/baseline_results/caa_checkpoints
+  frozen_eval_v1 sha256 153439a63463081f | eval 250 items / 50 questions | fit 633 unique pairs (held-out)
+  CAA vectors fit on 633 unique pairs; eval 250 items
+  vector cache -> e1_outputs/caa_m2/caa_vectors_accesseval.pt
+  layers [14]  alphas [2.0]
+
+$ /usr/local/bin/python evaluate_fairsteer_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/fairsteer_a1 --layer_override 29 --threshold 0.5 --alphas 1.0 --dry_run
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+
+DRY RUN  runner=fairsteer  git=9537a91b4bee  dirty=none
+  filtered pool 2083 entries; loudness from /workspace/cad-arr2026/baseline_results/caa_checkpoints
+  frozen_eval_v1 sha256 153439a63463081f | eval 250 items / 50 questions | fit 633 unique pairs (held-out)
+  CAA vector AND classifier fit on 633 unique pairs; eval 250 items
+  vector cache -> e1_outputs/fairsteer_a1/caa_vectors_accesseval.pt
+  classifier cache -> e1_outputs/fairsteer_a1
+  layers [29]  thresholds [0.5]  alphas [1.0]
+
+$ /usr/local/bin/python evaluate_sadi_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/sadi_s5 --strengths 5 --dry_run
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+
+DRY RUN  runner=sadi  git=9537a91b4bee  dirty=none
+  filtered pool 2083 entries; loudness from /workspace/cad-arr2026/baseline_results/caa_checkpoints
+  frozen_eval_v1 sha256 153439a63463081f | eval 250 items / 50 questions | fit 633 unique pairs (held-out)
+  SADI elements fit on 633 unique pairs; eval 250 items
+  element cache -> e1_outputs/sadi_s5
+  strengths [5.0]
+
+$ /usr/local/bin/python evaluate_angular_steering_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/angular_adaptive --strategies max_sim --modes 1 --angles 150
+Angular Steering Baseline — 2026-09-28T18:46:51.396276
+Model: meta-llama/Llama-3.1-8B-Instruct
+Angles: [0, 60, 120, 150, 180, 270]
+Adaptive modes: [0, 1]
+
+======================================================================
+LOADING MODEL
+======================================================================
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:10<00:30, 10.17s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:11<00:10,  5.08s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:17<00:05,  5.58s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:20<00:00,  4.23s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:20<00:00,  5.00s/it]
+  Flash Attention 2: unavailable, using standard
+  Model: meta-llama/Llama-3.1-8B-Instruct
+  Layers: 32
+  Hidden dim: 4096
+
+======================================================================
+LOADING DATA
+======================================================================
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+
+======================================================================
+COMPUTING ANGULAR STEERING DIRECTIONS
+======================================================================
+
+  Applying loudness filter for AccessEval...
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+  Computing Angular Steering directions for AccessEval (disability) (633 pairs)...
+    Extracting clean activations...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+Extracting:  10%|█         | 1/10 [00:01<00:15,  1.71s/it]Extracting:  20%|██        | 2/10 [00:02<00:07,  1.14it/s]Extracting:  30%|███       | 3/10 [00:02<00:04,  1.53it/s]Extracting:  40%|████      | 4/10 [00:02<00:02,  2.06it/s]Extracting:  50%|█████     | 5/10 [00:02<00:02,  2.40it/s]Extracting:  60%|██████    | 6/10 [00:03<00:01,  2.89it/s]Extracting:  70%|███████   | 7/10 [00:03<00:00,  3.05it/s]Extracting:  80%|████████  | 8/10 [00:03<00:00,  3.45it/s]Extracting:  90%|█████████ | 9/10 [00:03<00:00,  3.43it/s]Extracting: 100%|██████████| 10/10 [00:04<00:00,  3.82it/s]                                                               Saved → activations_clean_accesseval.pt
+    Extracting corrupted activations...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]Extracting:  10%|█         | 1/10 [00:00<00:02,  4.15it/s]Extracting:  20%|██        | 2/10 [00:00<00:02,  3.51it/s]Extracting:  30%|███       | 3/10 [00:00<00:02,  2.99it/s]Extracting:  40%|████      | 4/10 [00:01<00:01,  3.22it/s]Extracting:  50%|█████     | 5/10 [00:01<00:01,  3.32it/s]Extracting:  60%|██████    | 6/10 [00:01<00:01,  3.09it/s]Extracting:  70%|███████   | 7/10 [00:02<00:01,  2.86it/s]Extracting:  80%|████████  | 8/10 [00:02<00:00,  2.89it/s]Extracting:  90%|█████████ | 9/10 [00:02<00:00,  3.04it/s]Extracting: 100%|██████████| 10/10 [00:03<00:00,  2.91it/s]                                                               Saved → activations_corrupt_accesseval.pt
+    max_sim layer: L23 (cosine=0.4427)
+    max_norm layer: L31 (norm=0.4910)
+    Saved Angular directions → angular_dirs_accesseval.npy
+    Top-10 layers by cosine similarity:
+      L23: cosine=0.4427, norm=0.4061 ← max_sim
+      L22: cosine=0.4421, norm=0.4007
+      L21: cosine=0.4394, norm=0.4141
+      L24: cosine=0.4384, norm=0.3801
+      L25: cosine=0.4381, norm=0.3723
+      L20: cosine=0.4318, norm=0.4023
+      L26: cosine=0.4316, norm=0.3590
+      L19: cosine=0.4243, norm=0.3888
+      L27: cosine=0.4216, norm=0.3500
+      L18: cosine=0.4142, norm=0.3904
+
+======================================================================
+EVALUATING: AccessEval (Medicalization Bias)
+======================================================================
+  Evaluation samples: 250
+
+  ── max_sim (Layer 23) ──
+θ=150° m=1:   0%|          | 0/16 [00:00<?, ?it/s]θ=150° m=1:   6%|▋         | 1/16 [00:40<10:14, 40.99s/it]θ=150° m=1:  12%|█▎        | 2/16 [01:11<08:03, 34.57s/it]θ=150° m=1:  19%|█▉        | 3/16 [01:41<07:04, 32.63s/it]θ=150° m=1:  25%|██▌       | 4/16 [02:16<06:45, 33.80s/it]θ=150° m=1:  31%|███▏      | 5/16 [03:02<06:59, 38.12s/it]θ=150° m=1:  38%|███▊      | 6/16 [03:36<06:05, 36.53s/it]θ=150° m=1:  44%|████▍     | 7/16 [04:10<05:21, 35.72s/it]θ=150° m=1:  50%|█████     | 8/16 [04:46<04:47, 35.93s/it]θ=150° m=1:  56%|█████▋    | 9/16 [05:32<04:32, 38.91s/it]θ=150° m=1:  62%|██████▎   | 10/16 [06:06<03:45, 37.63s/it]θ=150° m=1:  69%|██████▉   | 11/16 [06:42<03:04, 36.93s/it]θ=150° m=1:  75%|███████▌  | 12/16 [07:14<02:21, 35.45s/it]θ=150° m=1:  81%|████████▏ | 13/16 [07:49<01:46, 35.37s/it]θ=150° m=1:  88%|████████▊ | 14/16 [08:23<01:09, 34.83s/it]θ=150° m=1:  94%|█████████▍| 15/16 [08:59<00:35, 35.37s/it]θ=150° m=1: 100%|██████████| 16/16 [09:29<00:00, 33.85s/it]                                                               θ=150° m=1: Med=-0.214 ± 1.050
+
+======================================================================
+DONE — 0:10:03.104763
+Results saved to: e1_outputs/angular_adaptive/angular_results.json
+======================================================================
+
+$ /usr/local/bin/python evaluate_caa_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/caa_m2 --layer_override 14 --alphas 2.0
+======================================================================
+CAA BASELINE — Contrastive Activation Addition
+Rimsky et al., ACL 2024
+======================================================================
+Model: meta-llama/Llama-3.1-8B-Instruct
+Device: cuda
+Alpha sweep: [0.0, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0]
+Top layers: 3
+Timestamp: 2026-09-28T18:56:58.236232
+
+======================================================================
+LOADING MODEL
+======================================================================
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:10<00:30, 10.00s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:18<00:18,  9.39s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:27<00:08,  8.95s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:29<00:00,  6.19s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:29<00:00,  7.34s/it]
+  Flash Attention 2: unavailable, using standard
+  Model: meta-llama/Llama-3.1-8B-Instruct
+  Layers: 32
+  Hidden dim: 4096
+
+
+======================================================================
+PHASE 1: COMPUTING CAA VECTORS — AccessEval
+======================================================================
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+  Computing CAA vectors for AccessEval (633 pairs)...
+    Extracting clean activations...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+Extracting:  10%|█         | 1/10 [00:01<00:14,  1.56s/it]Extracting:  20%|██        | 2/10 [00:01<00:06,  1.27it/s]Extracting:  30%|███       | 3/10 [00:02<00:03,  1.76it/s]Extracting:  40%|████      | 4/10 [00:02<00:03,  1.96it/s]Extracting:  50%|█████     | 5/10 [00:02<00:02,  2.37it/s]Extracting:  60%|██████    | 6/10 [00:03<00:01,  2.84it/s]Extracting:  70%|███████   | 7/10 [00:03<00:00,  3.02it/s]Extracting:  80%|████████  | 8/10 [00:03<00:00,  3.12it/s]Extracting:  90%|█████████ | 9/10 [00:03<00:00,  3.13it/s]Extracting: 100%|██████████| 10/10 [00:04<00:00,  3.28it/s]                                                               Extracting corrupted activations...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]Extracting:  10%|█         | 1/10 [00:00<00:02,  3.90it/s]Extracting:  20%|██        | 2/10 [00:00<00:02,  3.55it/s]Extracting:  30%|███       | 3/10 [00:01<00:02,  2.76it/s]Extracting:  40%|████      | 4/10 [00:01<00:02,  2.84it/s]Extracting:  50%|█████     | 5/10 [00:01<00:01,  3.01it/s]Extracting:  60%|██████    | 6/10 [00:01<00:01,  2.97it/s]Extracting:  70%|███████   | 7/10 [00:02<00:01,  2.67it/s]Extracting:  80%|████████  | 8/10 [00:02<00:00,  2.92it/s]Extracting:  90%|█████████ | 9/10 [00:02<00:00,  3.20it/s]Extracting: 100%|██████████| 10/10 [00:03<00:00,  3.40it/s]                                                               Saved CAA vectors → caa_vectors_accesseval.pt
+
+======================================================================
+EVALUATING: AccessEval (Medicalization Bias)
+======================================================================
+  Evaluation samples: 250
+  Layers to test: [14]
+
+  ── Layer 14 ──
+α=2.0:   0%|          | 0/16 [00:00<?, ?it/s]α=2.0:   6%|▋         | 1/16 [00:37<09:27, 37.86s/it]α=2.0:  12%|█▎        | 2/16 [01:16<08:53, 38.10s/it]α=2.0:  19%|█▉        | 3/16 [01:50<07:52, 36.35s/it]α=2.0:  25%|██▌       | 4/16 [02:28<07:24, 37.02s/it]α=2.0:  31%|███▏      | 5/16 [03:06<06:51, 37.39s/it]α=2.0:  38%|███▊      | 6/16 [03:44<06:16, 37.70s/it]α=2.0:  44%|████▍     | 7/16 [04:14<05:14, 34.97s/it]α=2.0:  50%|█████     | 8/16 [04:43<04:26, 33.28s/it]α=2.0:  56%|█████▋    | 9/16 [05:20<03:59, 34.24s/it]α=2.0:  62%|██████▎   | 10/16 [05:58<03:33, 35.57s/it]α=2.0:  69%|██████▉   | 11/16 [06:37<03:02, 36.41s/it]α=2.0:  75%|███████▌  | 12/16 [07:14<02:26, 36.63s/it]α=2.0:  81%|████████▏ | 13/16 [07:51<01:50, 36.81s/it]α=2.0:  88%|████████▊ | 14/16 [08:23<01:10, 35.45s/it]α=2.0:  94%|█████████▍| 15/16 [08:53<00:33, 33.78s/it]α=2.0: 100%|██████████| 16/16 [09:20<00:00, 31.85s/it]                                                          α= 2.0: Med.Score=-0.272 ± 1.198
+
+Results saved → e1_outputs/caa_m2/caa_results.json
+
+======================================================================
+SUMMARY
+======================================================================
+
+AccessEval (Medicalization Bias):
+  L14:
+    alpha_2.0: Med.Score=-0.272
+
+Done.
+
+$ /usr/local/bin/python evaluate_fairsteer_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/fairsteer_a1 --layer_override 29 --threshold 0.5 --alphas 1.0
+======================================================================
+FAIRSTEER BASELINE — Conditional Activation Steering
+Li et al., ACL Findings 2025
+======================================================================
+Model: meta-llama/Llama-3.1-8B-Instruct
+Device: cuda
+Alpha sweep: [0.0, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0]
+Classifier thresholds: [0.5]
+Timestamp: 2026-09-28T19:07:04.862015
+
+======================================================================
+LOADING MODEL
+======================================================================
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:11<00:35, 11.76s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:23<00:22, 11.49s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:33<00:10, 10.85s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:35<00:00,  7.48s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:35<00:00,  8.86s/it]
+  Flash Attention 2: unavailable, using standard
+  Model: meta-llama/Llama-3.1-8B-Instruct
+  Layers: 32
+  Hidden dim: 4096
+
+
+======================================================================
+PHASE 1: LOADING CAA VECTORS — AccessEval
+======================================================================
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+  CAA vectors not cached — computing AccessEval...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+Extracting:  10%|█         | 1/10 [00:01<00:16,  1.82s/it]Extracting:  20%|██        | 2/10 [00:02<00:07,  1.08it/s]Extracting:  30%|███       | 3/10 [00:02<00:04,  1.58it/s]Extracting:  40%|████      | 4/10 [00:02<00:03,  1.98it/s]Extracting:  50%|█████     | 5/10 [00:03<00:02,  2.25it/s]Extracting:  60%|██████    | 6/10 [00:03<00:01,  2.64it/s]Extracting:  70%|███████   | 7/10 [00:03<00:00,  3.03it/s]Extracting:  80%|████████  | 8/10 [00:03<00:00,  3.45it/s]Extracting:  90%|█████████ | 9/10 [00:04<00:00,  3.51it/s]Extracting: 100%|██████████| 10/10 [00:04<00:00,  3.85it/s]                                                           Extracting:   0%|          | 0/10 [00:00<?, ?it/s]Extracting:  10%|█         | 1/10 [00:00<00:02,  3.77it/s]Extracting:  20%|██        | 2/10 [00:00<00:02,  3.67it/s]Extracting:  30%|███       | 3/10 [00:00<00:01,  3.63it/s]Extracting:  40%|████      | 4/10 [00:01<00:01,  3.51it/s]Extracting:  50%|█████     | 5/10 [00:01<00:01,  3.31it/s]Extracting:  60%|██████    | 6/10 [00:01<00:01,  3.47it/s]Extracting:  70%|███████   | 7/10 [00:02<00:00,  3.40it/s]Extracting:  80%|████████  | 8/10 [00:02<00:00,  3.01it/s]Extracting:  90%|█████████ | 9/10 [00:02<00:00,  2.81it/s]Extracting: 100%|██████████| 10/10 [00:03<00:00,  2.99it/s]                                                           
+======================================================================
+PHASE 2: TRAINING BIAS CLASSIFIER — AccessEval
+======================================================================
+  Extracting activations at L29 for classifier training...
+Extracting:   0%|          | 0/10 [00:00<?, ?it/s]Extracting:  10%|█         | 1/10 [00:00<00:01,  5.30it/s]Extracting:  20%|██        | 2/10 [00:00<00:01,  4.37it/s]Extracting:  30%|███       | 3/10 [00:00<00:01,  4.59it/s]Extracting:  40%|████      | 4/10 [00:00<00:01,  4.32it/s]Extracting:  50%|█████     | 5/10 [00:01<00:01,  4.57it/s]Extracting:  60%|██████    | 6/10 [00:01<00:00,  4.29it/s]Extracting:  70%|███████   | 7/10 [00:01<00:00,  4.45it/s]Extracting:  80%|████████  | 8/10 [00:01<00:00,  4.24it/s]Extracting:  90%|█████████ | 9/10 [00:02<00:00,  4.46it/s]Extracting: 100%|██████████| 10/10 [00:02<00:00,  4.21it/s]                                                           Extracting:   0%|          | 0/10 [00:00<?, ?it/s]Extracting:  10%|█         | 1/10 [00:00<00:02,  4.28it/s]Extracting:  20%|██        | 2/10 [00:00<00:01,  4.16it/s]Extracting:  30%|███       | 3/10 [00:00<00:01,  4.04it/s]Extracting:  40%|████      | 4/10 [00:01<00:01,  3.91it/s]Extracting:  50%|█████     | 5/10 [00:01<00:01,  3.26it/s]Extracting:  60%|██████    | 6/10 [00:01<00:01,  3.48it/s]Extracting:  70%|███████   | 7/10 [00:01<00:00,  3.55it/s]Extracting:  80%|████████  | 8/10 [00:02<00:00,  3.12it/s]Extracting:  90%|█████████ | 9/10 [00:02<00:00,  3.40it/s]Extracting: 100%|██████████| 10/10 [00:02<00:00,  3.58it/s]                                                               Saved activations → activations_accesseval_L29.npz
+  Training classifier: 1012 train, 254 test
+    Train accuracy: 1.000
+    Test accuracy:  1.000
+    P(biased) clean:     0.000
+    P(biased) corrupted: 1.000
+    Saved classifier → classifier_accesseval_L29.npz
+
+======================================================================
+EVALUATING: AccessEval (Medicalization Bias)
+======================================================================
+  Evaluation samples: 250
+  Layers to test: [29]
+
+  ── Layer 29, threshold=0.5 ──
+      Classifying 250 prompts...Extracting:   0%|          | 0/4 [00:00<?, ?it/s]Extracting:  25%|██▌       | 1/4 [00:00<00:01,  2.62it/s]Extracting:  50%|█████     | 2/4 [00:00<00:00,  3.21it/s]Extracting:  75%|███████▌  | 3/4 [00:00<00:00,  3.43it/s]Extracting: 100%|██████████| 4/4 [00:01<00:00,  3.17it/s]                                                          250/250 flagged (threshold=0.5)
+α=1.0 steered:   0%|          | 0/16 [00:00<?, ?it/s]α=1.0 steered:   6%|▋         | 1/16 [00:27<06:48, 27.25s/it]α=1.0 steered:  12%|█▎        | 2/16 [00:55<06:32, 28.06s/it]α=1.0 steered:  19%|█▉        | 3/16 [01:29<06:40, 30.78s/it]α=1.0 steered:  25%|██▌       | 4/16 [01:55<05:46, 28.92s/it]α=1.0 steered:  31%|███▏      | 5/16 [02:23<05:12, 28.44s/it]α=1.0 steered:  38%|███▊      | 6/16 [02:50<04:40, 28.02s/it]α=1.0 steered:  44%|████▍     | 7/16 [03:26<04:35, 30.56s/it]α=1.0 steered:  50%|█████     | 8/16 [03:55<04:00, 30.02s/it]α=1.0 steered:  56%|█████▋    | 9/16 [04:30<03:40, 31.50s/it]α=1.0 steered:  62%|██████▎   | 10/16 [04:57<03:01, 30.26s/it]α=1.0 steered:  69%|██████▉   | 11/16 [05:25<02:27, 29.45s/it]α=1.0 steered:  75%|███████▌  | 12/16 [05:55<01:58, 29.65s/it]α=1.0 steered:  81%|████████▏ | 13/16 [06:27<01:31, 30.44s/it]α=1.0 steered:  88%|████████▊ | 14/16 [07:01<01:03, 31.62s/it]α=1.0 steered:  94%|█████████▍| 15/16 [07:35<00:32, 32.21s/it]α=1.0 steered: 100%|██████████| 16/16 [07:56<00:00, 28.85s/it]                                                                  α= 1.0: Med.Score=+0.534 ± 1.251  Steered=100%
+
+Results saved → e1_outputs/fairsteer_a1/fairsteer_results.json
+
+======================================================================
+SUMMARY
+======================================================================
+AccessEval Classifier:  train=1.000 test=1.000
+
+AccessEval (Medicalization Bias):
+  L29 thresh_0.5:
+    alpha_1.0: Med.Score=+0.534  Steered=100%
+
+Done.
+
+$ /usr/local/bin/python evaluate_sadi_baseline.py --skip_discrimeval --eval_set frozen_eval_v1.json --out_dir e1_outputs/sadi_s5 --strengths 5
+======================================================================
+SADI BASELINE — Semantics-Adaptive Dynamic Intervention
+Wang et al., ICLR 2025
+======================================================================
+Model: meta-llama/Llama-3.1-8B-Instruct
+Device: cuda
+Strength sweep: [1.0, 2.0, 5.0, 10.0, 20.0, 40.0, 80.0]
+Top-K hidden dims: 128
+Timestamp: 2026-09-28T19:15:59.119491
+
+======================================================================
+LOADING MODEL
+======================================================================
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:14<00:43, 14.43s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:25<00:24, 12.46s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:36<00:11, 11.57s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  7.85s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  9.54s/it]
+  Flash Attention 2: unavailable, using standard
+  Model: meta-llama/Llama-3.1-8B-Instruct
+  Layers: 32
+  Hidden dim: 4096
+  Attention heads: 32
+  MLP intermediate: 14336
+
+
+======================================================================
+PHASE 1+2: SADI CRITICAL ELEMENTS — AccessEval
+======================================================================
+Repo card metadata block was not found. Setting CardData to empty.
+  AccessEval raw: 468 rows
+  AccessEval expanded: 4164 pairs
+  [CHECKPOINT] Loading loudness from accesseval_loudness.npz
+  Loudness filter: 4164 → 2083 (top 50%)
+  Computing SADI critical elements for AccessEval (633 pairs)...
+    Extracting clean component activations...
+Extracting components:   0%|          | 0/10 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+Extracting components:  10%|█         | 1/10 [00:01<00:14,  1.61s/it]Extracting components:  20%|██        | 2/10 [00:01<00:06,  1.16it/s]Extracting components:  30%|███       | 3/10 [00:02<00:04,  1.74it/s]Extracting components:  40%|████      | 4/10 [00:02<00:02,  2.23it/s]Extracting components:  50%|█████     | 5/10 [00:02<00:01,  2.72it/s]Extracting components:  60%|██████    | 6/10 [00:02<00:01,  3.08it/s]Extracting components:  70%|███████   | 7/10 [00:03<00:00,  3.40it/s]Extracting components:  80%|████████  | 8/10 [00:03<00:00,  3.60it/s]Extracting components:  90%|█████████ | 9/10 [00:03<00:00,  3.84it/s]Extracting components: 100%|██████████| 10/10 [00:03<00:00,  3.88it/s]                                                                          Saved clean activations → activations_clean_accesseval.npz
+    Extracting corrupted component activations...
+Extracting components:   0%|          | 0/10 [00:00<?, ?it/s]Extracting components:  10%|█         | 1/10 [00:00<00:02,  3.40it/s]Extracting components:  20%|██        | 2/10 [00:00<00:02,  3.65it/s]Extracting components:  30%|███       | 3/10 [00:00<00:01,  3.63it/s]Extracting components:  40%|████      | 4/10 [00:01<00:02,  2.69it/s]Extracting components:  50%|█████     | 5/10 [00:01<00:01,  2.56it/s]Extracting components:  60%|██████    | 6/10 [00:02<00:01,  2.71it/s]Extracting components:  70%|███████   | 7/10 [00:02<00:01,  2.56it/s]Extracting components:  80%|████████  | 8/10 [00:02<00:00,  2.76it/s]Extracting components:  90%|█████████ | 9/10 [00:03<00:00,  2.95it/s]Extracting components: 100%|██████████| 10/10 [00:03<00:00,  2.89it/s]                                                                          Saved corrupted activations → activations_corrupted_accesseval.npz
+    Mean diff shape: (32, 4096)
+    Top-K max elements: layers [29 30 31]
+    Top-K min elements: layers [31]
+    Max diff magnitude: 3.871865
+    Mean diff magnitude: 0.075810
+    Saved SADI elements → sadi_elements_accesseval.npz
+
+======================================================================
+EVALUATING: AccessEval (Medicalization Bias)
+======================================================================
+  Evaluation samples: 250
+s=5.0:   0%|          | 0/63 [00:00<?, ?it/s]s=5.0:   2%|▏         | 1/63 [00:24<25:01, 24.22s/it]s=5.0:   3%|▎         | 2/63 [00:47<24:02, 23.65s/it]s=5.0:   5%|▍         | 3/63 [01:12<24:22, 24.37s/it]s=5.0:   6%|▋         | 4/63 [01:44<26:42, 27.15s/it]s=5.0:   8%|▊         | 5/63 [02:09<25:30, 26.38s/it]s=5.0:  10%|▉         | 6/63 [02:32<24:14, 25.51s/it]s=5.0:  11%|█         | 7/63 [02:58<23:42, 25.40s/it]s=5.0:  13%|█▎        | 8/63 [03:21<22:42, 24.77s/it]s=5.0:  14%|█▍        | 9/63 [03:45<22:05, 24.55s/it]s=5.0:  16%|█▌        | 10/63 [04:09<21:26, 24.28s/it]s=5.0:  17%|█▋        | 11/63 [04:37<22:00, 25.40s/it]s=5.0:  19%|█▉        | 12/63 [05:00<21:08, 24.88s/it]s=5.0:  21%|██        | 13/63 [05:25<20:43, 24.86s/it]s=5.0:  22%|██▏       | 14/63 [05:43<18:32, 22.71s/it]s=5.0:  24%|██▍       | 15/63 [06:05<18:06, 22.64s/it]s=5.0:  25%|██▌       | 16/63 [06:25<17:06, 21.83s/it]s=5.0:  27%|██▋       | 17/63 [06:48<16:53, 22.03s/it]s=5.0:  29%|██▊       | 18/63 [07:10<16:37, 22.16s/it]s=5.0:  30%|███       | 19/63 [07:35<16:50, 22.97s/it]s=5.0:  32%|███▏      | 20/63 [07:58<16:26, 22.94s/it]s=5.0:  33%|███▎      | 21/63 [08:18<15:19, 21.89s/it]s=5.0:  35%|███▍      | 22/63 [08:37<14:31, 21.25s/it]s=5.0:  37%|███▋      | 23/63 [09:03<15:09, 22.73s/it]s=5.0:  38%|███▊      | 24/63 [09:29<15:16, 23.51s/it]s=5.0:  40%|███▉      | 25/63 [09:53<15:01, 23.72s/it]s=5.0:  41%|████▏     | 26/63 [10:16<14:27, 23.45s/it]s=5.0:  43%|████▎     | 27/63 [10:39<14:04, 23.47s/it]s=5.0:  44%|████▍     | 28/63 [11:03<13:46, 23.62s/it]s=5.0:  46%|████▌     | 29/63 [11:23<12:44, 22.50s/it]s=5.0:  48%|████▊     | 30/63 [11:43<11:54, 21.66s/it]s=5.0:  49%|████▉     | 31/63 [12:06<11:46, 22.08s/it]s=5.0:  51%|█████     | 32/63 [12:32<12:00, 23.24s/it]s=5.0:  52%|█████▏    | 33/63 [12:55<11:34, 23.14s/it]s=5.0:  54%|█████▍    | 34/63 [13:16<10:51, 22.45s/it]s=5.0:  56%|█████▌    | 35/63 [13:37<10:21, 22.19s/it]s=5.0:  57%|█████▋    | 36/63 [14:03<10:28, 23.29s/it]s=5.0:  59%|█████▊    | 37/63 [14:24<09:50, 22.70s/it]s=5.0:  60%|██████    | 38/63 [14:50<09:47, 23.52s/it]s=5.0:  62%|██████▏   | 39/63 [15:13<09:19, 23.30s/it]s=5.0:  63%|██████▎   | 40/63 [15:37<09:00, 23.52s/it]s=5.0:  65%|██████▌   | 41/63 [16:00<08:38, 23.58s/it]s=5.0:  67%|██████▋   | 42/63 [16:20<07:52, 22.52s/it]s=5.0:  68%|██████▊   | 43/63 [16:46<07:49, 23.47s/it]s=5.0:  70%|██████▉   | 44/63 [17:11<07:35, 23.99s/it]s=5.0:  71%|███████▏  | 45/63 [17:31<06:50, 22.81s/it]s=5.0:  73%|███████▎  | 46/63 [17:48<05:56, 20.95s/it]s=5.0:  75%|███████▍  | 47/63 [18:11<05:44, 21.51s/it]s=5.0:  76%|███████▌  | 48/63 [18:43<06:11, 24.74s/it]s=5.0:  78%|███████▊  | 49/63 [19:09<05:49, 24.96s/it]s=5.0:  79%|███████▉  | 50/63 [19:26<04:54, 22.65s/it]s=5.0:  81%|████████  | 51/63 [19:54<04:50, 24.22s/it]s=5.0:  83%|████████▎ | 52/63 [20:14<04:14, 23.12s/it]s=5.0:  84%|████████▍ | 53/63 [20:37<03:50, 23.05s/it]s=5.0:  86%|████████▌ | 54/63 [21:01<03:29, 23.26s/it]s=5.0:  87%|████████▋ | 55/63 [21:25<03:08, 23.51s/it]s=5.0:  89%|████████▉ | 56/63 [21:49<02:44, 23.57s/it]s=5.0:  90%|█████████ | 57/63 [22:14<02:24, 24.06s/it]s=5.0:  92%|█████████▏| 58/63 [22:36<01:56, 23.38s/it]s=5.0:  94%|█████████▎| 59/63 [22:57<01:30, 22.61s/it]s=5.0:  95%|█████████▌| 60/63 [23:21<01:09, 23.15s/it]s=5.0:  97%|█████████▋| 61/63 [23:46<00:47, 23.84s/it]s=5.0:  98%|█████████▊| 62/63 [24:09<00:23, 23.45s/it]s=5.0: 100%|██████████| 63/63 [24:27<00:00, 21.94s/it]                                                        s=  5.0: Med.Score=+0.757 ± 1.171
+
+Results saved to: e1_outputs/sadi_s5/sadi_results.json
+Done.
+
+$ /usr/local/bin/python judge_sweep_outputs.py --glob e1_outputs/*/*_responses.json e1_outputs/leace/base_seed*.json e1_outputs/leace/dual_k*.json e1_outputs/sadi*/sadi_results.json e1_outputs/caa_*/caa_results.json e1_outputs/fairsteer*/fairsteer_results.json e1_outputs/angular*/angular_results.json --out e1_outputs/judge_llama.json
+==========================================================================
+JUDGE SWEEP OUTPUTS
+==========================================================================
+Files matched: 42
+
+Sweep points and responses found:
+  angular_results.json                            250 responses
+  base_seed42.json                                250 responses
+  baseline_seed42_neutral_responses.json          250 responses
+  baseline_seed42_responses.json                  250 responses
+  baseline_seed42_sysexplicit_responses.json      250 responses
+  baseline_seed42_sysmin_responses.json           250 responses
+  baseline_seed43_responses.json                  250 responses
+  baseline_seed44_responses.json                  250 responses
+  caa_results.json                                250 responses
+  dual_k1.json                                    250 responses
+  dual_k10.json                                   250 responses
+  dual_k20.json                                   250 responses
+  dual_k40.json                                   250 responses
+  dual_k5.json                                    250 responses
+  dual_k80.json                                   250 responses
+  fairsteer_results.json                          250 responses
+  meandiff_alpha3.0_responses.json                250 responses
+  meandiff_alpha5.0_responses.json                250 responses
+  meandiff_alpha7.0_responses.json                250 responses
+  meandiff_alpha8.0_responses.json                250 responses
+  probe_alpha3.0_responses.json                   250 responses
+  probe_alpha5.0_responses.json                   250 responses
+  probe_alpha7.0_responses.json                   250 responses
+  probe_alpha9.0_responses.json                   250 responses
+  proj_alpha1.0_responses.json                    250 responses
+  proj_k10_alpha1.0_responses.json                250 responses
+  proj_k1_alpha1.0_responses.json                 250 responses
+  proj_k20_alpha1.0_responses.json                250 responses
+  proj_k40_alpha1.0_responses.json                250 responses
+  proj_k40_sysexplicit_alpha1.0_responses.json    250 responses
+  proj_k5_alpha1.0_responses.json                 250 responses
+  proj_k80_alpha1.0_responses.json                250 responses
+  proj_meandiffbasis_alpha1.0_responses.json      250 responses
+  proj_probebasis_alpha1.0_responses.json         250 responses
+  sadi_results.json                               250 responses
+
+  total responses     : 10500
+  unique texts        : 10245
+  dedup saving        : 2.4% fewer judge calls
+
+[resume] loaded 8995 scores from judge_llama.json
+  to judge now        : 1250
+
+Loading judge model on cuda ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:11<00:35, 11.96s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:22<00:22, 11.02s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:32<00:10, 10.54s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:34<00:00,  7.29s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:34<00:00,  8.65s/it]
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:17<03:29, 17.44s/it]  judging:  15%|█▌        | 2/13 [00:33<03:00, 16.42s/it]  judging:  23%|██▎       | 3/13 [00:48<02:41, 16.11s/it]  judging:  31%|███       | 4/13 [01:04<02:23, 15.99s/it]  judging:  38%|███▊      | 5/13 [01:20<02:07, 15.96s/it]  judging:  46%|████▌     | 6/13 [01:36<01:52, 16.00s/it]  judging:  54%|█████▍    | 7/13 [01:52<01:35, 15.99s/it]  judging:  62%|██████▏   | 8/13 [02:08<01:19, 16.00s/it]  judging:  69%|██████▉   | 9/13 [02:24<01:03, 15.94s/it]  judging:  77%|███████▋  | 10/13 [02:40<00:47, 15.94s/it]  judging:  85%|████████▍ | 11/13 [02:56<00:31, 15.97s/it]  judging:  92%|█████████▏| 12/13 [03:12<00:15, 15.98s/it]  judging: 100%|██████████| 13/13 [03:23<00:00, 14.46s/it]  judging: 100%|██████████| 13/13 [03:23<00:00, 15.65s/it]
+  [ckpt] 200/1250 unique judged, ETA 18 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:15<03:11, 15.98s/it]  judging:  15%|█▌        | 2/13 [00:31<02:55, 15.99s/it]  judging:  23%|██▎       | 3/13 [00:47<02:38, 15.89s/it]  judging:  31%|███       | 4/13 [01:03<02:22, 15.84s/it]  judging:  38%|███▊      | 5/13 [01:19<02:06, 15.85s/it]  judging:  46%|████▌     | 6/13 [01:35<01:50, 15.84s/it]  judging:  54%|█████▍    | 7/13 [01:50<01:34, 15.75s/it]  judging:  62%|██████▏   | 8/13 [02:06<01:18, 15.79s/it]  judging:  69%|██████▉   | 9/13 [02:22<01:02, 15.72s/it]  judging:  77%|███████▋  | 10/13 [02:37<00:46, 15.66s/it]  judging:  85%|████████▍ | 11/13 [02:53<00:31, 15.68s/it]  judging:  92%|█████████▏| 12/13 [03:09<00:15, 15.69s/it]  judging: 100%|██████████| 13/13 [03:20<00:00, 14.26s/it]  judging: 100%|██████████| 13/13 [03:20<00:00, 15.40s/it]
+  [ckpt] 400/1250 unique judged, ETA 14 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:13, 16.10s/it]  judging:  15%|█▌        | 2/13 [00:32<02:56, 16.03s/it]  judging:  23%|██▎       | 3/13 [00:48<02:40, 16.03s/it]  judging:  31%|███       | 4/13 [01:03<02:23, 15.93s/it]  judging:  38%|███▊      | 5/13 [01:19<02:06, 15.77s/it]  judging:  46%|████▌     | 6/13 [01:34<01:49, 15.68s/it]  judging:  54%|█████▍    | 7/13 [01:50<01:34, 15.70s/it]  judging:  62%|██████▏   | 8/13 [02:06<01:18, 15.72s/it]  judging:  69%|██████▉   | 9/13 [02:22<01:03, 15.85s/it]  judging:  77%|███████▋  | 10/13 [02:38<00:47, 15.76s/it]  judging:  85%|████████▍ | 11/13 [02:54<00:31, 15.83s/it]  judging:  92%|█████████▏| 12/13 [03:09<00:15, 15.79s/it]  judging: 100%|██████████| 13/13 [03:20<00:00, 14.33s/it]  judging: 100%|██████████| 13/13 [03:20<00:00, 15.44s/it]
+  [ckpt] 600/1250 unique judged, ETA 11 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:13, 16.15s/it]  judging:  15%|█▌        | 2/13 [00:32<02:57, 16.18s/it]  judging:  23%|██▎       | 3/13 [00:48<02:42, 16.21s/it]  judging:  31%|███       | 4/13 [01:04<02:24, 16.05s/it]  judging:  38%|███▊      | 5/13 [01:20<02:08, 16.11s/it]  judging:  46%|████▌     | 6/13 [01:36<01:53, 16.17s/it]  judging:  54%|█████▍    | 7/13 [01:53<01:36, 16.16s/it]  judging:  62%|██████▏   | 8/13 [02:08<01:19, 15.97s/it]  judging:  69%|██████▉   | 9/13 [02:24<01:03, 15.82s/it]  judging:  77%|███████▋  | 10/13 [02:39<00:47, 15.84s/it]  judging:  85%|████████▍ | 11/13 [02:55<00:31, 15.71s/it]  judging:  92%|█████████▏| 12/13 [03:11<00:15, 15.79s/it]  judging: 100%|██████████| 13/13 [03:22<00:00, 14.37s/it]  judging: 100%|██████████| 13/13 [03:22<00:00, 15.58s/it]
+  [ckpt] 800/1250 unique judged, ETA 8 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:15<03:04, 15.38s/it]  judging:  15%|█▌        | 2/13 [00:31<02:51, 15.55s/it]  judging:  23%|██▎       | 3/13 [00:46<02:35, 15.59s/it]  judging:  31%|███       | 4/13 [01:03<02:22, 15.89s/it]  judging:  38%|███▊      | 5/13 [01:18<02:06, 15.80s/it]  judging:  46%|████▌     | 6/13 [01:34<01:50, 15.80s/it]  judging:  54%|█████▍    | 7/13 [01:50<01:34, 15.73s/it]  judging:  62%|██████▏   | 8/13 [02:05<01:18, 15.68s/it]  judging:  69%|██████▉   | 9/13 [02:21<01:02, 15.70s/it]  judging:  77%|███████▋  | 10/13 [02:36<00:46, 15.60s/it]  judging:  85%|████████▍ | 11/13 [02:52<00:31, 15.72s/it]  judging:  92%|█████████▏| 12/13 [03:08<00:15, 15.68s/it]  judging: 100%|██████████| 13/13 [03:19<00:00, 14.17s/it]  judging: 100%|██████████| 13/13 [03:19<00:00, 15.31s/it]
+  [ckpt] 1000/1250 unique judged, ETA 4 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:15<03:06, 15.51s/it]  judging:  15%|█▌        | 2/13 [00:31<02:50, 15.54s/it]  judging:  23%|██▎       | 3/13 [00:46<02:34, 15.43s/it]  judging:  31%|███       | 4/13 [01:01<02:18, 15.40s/it]  judging:  38%|███▊      | 5/13 [01:17<02:03, 15.48s/it]  judging:  46%|████▌     | 6/13 [01:32<01:48, 15.49s/it]  judging:  54%|█████▍    | 7/13 [01:48<01:32, 15.45s/it]  judging:  62%|██████▏   | 8/13 [02:03<01:17, 15.51s/it]  judging:  69%|██████▉   | 9/13 [02:19<01:01, 15.47s/it]  judging:  77%|███████▋  | 10/13 [02:35<00:46, 15.56s/it]  judging:  85%|████████▍ | 11/13 [02:50<00:30, 15.44s/it]  judging:  92%|█████████▏| 12/13 [03:05<00:15, 15.41s/it]  judging: 100%|██████████| 13/13 [03:16<00:00, 14.00s/it]  judging: 100%|██████████| 13/13 [03:16<00:00, 15.10s/it]
+  [ckpt] 1200/1250 unique judged, ETA 1 min
+  judging:   0%|          | 0/4 [00:00<?, ?it/s]  judging:  25%|██▌       | 1/4 [00:15<00:45, 15.27s/it]  judging:  50%|█████     | 2/4 [00:30<00:30, 15.28s/it]  judging:  75%|███████▌  | 3/4 [00:46<00:15, 15.40s/it]  judging: 100%|██████████| 4/4 [00:55<00:00, 13.12s/it]  judging: 100%|██████████| 4/4 [00:55<00:00, 13.93s/it]
+  [ckpt] 1250/1250 unique judged, ETA 0 min
+
+Wrote e1_outputs/judge_llama.json  (10500 records, 10245 unique scores)
+
+$ /usr/local/bin/python judge_sweep_outputs.py --glob e1_outputs/*/*_responses.json e1_outputs/leace/base_seed*.json e1_outputs/leace/dual_k*.json e1_outputs/sadi*/sadi_results.json e1_outputs/caa_*/caa_results.json e1_outputs/fairsteer*/fairsteer_results.json e1_outputs/angular*/angular_results.json --out e1_outputs/judge_second.json --judge_model Qwen/Qwen2.5-7B-Instruct
+==========================================================================
+JUDGE SWEEP OUTPUTS
+==========================================================================
+Files matched: 42
+
+Sweep points and responses found:
+  angular_results.json                            250 responses
+  base_seed42.json                                250 responses
+  baseline_seed42_neutral_responses.json          250 responses
+  baseline_seed42_responses.json                  250 responses
+  baseline_seed42_sysexplicit_responses.json      250 responses
+  baseline_seed42_sysmin_responses.json           250 responses
+  baseline_seed43_responses.json                  250 responses
+  baseline_seed44_responses.json                  250 responses
+  caa_results.json                                250 responses
+  dual_k1.json                                    250 responses
+  dual_k10.json                                   250 responses
+  dual_k20.json                                   250 responses
+  dual_k40.json                                   250 responses
+  dual_k5.json                                    250 responses
+  dual_k80.json                                   250 responses
+  fairsteer_results.json                          250 responses
+  meandiff_alpha3.0_responses.json                250 responses
+  meandiff_alpha5.0_responses.json                250 responses
+  meandiff_alpha7.0_responses.json                250 responses
+  meandiff_alpha8.0_responses.json                250 responses
+  probe_alpha3.0_responses.json                   250 responses
+  probe_alpha5.0_responses.json                   250 responses
+  probe_alpha7.0_responses.json                   250 responses
+  probe_alpha9.0_responses.json                   250 responses
+  proj_alpha1.0_responses.json                    250 responses
+  proj_k10_alpha1.0_responses.json                250 responses
+  proj_k1_alpha1.0_responses.json                 250 responses
+  proj_k20_alpha1.0_responses.json                250 responses
+  proj_k40_alpha1.0_responses.json                250 responses
+  proj_k40_sysexplicit_alpha1.0_responses.json    250 responses
+  proj_k5_alpha1.0_responses.json                 250 responses
+  proj_k80_alpha1.0_responses.json                250 responses
+  proj_meandiffbasis_alpha1.0_responses.json      250 responses
+  proj_probebasis_alpha1.0_responses.json         250 responses
+  sadi_results.json                               250 responses
+
+  total responses     : 10500
+  unique texts        : 10245
+  dedup saving        : 2.4% fewer judge calls
+
+[resume] loaded 8995 scores from judge_second.json
+  to judge now        : 1250
+
+Loading judge model on cuda ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:09<00:27,  9.29s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:16<00:16,  8.34s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:24<00:08,  8.14s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:31<00:00,  7.63s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:31<00:00,  7.93s/it]
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:14<02:52, 14.41s/it]  judging:  15%|█▌        | 2/13 [00:27<02:28, 13.47s/it]  judging:  23%|██▎       | 3/13 [00:40<02:11, 13.17s/it]  judging:  31%|███       | 4/13 [00:52<01:57, 13.06s/it]  judging:  38%|███▊      | 5/13 [01:05<01:44, 13.02s/it]  judging:  46%|████▌     | 6/13 [01:18<01:31, 13.04s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:18, 13.08s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:05, 13.07s/it]  judging:  69%|██████▉   | 9/13 [01:58<00:52, 13.01s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:38, 12.99s/it]  judging:  85%|████████▍ | 11/13 [02:24<00:26, 13.01s/it]  judging:  92%|█████████▏| 12/13 [02:37<00:13, 13.01s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 11.94s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 12.81s/it]
+  [ckpt] 200/1250 unique judged, ETA 15 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:12<02:35, 12.99s/it]  judging:  15%|█▌        | 2/13 [00:26<02:23, 13.02s/it]  judging:  23%|██▎       | 3/13 [00:38<02:09, 12.96s/it]  judging:  31%|███       | 4/13 [00:51<01:56, 12.92s/it]  judging:  38%|███▊      | 5/13 [01:04<01:43, 12.90s/it]  judging:  46%|████▌     | 6/13 [01:17<01:30, 12.89s/it]  judging:  54%|█████▍    | 7/13 [01:30<01:16, 12.82s/it]  judging:  62%|██████▏   | 8/13 [01:43<01:04, 12.85s/it]  judging:  69%|██████▉   | 9/13 [01:55<00:51, 12.79s/it]  judging:  77%|███████▋  | 10/13 [02:08<00:38, 12.74s/it]  judging:  85%|████████▍ | 11/13 [02:21<00:25, 12.76s/it]  judging:  92%|█████████▏| 12/13 [02:33<00:12, 12.77s/it]  judging: 100%|██████████| 13/13 [02:43<00:00, 11.77s/it]  judging: 100%|██████████| 13/13 [02:43<00:00, 12.57s/it]
+  [ckpt] 400/1250 unique judged, ETA 12 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:37, 13.10s/it]  judging:  15%|█▌        | 2/13 [00:26<02:23, 13.04s/it]  judging:  23%|██▎       | 3/13 [00:39<02:10, 13.04s/it]  judging:  31%|███       | 4/13 [00:52<01:56, 12.99s/it]  judging:  38%|███▊      | 5/13 [01:04<01:42, 12.85s/it]  judging:  46%|████▌     | 6/13 [01:17<01:29, 12.78s/it]  judging:  54%|█████▍    | 7/13 [01:30<01:16, 12.79s/it]  judging:  62%|██████▏   | 8/13 [01:42<01:04, 12.81s/it]  judging:  69%|██████▉   | 9/13 [01:56<00:51, 12.91s/it]  judging:  77%|███████▋  | 10/13 [02:08<00:38, 12.84s/it]  judging:  85%|████████▍ | 11/13 [02:21<00:25, 12.89s/it]  judging:  92%|█████████▏| 12/13 [02:34<00:12, 12.86s/it]  judging: 100%|██████████| 13/13 [02:44<00:00, 11.91s/it]  judging: 100%|██████████| 13/13 [02:44<00:00, 12.64s/it]
+  [ckpt] 600/1250 unique judged, ETA 9 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:37, 13.13s/it]  judging:  15%|█▌        | 2/13 [00:26<02:24, 13.16s/it]  judging:  23%|██▎       | 3/13 [00:39<02:11, 13.19s/it]  judging:  31%|███       | 4/13 [00:52<01:57, 13.07s/it]  judging:  38%|███▊      | 5/13 [01:05<01:44, 13.11s/it]  judging:  46%|████▌     | 6/13 [01:18<01:32, 13.15s/it]  judging:  54%|█████▍    | 7/13 [01:31<01:18, 13.15s/it]  judging:  62%|██████▏   | 8/13 [01:44<01:04, 12.99s/it]  judging:  69%|██████▉   | 9/13 [01:57<00:51, 12.88s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:38, 12.89s/it]  judging:  85%|████████▍ | 11/13 [02:22<00:25, 12.79s/it]  judging:  92%|█████████▏| 12/13 [02:35<00:12, 12.85s/it]  judging: 100%|██████████| 13/13 [02:45<00:00, 11.88s/it]  judging: 100%|██████████| 13/13 [02:45<00:00, 12.72s/it]
+  [ckpt] 800/1250 unique judged, ETA 6 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:12<02:30, 12.53s/it]  judging:  15%|█▌        | 2/13 [00:25<02:19, 12.68s/it]  judging:  23%|██▎       | 3/13 [00:38<02:07, 12.75s/it]  judging:  31%|███       | 4/13 [00:51<01:56, 12.95s/it]  judging:  38%|███▊      | 5/13 [01:04<01:43, 12.89s/it]  judging:  46%|████▌     | 6/13 [01:17<01:30, 12.88s/it]  judging:  54%|█████▍    | 7/13 [01:29<01:16, 12.82s/it]  judging:  62%|██████▏   | 8/13 [01:42<01:04, 12.84s/it]  judging:  69%|██████▉   | 9/13 [01:55<00:51, 12.89s/it]  judging:  77%|███████▋  | 10/13 [02:08<00:38, 12.81s/it]  judging:  85%|████████▍ | 11/13 [02:21<00:25, 12.87s/it]  judging:  92%|█████████▏| 12/13 [02:33<00:12, 12.81s/it]  judging: 100%|██████████| 13/13 [02:43<00:00, 11.82s/it]  judging: 100%|██████████| 13/13 [02:43<00:00, 12.58s/it]
+  [ckpt] 1000/1250 unique judged, ETA 3 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:12<02:31, 12.62s/it]  judging:  15%|█▌        | 2/13 [00:25<02:18, 12.63s/it]  judging:  23%|██▎       | 3/13 [00:37<02:05, 12.58s/it]  judging:  31%|███       | 4/13 [00:50<01:53, 12.56s/it]  judging:  38%|███▊      | 5/13 [01:03<01:40, 12.62s/it]  judging:  46%|████▌     | 6/13 [01:15<01:28, 12.61s/it]  judging:  54%|█████▍    | 7/13 [01:28<01:15, 12.59s/it]  judging:  62%|██████▏   | 8/13 [01:40<01:03, 12.63s/it]  judging:  69%|██████▉   | 9/13 [01:53<00:50, 12.61s/it]  judging:  77%|███████▋  | 10/13 [02:06<00:38, 12.68s/it]  judging:  85%|████████▍ | 11/13 [02:18<00:25, 12.59s/it]  judging:  92%|█████████▏| 12/13 [02:31<00:12, 12.56s/it]  judging: 100%|██████████| 13/13 [02:40<00:00, 11.69s/it]  judging: 100%|██████████| 13/13 [02:40<00:00, 12.38s/it]
+  [ckpt] 1200/1250 unique judged, ETA 1 min
+  judging:   0%|          | 0/4 [00:00<?, ?it/s]  judging:  25%|██▌       | 1/4 [00:12<00:37, 12.48s/it]  judging:  50%|█████     | 2/4 [00:24<00:24, 12.49s/it]  judging:  75%|███████▌  | 3/4 [00:37<00:12, 12.57s/it]  judging: 100%|██████████| 4/4 [00:46<00:00, 11.25s/it]  judging: 100%|██████████| 4/4 [00:46<00:00, 11.72s/it]
+  [ckpt] 1250/1250 unique judged, ETA 0 min
+
+Wrote e1_outputs/judge_second.json  (10500 records, 10245 unique scores)

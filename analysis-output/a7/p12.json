@@ -1,0 +1,150 @@
+{
+ "Angular": {
+  "authors_arm": "angular_adaptive",
+  "e1_arm": "angular",
+  "text_flags": [
+   "overshoot"
+  ],
+  "m1_u_rate": {
+   "llama": 0.0,
+   "qwen": 0.0
+  },
+  "dq_authors": {
+   "llama": -1.978,
+   "qwen": -0.68
+  },
+  "dq_e1": {
+   "llama": -2.074,
+   "qwen": -0.664
+  },
+  "d_authors": 0.6979083811595188,
+  "d_e1": 0.741222783384176,
+  "dJ_authors": {
+   "llama": -0.16170212765957448,
+   "qwen": -0.13122171945701358
+  },
+  "dJ_authors_ci": {
+   "llama": [
+    -0.28085106382978725,
+    -0.04680851063829787
+   ],
+   "qwen": [
+    -0.22328189524016517,
+    -0.050222602739726056
+   ]
+  },
+  "m1_call_authors": "reduces",
+  "echo_drop_authors": 0.5557549346321456,
+  "outcome": "(b) broken at the authors' setting too"
+ },
+ "CAA": {
+  "authors_arm": "caa_m2",
+  "e1_arm": "caa",
+  "text_flags": [
+   "overshoot"
+  ],
+  "m1_u_rate": {
+   "llama": 0.0,
+   "qwen": 0.0
+  },
+  "dq_authors": {
+   "llama": -2.198,
+   "qwen": -0.688
+  },
+  "dq_e1": {
+   "llama": -0.802,
+   "qwen": -0.296
+  },
+  "d_authors": 0.7061685024853189,
+  "d_e1": 0.3650401286111106,
+  "dJ_authors": {
+   "llama": -0.4,
+   "qwen": -0.22624434389140272
+  },
+  "dJ_authors_ci": {
+   "llama": [
+    -0.5361702127659574,
+    -0.2723404255319149
+   ],
+   "qwen": [
+    -0.3243530086690464,
+    -0.13596384772611142
+   ]
+  },
+  "m1_call_authors": "reduces",
+  "echo_drop_authors": 0.6088182517303256,
+  "outcome": "(b) broken at the authors' setting too"
+ },
+ "FairSteer": {
+  "authors_arm": "fairsteer_a1",
+  "e1_arm": "fairsteer",
+  "text_flags": [],
+  "m1_u_rate": {
+   "llama": 0.0,
+   "qwen": 0.0
+  },
+  "dq_authors": {
+   "llama": -0.302,
+   "qwen": -0.128
+  },
+  "dq_e1": {
+   "llama": -1.31,
+   "qwen": -0.608
+  },
+  "d_authors": 0.04955611983415125,
+  "d_e1": 0.280988667082606,
+  "dJ_authors": {
+   "llama": -0.00425531914893617,
+   "qwen": -0.02242152466367713
+  },
+  "dJ_authors_ci": {
+   "llama": [
+    -0.09797872340425531,
+    0.09787234042553192
+   ],
+   "qwen": [
+    -0.07692307692307693,
+    0.03125350336322868
+   ]
+  },
+  "m1_call_authors": "no change",
+  "echo_drop_authors": 0.14637272494232256,
+  "outcome": "(a) intact at the authors' setting"
+ },
+ "SADI": {
+  "authors_arm": "sadi_s5",
+  "e1_arm": "sadi",
+  "text_flags": [],
+  "m1_u_rate": {
+   "llama": 0.0,
+   "qwen": 0.0
+  },
+  "dq_authors": {
+   "llama": 0.004,
+   "qwen": -0.052
+  },
+  "dq_e1": {
+   "llama": -3.934,
+   "qwen": -2.384
+  },
+  "d_authors": -0.13130181151430387,
+  "d_e1": 0.29620631663962793,
+  "dJ_authors": {
+   "llama": 0.00425531914893617,
+   "qwen": 0.06046511627906977
+  },
+  "dJ_authors_ci": {
+   "llama": [
+    -0.08936170212765958,
+    0.10212765957446808
+   ],
+   "qwen": [
+    -0.004807692307692308,
+    0.12559606607259285
+   ]
+  },
+  "m1_call_authors": "no change",
+  "echo_drop_authors": 0.035888233786208756,
+  "outcome": "(a) intact at the authors' setting"
+ }
+}
