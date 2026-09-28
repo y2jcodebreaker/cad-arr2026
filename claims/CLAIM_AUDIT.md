@@ -95,11 +95,31 @@ Status: **in progress**. Sections below are complete unless marked otherwise.
 estimator" (05.003): **all FLAG** under A1/A7. There is no leaderboard for this metric; "published"
 is false for all four baseline settings.
 
-## F. Summary
+## F. Non-numeric factual sentences (second pass, 2026-09-28)
 
-- Sentences checked: all 224. Numbers checked against files: 45; 38 reproduce, 7 do not or are
-  untraceable (SADI mean 0.000, 75 empty, 16.8%, 71.6%, pair bootstrap 40 [40, 41], cos −0.001,
-  Target A 67.9%).
-- Foundational problems: A1–A9. Interpretive claims that rest on the lexical metric (removal of
-  "medicalization", "% reduction", "past neutral") wait for M1.
+The first version of this file said "all 224 sentences checked" before this pass was done; that
+line was wrong and is replaced below.
+
+| Sentence | Claim | Status | Evidence |
+|---|---|---|---|
+| 02.017 | "FairSteer and CAA are more than twice the unsteered length" | ❌ 945 / 481 = 1.96×, 638 / 481 = 1.33× | result files |
+| 01.018 | degenerate outputs are "longer than the responses they replace" | ❌ for SADI (188 vs 481 words) | same |
+| 03.012, 01.008 | SADI has "the lowest medicalization score of the five" / "strongest target-metric score" | ❌ Angular is lower (−0.222 vs 0.119); the two sentences also contradict 01.014 | `sweep_points.json` |
+| 03.018 | "Every point that reaches or passes neutral is degenerate" | ✅ no intact point has med ≤ 0 (the meaning of "neutral" is A4) | same |
+| 03.026 | "No baseline method reaches that region without degenerating" | ❌ 7 intact baseline points reach ≥ 50% reduction (CAA α=1; FairSteer τ 0.3/0.5/0.7 α=2; Angular max-norm L31 mode 1 150°, modes 0/1 270°). True claim: none is on the Pareto front there | same |
+| 01.014, 03.013 | Angular "injecting corruption inside words" | **FLAG: unverified.** An in-word pattern search on the sweep outputs matches only legitimate words (*DuckDuckGo*, *LinkedIn*); the earlier "6.0% artifacts" figure is already retired as unverified | `results/angular_results.json` |
+| 03.030–031 | "falls steeply … not gradual in any" | interpretation; CAD mean-diff falls 7.92 → 6.60 over α 1–10 before the drop | `sweep_points.json` |
+| 05.022 | "one varies a single template while the other spans nine categories" | **FLAG** (refers to Target A, see Tab 3 row) | — |
+| 07.001 | "answers … a question about risk and supervision" | **FLAG** (A6: the example is not from the data) | — |
+| 04.002–005, 04.019, 04.022–027, 04.033, Lim.001, Lim.004 | design statements, prompt wording, "neither costs quality", fit context | ✅ | PREREG_E1 (A1, A4), `e1_scores.json` |
+
+## G. Summary
+
+- 224 sentences read; numeric claims (45) traced to files, citation claims checked against the
+  cited text, generalising words listed, and non-numeric factual sentences checked in a second pass.
+  Interpretive sentences are marked as such, not "verified".
+- Numbers: 38 of 45 reproduce; 7 do not or cannot be traced (section C). Non-numeric factual
+  errors: 5 (section F), plus the unverified Angular corruption claim.
+- Foundational problems A1–A9. Every claim of removing "medicalization", "% reduction" or "past
+  neutral" waits for M1.
 - Nothing in the paper has been edited yet. The rewrite follows M1 and A7.
