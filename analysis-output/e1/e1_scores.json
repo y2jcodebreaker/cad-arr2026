@@ -931,6 +931,90 @@
     0.952,
     0.152
    ]
+  },
+  "prompt_min": {
+   "med": 0.6422770538081304,
+   "d": -0.036783888560497975,
+   "d_ci": [
+    -0.14137643476212802,
+    0.06169526498322671
+   ],
+   "dmed_pct": -7.634305536922412,
+   "q_llama": 7.818,
+   "q_qwen": 6.668,
+   "dq_llama": -0.028,
+   "dq_llama_ci": [
+    -0.126,
+    0.07404999999999973
+   ],
+   "dq_qwen": -0.028,
+   "dq_qwen_ci": [
+    -0.10409999999999998,
+    0.048
+   ],
+   "unique": 1.0,
+   "parse_fail": 0.0,
+   "degenerate": [],
+   "alignment": [
+    0.996,
+    0.26
+   ]
+  },
+  "prompt_explicit": {
+   "med": 0.5166226822562208,
+   "d": 0.06481611717482652,
+   "d_ci": [
+    -0.018337108401628555,
+    0.15442946330208632
+   ],
+   "dmed_pct": 13.423150804509486,
+   "q_llama": 7.854,
+   "q_qwen": 6.764,
+   "dq_llama": 0.008,
+   "dq_llama_ci": [
+    -0.06605,
+    0.092
+   ],
+   "dq_qwen": 0.068,
+   "dq_qwen_ci": [
+    -0.004,
+    0.132
+   ],
+   "unique": 1.0,
+   "parse_fail": 0.0,
+   "degenerate": [],
+   "alignment": [
+    1.0,
+    0.252
+   ]
+  },
+  "prompt_explicit_cad_k40": {
+   "med": 0.015453785473739923,
+   "d": 0.5058802909567442,
+   "d_ci": [
+    0.3677864829335828,
+    0.6582235004391382
+   ],
+   "dmed_pct": 97.41021813324896,
+   "q_llama": 7.15,
+   "q_qwen": 6.496,
+   "dq_llama": -0.696,
+   "dq_llama_ci": [
+    -0.944,
+    -0.466
+   ],
+   "dq_qwen": -0.2,
+   "dq_qwen_ci": [
+    -0.312,
+    -0.09190000000000055
+   ],
+   "unique": 1.0,
+   "parse_fail": 0.004,
+   "degenerate": [],
+   "alignment": [
+    0.932,
+    0.184
+   ]
   }
  },
  "verdicts": {
@@ -1094,6 +1178,49 @@
     }
    },
    "outcome": "unmatched in both directions: P7 not testable, so the principle is not claimed"
+  },
+  "P8": {
+   "delta_d_cad_minus_prompt": 0.2750248470877261,
+   "delta_d_ci": [
+    0.13519647904624413,
+    0.43939906230292797
+   ],
+   "quality_prompt_minus_cad": {
+    "llama": {
+     "mean": 0.594,
+     "ci": [
+      0.35995,
+      0.85
+     ]
+    },
+    "qwen": {
+     "mean": 0.3,
+     "ci": [
+      0.19990000000000002,
+      0.396
+     ]
+    }
+   },
+   "prompt_flags": [],
+   "prompt_min": {
+    "d": -0.036783888560497975,
+    "dq_llama": -0.028,
+    "dq_qwen": -0.028
+   },
+   "combo": {
+    "d": 0.5058802909567442,
+    "gain_over": "cad_proj_k40",
+    "gain_ci": [
+     0.0828310237886781,
+     0.255029195261506
+    ],
+    "quality_within_1": true,
+    "complementary": true
+   },
+   "outcome": [
+    "(b) steering adds debiasing beyond prompting",
+    "(c) complementary"
+   ]
   },
   "reference_noise": {
    "unsteered_s43": {

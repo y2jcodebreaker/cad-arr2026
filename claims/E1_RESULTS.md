@@ -51,3 +51,28 @@ Reference noise: a different unsteered draw moves d by at most 0.019 and quality
   broken one, on held-out questions, under both judges.
 - k=auto gives 33/36 on the 633-pair pool and 42/49 on the 1,044-pair pool (D1).
 - The runner's own `is_degenerate` flagged additive probe α=9; the registered text criteria do not.
+
+## A4 — prompting baseline (scored 2026-09-27, evidence commit on `feature/e1-a4-results`)
+
+| arm | med | d [95% CI] | ΔMed% | ΔQ Llama | ΔQ Qwen | flags |
+|---|---|---|---|---|---|---|
+| `prompt_min` | 0.642 | −0.04 [−0.14, 0.06] | −7.6 | −0.03 | −0.03 | — |
+| `prompt_explicit` | 0.517 | 0.07 [−0.02, 0.15] | 13.4 | +0.01 | +0.07 | — |
+| `cad_proj_k40` (tier 1) | 0.202 | 0.34 [0.21, 0.48] | 66.2 | −0.59 | −0.23 | — |
+| `prompt_explicit_cad_k40` | 0.015 | **0.51 [0.37, 0.66]** | 97.4 | −0.70 | −0.20 | — |
+
+**P8 outcome: (b) and (c).**
+- **(b) Steering adds debiasing beyond prompting.** Δd = d(CAD k40) − d(prompt_explicit) = 0.28
+  [0.14, 0.44]. (a) fails: the prompt keeps quality (+0.59 [0.36, 0.85] Llama, +0.30 [0.20, 0.40]
+  Qwen over CAD k40) but barely debiases.
+- **(c) Complementary.** The combination reaches d 0.51, above CAD k40 by 0.08–0.26 (CI), with
+  quality within 1.0 of unsteered on both judges, no degeneracy flag (unique 1.00, parse-fail 0.004).
+
+**Observations (not pre-registered):**
+- The minimal prompt slightly *raises* medicalization (NS). An explicit instruction removes 13%.
+  This matches Macocco et al. (2026): prompting is viable for injecting a concept, weaker at removing one.
+  AxBench's "prompting beats steering" does not transfer to this removal task.
+- On tier-1 + A4 point estimates, the combination is dominated by no intact arm and dominates CAA,
+  FairSteer, LEACE k80, CAD k80 and every additive CAD arm. No intact arm reaches a higher d. This is
+  a Pareto statement on point estimates; P4 (tier 2) is still the registered test of the front.
+- The directions were fit on default-prompt activations and still work under the explicit prompt.
