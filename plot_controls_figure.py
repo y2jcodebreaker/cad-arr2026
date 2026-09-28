@@ -68,10 +68,10 @@ def main() -> None:
                      xy=(430, TARGET_A["evr1"]), xytext=(150, 47), fontsize=6.4,
                      color="#1a1a1a", linespacing=1.4,
                      arrowprops=dict(arrowstyle="-", lw=0.6, color="#666666", shrinkB=1))
-    axes[1].annotate("Target A, previously\nreported: $k{=}2$",
-                     xy=(430, TARGET_A["k"]), xytext=(230, 14), fontsize=6.4,
-                     color="#1a1a1a", linespacing=1.4,
-                     arrowprops=dict(arrowstyle="-", lw=0.6, color="#666666", shrinkB=1))
+    # one line, sitting just above the reference line in the empty band at the right,
+    # so it crosses no data line (an arrowed two-line label overlapped the cluster curve)
+    axes[1].text(1000, TARGET_A["k"] + 0.8, "Target A, previously reported: $k{=}2$",
+                 fontsize=6.4, color="#1a1a1a", ha="right", va="bottom")
 
     axes[0].set_ylabel("$\\mathrm{EVR}_1$ (\\%)" if False else "EVR$_1$ (%)")
     axes[1].set_ylabel("$k$@80%")

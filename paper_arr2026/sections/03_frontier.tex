@@ -61,10 +61,11 @@ falls away. Every point that reaches or passes neutral is degenerate.
 \caption{Judged quality against medicalization for 87 sweep points, $n{=}250$ responses
 each. Filled markers are intact output, hollow markers are degenerate by the criterion
 in Section~\ref{sec:frontier}, which uses text properties and not the quality score.
-Error bars are bootstrap $95\%$ confidence intervals on the mean quality. The grey band
-is the unsteered reference, $\pm 2$ standard deviations across ten no-steer points. The
-shaded region past neutral marks responses that withhold medical information, which is
-not an improvement. The blue line is the Pareto front over intact points.}
+Black rings mark each method's published setting. The grey band is the unsteered
+reference, $\pm 2$ standard deviations across ten no-steer points, and the shaded region
+past neutral marks responses that withhold medical information. The blue line is the Pareto
+front over intact points. Per-point $95\%$ intervals (median half-width $0.18$) are listed in
+Appendix~\ref{app:sweep}.}
 \label{fig:frontier}
 \end{figure}
 
@@ -99,17 +100,13 @@ and leaves the text intact.
 
 A wider margin is not immunity. The CAD projection is flagged degenerate from
 $\alpha{=}3$, where $70\%$ of its responses become unparseable, and at $\alpha{=}5$ it
-returns 75 empty responses out of 250. Every method here has a range in which it works
-and a point past which it destroys the output. What separates them is how much room
+returns 75 empty responses out of 250. What separates them is how much room
 sits between that point and the strength needed to remove the bias.
 
-This also explains why the leaderboard inverts the ranking. Methods are tuned to
-maximise the target metric, and the target metric keeps rewarding larger steering
-strengths past the point where the text breaks, because broken text contains neither
-medical nor professional vocabulary and the log-odds contrast
-\citep{monroe2008fightin} goes to zero. The degeneration modes themselves are familiar
-from open-ended generation \citep{welleck-etal-2019-neural}; what is new here is that a
-fairness metric scores them as success.
+This is why the leaderboard inverts the ranking: methods are tuned to maximise a target
+metric that keeps rewarding larger strengths past the point where the text breaks. The
+degeneration modes are familiar from open-ended generation \citep{welleck-etal-2019-neural};
+what is new is that a fairness metric scores them as success.
 
 \subsection{A second architecture}
 
@@ -118,8 +115,3 @@ $d{=}0.392$ at $\alpha{=}1$ with no degenerate output, and collapses at $\alpha{
 rather than the $\alpha{=}3$ we observe for Llama-3.1-8B. The operating window is
 narrower on Qwen, and the threshold structure of Figure~\ref{fig:collapse} replicates
 with a different threshold.
-
-\paragraph{Scope.} The sweep draws a separate 250-prompt subset per method and fits every
-method on a pool that contains its evaluation prompts, so it supports the shape of the
-curve and the ordering rather than paired effect sizes. Section~\ref{sec:confirm} removes
-both limitations.
