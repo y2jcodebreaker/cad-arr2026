@@ -117,6 +117,21 @@ line was wrong and is replaced below.
 | 07.001 | "answers … a question about risk and supervision" | **FLAG** (A6: the example is not from the data) | — |
 | 04.002–005, 04.019, 04.022–027, 04.033, Lim.001, Lim.004 | design statements, prompt wording, "neither costs quality", fit context | ✅ | PREREG_E1 (A1, A4), `e1_scores.json` |
 
+### F2. GPT-5.5 judge numbers (checked 2026-09-29 against `results/judge_gpt55_checkpoint.json`)
+
+| where | text says | file says | verdict |
+|---|---|---|---|
+| A_e1.tex l.80 | CAD −0.08 | paired −0.092 [−0.22, +0.04] (n 196); unpaired −0.085 | **FIX**: text used unpaired means; give paired −0.09 to match the stored interval |
+| A_e1.tex l.80 | Angular −2.23 | paired −2.237 (n 249); unpaired −2.234 | **FIX**: −2.24 (paired) |
+| A_e1.tex l.80 | SADI −5.26 | −5.264 both ways | ✅ |
+
+Context that must go with any GPT-5.5 sentence: it rated **accessibility quality** (0–10, the
+AccessEval rubric), not medicalization; on the pre-repo runs (different prompt draws from the
+frozen set; CAD arm 196 paired items; code not attributable to a commit, LEDGER rows 14–15); 0 of
+its 2,885 texts overlap with any text the E1 judges scored. It can support "the methods the lexical
+score ranks highest (SADI, Angular) are the ones a frontier judge rates lowest on quality", labelled as
+an earlier run; it cannot be compared number-for-number with E1/A8.
+
 ## G. Summary
 
 - 224 sentences read; numeric claims (45) traced to files, citation claims checked against the
