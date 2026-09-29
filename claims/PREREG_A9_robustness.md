@@ -168,3 +168,21 @@ passes and the ids of 550 sampled judge prompts equal those of transformers 4.57
 `fix_mistral_regex=True`; `greedy_decode` equals `generate(do_sample=False)` token for token on a
 tiny random Mistral model (head_dim ≠ hidden/heads, left padding, torch 2.4.1). Every judge output
 now records its transformers and tokenizers versions.
+
+### A9-A5 — 2026-09-29, before any A9 generation (found when the pod came up)
+
+**What changed.** Three same-environment reference arms are generated first: `unsteered_rerun`,
+`neutral_rerun` and `fc_remove_a1_rerun` (no steering / no steering on neutral questions / the A8
+arm, all as originally specified). For each, the share of its 250 texts identical to the committed
+arm (`unsteered_s42`, `neutral_s42`, `fc_remove_a1`) is reported. **Rule:** if all three shares are
+≥ 0.95, the registered references stand. Otherwise Q-SPEC, Q-MECH and Q-SIDE use the reruns as
+references (`fc_remove_a1_rerun` − shuffle mean; shuffles and `id_remove_a1` against
+`unsteered_rerun`; `fc_remove_a1_neutral` against `neutral_rerun`), so that no comparison mixes
+software environments. Q-J3 (committed arms only) and Q-FRESH (all new) are unaffected. Also
+reported: ΔJ of `unsteered_rerun` against `unsteered_s42` on both M1 judges (the environment's own
+effect). J3 also scores the three reruns. Every A9 run record now stores torch, CUDA, transformers,
+tokenizers and GPU.
+
+**Why.** The new pod's image ships torch 2.8.0; the earlier runs used the torch 2.4 image, and their
+exact torch build was not recorded. A library change can alter greedy decoding by itself. Torch
+2.4.1 is installed on the pod to stay close to the earlier stack; this rule covers any residual drift.
