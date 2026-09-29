@@ -232,6 +232,12 @@ def batches(keys: list[str], unique: dict, measure, budget: int = TOKEN_BUDGET, 
 def run(out_path: Path, model_name: str, records: list[dict], unique: dict, generate,
         measure=lambda q, a: len(q) + len(a), budget: int = TOKEN_BUDGET, max_batch: int = MAX_BATCH) -> dict:
     state = {"model": model_name, "rubric_sha256": RUBRIC_SHA, "rating_by_key": {}, "raw_by_key": {}}
+    try:
+        import tokenizers
+        import transformers
+        state["env"] = {"transformers": transformers.__version__, "tokenizers": tokenizers.__version__}
+    except ImportError:
+        pass
     if out_path.exists():
         prev = json.loads(out_path.read_text())
         if prev.get("model") != model_name or prev.get("rubric_sha256") != RUBRIC_SHA:

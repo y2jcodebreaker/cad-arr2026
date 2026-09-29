@@ -156,3 +156,15 @@ sensitively while avoiding stereotypes?"), each the only pair of its question. T
 items from 85 questions (310 non-Healthcare), sha256 2fd13f1a…. **Why.** The echo measure needs the
 item's category, and these items are a different kind of question from every frozen-set item (the
 frozen set has none). Dropping them after sampling leaves every other draw unchanged.
+
+### A9-A4 — 2026-09-29, before any J3 rating exists (found by testing under the pod's pinned versions)
+
+**What changed.** J3 runs in its own environment: transformers 4.46.3 with tokenizers 0.20.3, on the
+pod image's torch. Llama generation and the M1 and accessibility judges keep the pinned stack
+(transformers 4.44.2, tokenizers 0.19.1). **Why.** tokenizers 0.19.1 cannot parse the pinned
+revision's tokenizer.json ("data did not match any variant of untagged enum ModelWrapper"), and
+transformers 4.44.2 requires tokenizers < 0.20. **Checked:** under 4.46.3 / 0.20.3 the template probe
+passes and the ids of 550 sampled judge prompts equal those of transformers 4.57 with
+`fix_mistral_regex=True`; `greedy_decode` equals `generate(do_sample=False)` token for token on a
+tiny random Mistral model (head_dim ≠ hidden/heads, left padding, torch 2.4.1). Every judge output
+now records its transformers and tokenizers versions.

@@ -38,10 +38,16 @@ python a9_robustness.py fit
 python a9_robustness.py generate
 python a9_robustness.py ppl
 
-# 2. third judge J3 (55 GB, alone on the card)
+# 2. third judge J3 (55 GB, alone on the card). Its tokenizer file needs tokenizers >= 0.20, which the
+#    pinned transformers 4.44.2 refuses, so J3 runs in its own venv on the image's torch (amendment A9-A4)
+if [ ! -x .venv-j3/bin/python ]; then
+  python -m venv --system-site-packages .venv-j3
+  .venv-j3/bin/pip install -q "transformers==4.46.3" "tokenizers==0.20.3"
+fi
+.venv-j3/bin/python -c "import transformers, tokenizers; print('J3 env', transformers.__version__, tokenizers.__version__)"
 wait "$DL" || echo "background download failed; from_pretrained will download instead"
-python judge_medicalization.py --judge mistral --base e1_outputs --j3_arms --out e1_outputs/m1_judge_mistral.json
-python judge_medicalization.py --judge mistral --base e1_outputs --fresh
+.venv-j3/bin/python judge_medicalization.py --judge mistral --base e1_outputs --j3_arms --out e1_outputs/m1_judge_mistral.json
+.venv-j3/bin/python judge_medicalization.py --judge mistral --base e1_outputs --fresh
 
 # 3. the two M1 judges on the new texts (resume: earlier scores are kept)
 python judge_medicalization.py --judge llama --base e1_outputs > a9_m1l.log 2>&1 & P1=$!
