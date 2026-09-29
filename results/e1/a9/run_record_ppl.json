@@ -1,0 +1,37 @@
+{
+ "runner": "a9_ppl",
+ "status": "ok",
+ "started": "2026-09-29T20:22:39",
+ "host": "25dbbed492c7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "ppl",
+  "arms": null,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a9",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "15f052fc46f6cbd84a401e5484ed7e501e8ccaac",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "unsteered": 8.052102437241071,
+  "fc_remove_a1": 8.051618482835453,
+  "fc_remove_a2": 8.062865848550649,
+  "env": {
+   "torch": "2.4.1+cu124",
+   "cuda": "12.4",
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "gpu": "NVIDIA A100-SXM4-80GB"
+  }
+ },
+ "finished": "2026-09-29T20:23:49",
+ "git_changed_during_run": false
+}

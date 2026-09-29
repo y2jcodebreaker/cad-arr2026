@@ -1,0 +1,7 @@
+rubric sha256 a5ec3d922f23739f | 4 arms, 1700 records, 1700 unique texts
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:09<00:27,  9.29s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:18<00:18,  9.08s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:26<00:08,  8.63s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:33<00:00,  8.14s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:33<00:00,  8.43s/it]
+1700 unique texts, 1700 to judge with Qwen/Qwen2.5-7B-Instruct
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+  [ckpt] 1026/1700  8.5 texts/s  ETA 1 min
+  [ckpt] 1700/1700  8.7 texts/s  ETA 0 min
+wrote e1_outputs/m1_judge_qwen_fresh.json  missing (unparseable) rate 0.0747

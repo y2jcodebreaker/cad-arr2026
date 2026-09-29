@@ -1,0 +1,108 @@
+nohup: ignoring input
+== A9 start 2026-09-29T18:03:03Z  commit f99ecad
+cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
+96 neutral fit questions (from 633 fit items)
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:12<00:36, 12.04s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:22<00:22, 11.33s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:32<00:10, 10.72s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:35<00:00,  7.48s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:35<00:00,  8.85s/it]
+  A9 neutral fit:   0%|          | 0/1 [00:00<?, ?it/s]  A9 neutral fit: 100%|██████████| 1/1 [01:24<00:00, 84.59s/it]  A9 neutral fit: 100%|██████████| 1/1 [01:24<00:00, 84.59s/it]
+  Done: 96 responses
+480 labelled items, layers [9, 11], neutral answers from e1_outputs/a9/fit_neutral_items.json
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:09<00:29,  9.96s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:19<00:19,  9.94s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:20<00:05,  5.83s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  3.65s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  5.28s/it]
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+{
+ "ga9_0_cos": {
+  "9": 0.9999999998985216,
+  "11": 0.9999999991323534
+ },
+ "cos_identity_framing": {
+  "9": -0.27017587423324585,
+  "11": -0.2214205414056778
+ },
+ "GA9_0_pass": true,
+ "cos_shuffle0_framing": {
+  "9": 0.15248557925224304,
+  "11": 0.19144296646118164
+ },
+ "cos_shuffle1_framing": {
+  "9": -0.09344597160816193,
+  "11": -0.08710178732872009
+ },
+ "cos_shuffle2_framing": {
+  "9": 0.14243218302726746,
+  "11": 0.1464124619960785
+ }
+}
+unsteered_rerun: direction none, layers -, disability side, prompt default, frozen set (250 items)
+neutral_rerun: direction none, layers -, neutral side, prompt default, frozen set (250 items)
+fc_remove_a1_rerun: direction a8, layers [9, 11], disability side, prompt default, frozen set (250 items)
+fc_shuffle_s0: direction shuffle0, layers [9, 11], disability side, prompt default, frozen set (250 items)
+fc_shuffle_s1: direction shuffle1, layers [9, 11], disability side, prompt default, frozen set (250 items)
+fc_shuffle_s2: direction shuffle2, layers [9, 11], disability side, prompt default, frozen set (250 items)
+id_remove_a1: direction identity, layers [9, 11], disability side, prompt default, frozen set (250 items)
+fc_remove_a1_neutral: direction a8, layers [9, 11], neutral side, prompt default, frozen set (250 items)
+fresh_unsteered: direction none, layers -, disability side, prompt default, fresh set (425 items)
+fresh_fc_remove_a1: direction a8, layers [9, 11], disability side, prompt default, fresh set (425 items)
+fresh_fc_prompt_remove_a1: direction a8, layers [9, 11], disability side, prompt explicit, fresh set (425 items)
+fresh_prompt_explicit: direction none, layers -, disability side, prompt explicit, fresh set (425 items)
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.08s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.05s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:03<00:01,  1.03s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.34it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.17it/s]
+  unsteered_rerun:   0%|          | 0/2 [00:00<?, ?it/s]  unsteered_rerun:  50%|█████     | 1/2 [02:16<02:16, 136.29s/it]  unsteered_rerun: 100%|██████████| 2/2 [04:14<00:00, 125.62s/it]  unsteered_rerun: 100%|██████████| 2/2 [04:14<00:00, 127.22s/it]
+  Done: 250 responses
+  neutral_rerun:   0%|          | 0/2 [00:00<?, ?it/s]  neutral_rerun:  50%|█████     | 1/2 [02:13<02:13, 133.08s/it]  neutral_rerun: 100%|██████████| 2/2 [04:26<00:00, 133.35s/it]  neutral_rerun: 100%|██████████| 2/2 [04:26<00:00, 133.31s/it]
+  Done: 250 responses
+  fc_remove_a1_rerun:   0%|          | 0/2 [00:00<?, ?it/s]  fc_remove_a1_rerun:  50%|█████     | 1/2 [02:11<02:11, 131.87s/it]  fc_remove_a1_rerun: 100%|██████████| 2/2 [04:49<00:00, 147.22s/it]  fc_remove_a1_rerun: 100%|██████████| 2/2 [04:49<00:00, 144.92s/it]
+  Done: 250 responses
+  fc_shuffle_s0:   0%|          | 0/2 [00:00<?, ?it/s]  fc_shuffle_s0:  50%|█████     | 1/2 [02:21<02:21, 141.99s/it]  fc_shuffle_s0: 100%|██████████| 2/2 [04:31<00:00, 134.81s/it]  fc_shuffle_s0: 100%|██████████| 2/2 [04:31<00:00, 135.89s/it]
+  Done: 250 responses
+  fc_shuffle_s1:   0%|          | 0/2 [00:00<?, ?it/s]  fc_shuffle_s1:  50%|█████     | 1/2 [02:15<02:15, 135.75s/it]  fc_shuffle_s1: 100%|██████████| 2/2 [04:14<00:00, 125.74s/it]  fc_shuffle_s1: 100%|██████████| 2/2 [04:14<00:00, 127.24s/it]
+  Done: 250 responses
+  fc_shuffle_s2:   0%|          | 0/2 [00:00<?, ?it/s]  fc_shuffle_s2:  50%|█████     | 1/2 [02:37<02:37, 157.65s/it]  fc_shuffle_s2: 100%|██████████| 2/2 [04:31<00:00, 132.13s/it]  fc_shuffle_s2: 100%|██████████| 2/2 [04:31<00:00, 135.96s/it]
+  Done: 250 responses
+  id_remove_a1:   0%|          | 0/2 [00:00<?, ?it/s]  id_remove_a1:  50%|█████     | 1/2 [02:39<02:39, 159.78s/it]  id_remove_a1: 100%|██████████| 2/2 [05:02<00:00, 149.92s/it]  id_remove_a1: 100%|██████████| 2/2 [05:02<00:00, 151.40s/it]
+  Done: 250 responses
+  fc_remove_a1_neutral:   0%|          | 0/2 [00:00<?, ?it/s]  fc_remove_a1_neutral:  50%|█████     | 1/2 [02:08<02:08, 128.80s/it]  fc_remove_a1_neutral: 100%|██████████| 2/2 [04:10<00:00, 124.91s/it]  fc_remove_a1_neutral: 100%|██████████| 2/2 [04:10<00:00, 125.50s/it]
+  Done: 250 responses
+  fresh_unsteered:   0%|          | 0/4 [00:00<?, ?it/s]  fresh_unsteered:  25%|██▌       | 1/4 [02:14<06:42, 134.08s/it]  fresh_unsteered:  50%|█████     | 2/4 [03:51<03:44, 112.23s/it]  fresh_unsteered:  75%|███████▌  | 3/4 [06:12<02:05, 125.55s/it]  fresh_unsteered: 100%|██████████| 4/4 [07:16<00:00, 101.39s/it]  fresh_unsteered: 100%|██████████| 4/4 [07:16<00:00, 109.19s/it]
+  Done: 425 responses
+  fresh_fc_remove_a1:   0%|          | 0/4 [00:00<?, ?it/s]  fresh_fc_remove_a1:  25%|██▌       | 1/4 [02:22<07:06, 142.06s/it]  fresh_fc_remove_a1:  50%|█████     | 2/4 [03:54<03:45, 112.76s/it]  fresh_fc_remove_a1:  75%|███████▌  | 3/4 [06:39<02:16, 136.52s/it]  fresh_fc_remove_a1: 100%|██████████| 4/4 [07:28<00:00, 102.00s/it]  fresh_fc_remove_a1: 100%|██████████| 4/4 [07:28<00:00, 112.04s/it]
+  Done: 425 responses
+  fresh_fc_prompt_remove_a1:   0%|          | 0/4 [00:00<?, ?it/s]  fresh_fc_prompt_remove_a1:  25%|██▌       | 1/4 [01:35<04:47, 95.85s/it]  fresh_fc_prompt_remove_a1:  50%|█████     | 2/4 [03:08<03:08, 94.14s/it]  fresh_fc_prompt_remove_a1:  75%|███████▌  | 3/4 [06:00<02:09, 129.39s/it]  fresh_fc_prompt_remove_a1: 100%|██████████| 4/4 [06:37<00:00, 92.97s/it]   fresh_fc_prompt_remove_a1: 100%|██████████| 4/4 [06:37<00:00, 99.31s/it]
+  Done: 425 responses
+  fresh_prompt_explicit:   0%|          | 0/4 [00:00<?, ?it/s]  fresh_prompt_explicit:  25%|██▌       | 1/4 [01:37<04:51, 97.32s/it]  fresh_prompt_explicit:  50%|█████     | 2/4 [03:03<03:01, 90.88s/it]  fresh_prompt_explicit:  75%|███████▌  | 3/4 [05:55<02:07, 127.64s/it]  fresh_prompt_explicit: 100%|██████████| 4/4 [06:26<00:00, 89.80s/it]   fresh_prompt_explicit: 100%|██████████| 4/4 [06:26<00:00, 96.72s/it]
+  Done: 425 responses
+Downloading readme:   0%|          | 0.00/10.5k [00:00<?, ?B/s]Traceback (most recent call last):
+  File "/workspace/cad-arr2026/a9_robustness.py", line 269, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/cad-arr2026/a9_robustness.py", line 264, in main
+    return {"fit_neutral_generate": cmd_fit_neutral_generate, "fit": cmd_fit,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/cad-arr2026/a9_robustness.py", line 225, in cmd_ppl
+    ds = load_dataset("Salesforce/wikitext", "wikitext-2-raw-v1", split="test")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/load.py", line 2606, in load_dataset
+    builder_instance = load_dataset_builder(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/load.py", line 2277, in load_dataset_builder
+    dataset_module = dataset_module_factory(
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/load.py", line 1923, in dataset_module_factory
+    raise e1 from None
+  File "/usr/local/lib/python3.12/dist-packages/datasets/load.py", line 1905, in dataset_module_factory
+    ).get_module()
+      ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/load.py", line 1221, in get_module
+    dataset_readme_path = cached_path(
+                          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/utils/file_utils.py", line 211, in cached_path
+    output_path = get_from_cache(
+                  ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/datasets/utils/file_utils.py", line 689, in get_from_cache
+    fsspec_get(
+  File "/usr/local/lib/python3.12/dist-packages/datasets/utils/file_utils.py", line 395, in fsspec_get
+    fs.get_file(path, temp_file.name, callback=callback)
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/hf_file_system.py", line 894, in get_file
+    http_get(
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 401, in http_get
+    raise ValueError(
+ValueError: Fast download using 'hf_transfer' is enabled (HF_HUB_ENABLE_HF_TRANSFER=1) but 'hf_transfer' package is not available in your environment. Try `pip install hf_transfer`.
+Downloading readme:   0%|          | 0.00/10.5k [00:00<?, ?B/s]
+-rw-rw-rw- 1 root root 8.6M Sep 29 19:10 a9.tgz

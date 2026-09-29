@@ -1,0 +1,8 @@
+rubric sha256 a5ec3d922f23739f | 52 arms, 13000 records, 12244 unique texts
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:11<00:34, 11.46s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:21<00:21, 10.91s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:32<00:10, 10.51s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:34<00:00,  7.39s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:34<00:00,  8.66s/it]
+[resume] 10997 scores loaded
+12244 unique texts, 1247 to judge with meta-llama/Llama-3.1-8B-Instruct
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+  [ckpt] 1060/1247  7.2 texts/s  ETA 0 min
+  [ckpt] 1247/1247  7.9 texts/s  ETA 0 min
+wrote e1_outputs/m1_judge_llama.json  missing (unparseable) rate 0.0000

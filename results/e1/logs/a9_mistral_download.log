@@ -1,43 +1,35 @@
 [33m⚠️  Warning: 'huggingface-cli download' is deprecated. Use 'hf download' instead.[0m
-Downloading '.gitattributes' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/0d4cb185280917cac60ef7195f2a6250b2b90d83.incomplete'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 399, in http_get
-    import hf_transfer  # type: ignore[no-redef]
-    ^^^^^^^^^^^^^^^^^^
-ModuleNotFoundError: No module named 'hf_transfer'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/huggingface-cli", line 7, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/commands/huggingface_cli.py", line 61, in main
-    service.run()
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/commands/download.py", line 157, in run
-    print(self._download())  # Print path to downloaded files
-          ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/commands/download.py", line 191, in _download
-    return snapshot_download(
-           ^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/_snapshot_download.py", line 330, in snapshot_download
-    _inner_hf_hub_download(file)
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/_snapshot_download.py", line 306, in _inner_hf_hub_download
-    return hf_hub_download(
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1014, in hf_hub_download
-    return _hf_hub_download_to_cache_dir(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1175, in _hf_hub_download_to_cache_dir
-    _download_to_tmp_and_move(
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1742, in _download_to_tmp_and_move
-    http_get(
-  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 401, in http_get
-    raise ValueError(
-ValueError: Fast download using 'hf_transfer' is enabled (HF_HUB_ENABLE_HF_TRANSFER=1) but 'hf_transfer' package is not available in your environment. Try `pip install hf_transfer`.
+Removing incomplete file '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/75a14c708eea501700a723dc74bc886cf36a1393686a3fb098ee106b160da32f.incomplete' (hf_transfer=True)
+Downloading 'model-00001-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/75a14c708eea501700a723dc74bc886cf36a1393686a3fb098ee106b160da32f.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/75a14c708eea501700a723dc74bc886cf36a1393686a3fb098ee106b160da32f
+Downloading 'model-00002-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/1ff40fbfd9e042b7dab3f3c9442f870a4701f53e394dda769807a160ba40f32a.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/1ff40fbfd9e042b7dab3f3c9442f870a4701f53e394dda769807a160ba40f32a
+Downloading 'model-00003-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/4cc2d059fded71efd2947a414f32053b4ed3fa84383edf97b6d91fd9f04e4235.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/4cc2d059fded71efd2947a414f32053b4ed3fa84383edf97b6d91fd9f04e4235
+Downloading 'model-00004-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/aa0e9acacf161c45ae0d71ca3f7e4ec9ee55dae2153398da52f81ee4f9e1b8d2.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/aa0e9acacf161c45ae0d71ca3f7e4ec9ee55dae2153398da52f81ee4f9e1b8d2
+Downloading 'model-00005-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/dafb696763d31a1fda58010b73ecc05c19d395da8ec2c24aa9c41da33f2230d3.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/dafb696763d31a1fda58010b73ecc05c19d395da8ec2c24aa9c41da33f2230d3
+Downloading 'model-00006-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/d9a433b19fd4d6986660a616a0d6fc7d02d9e8c0ab3c9b98940217ee6bd4e053.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/d9a433b19fd4d6986660a616a0d6fc7d02d9e8c0ab3c9b98940217ee6bd4e053
+Downloading 'model-00007-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/5ac5c7b042491f917016c3e9635583177058f736be5fa315019b959fc3c43b63.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/5ac5c7b042491f917016c3e9635583177058f736be5fa315019b959fc3c43b63
+Downloading 'model-00008-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/3c460c5b957ab3ac81f03bb20c0348820225dd9b819fa4487ae733b1e696e573.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/3c460c5b957ab3ac81f03bb20c0348820225dd9b819fa4487ae733b1e696e573
+Downloading 'model-00009-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/304f66de1aeb55f0b4e1181885e3d15b65b485d5ce5c93b4adcdf7dd2c2d8cc5.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/304f66de1aeb55f0b4e1181885e3d15b65b485d5ce5c93b4adcdf7dd2c2d8cc5
+Downloading 'model-00010-of-00010.safetensors' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/c4c3bcedc02f4dd7e04c8b0fe1199f4f27de7a37790d1510a8772ffe05093543.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/c4c3bcedc02f4dd7e04c8b0fe1199f4f27de7a37790d1510a8772ffe05093543
+Downloading 'model.safetensors.index.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/fea625e56294eba8231f10d76c291f8fc78a3dbd.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/fea625e56294eba8231f10d76c291f8fc78a3dbd
+Downloading 'params.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/08ac609f2021b9ccc31bc3f04612d04cc42adcc5.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/08ac609f2021b9ccc31bc3f04612d04cc42adcc5
+Downloading 'special_tokens_map.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/642b1b50c2ed17cd03114ad8af688a4854da558a.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/642b1b50c2ed17cd03114ad8af688a4854da558a
+Downloading 'tekken.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/c4b90a968dbc67ef3975129d0b78a2e3cbb6bea340ab9205f22e8a0308b1ffc5.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/c4b90a968dbc67ef3975129d0b78a2e3cbb6bea340ab9205f22e8a0308b1ffc5
+Downloading 'tokenizer.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/b76085f9923309d873994d444989f7eb6ec074b06f25b58f1e8d7b7741070949.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/b76085f9923309d873994d444989f7eb6ec074b06f25b58f1e8d7b7741070949
+Downloading 'tokenizer_config.json' to '/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/a20398005bd56cc879ebcea8c364afe0b6a428bc.incomplete'
+Download complete. Moving file to /workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/blobs/a20398005bd56cc879ebcea8c364afe0b6a428bc
+/workspace/.cache/huggingface/hub/models--mistralai--Mistral-Small-24B-Instruct-2501/snapshots/9527884be6e5616bdd54de542f9ae13384489724
