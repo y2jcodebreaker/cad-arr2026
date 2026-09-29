@@ -1,0 +1,46 @@
+{
+ "runner": "a9_generate",
+ "status": "ok",
+ "started": "2026-09-29T18:49:48",
+ "host": "2302bc1046ec",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "generate",
+  "arms": null,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a9",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "f99ecad452fe1b6cbf1239ebd9ac82d84af0a211",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "direction": "a8",
+  "layers": [
+   9,
+   11
+  ],
+  "alpha": 1.0,
+  "side": "disability",
+  "system_prompt": "default",
+  "eval_set": "fresh",
+  "fresh_sha256": "2fd13f1ad94403dc8a3f153301b894c0c9591e1362e86f871802c04ab7de11bb",
+  "n": 425,
+  "lexical_mean": 1.1183513579162265,
+  "env": {
+   "torch": "2.4.1+cu124",
+   "cuda": "12.4",
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "gpu": "NVIDIA A100-SXM4-80GB"
+  }
+ },
+ "finished": "2026-09-29T18:57:16",
+ "git_changed_during_run": false
+}

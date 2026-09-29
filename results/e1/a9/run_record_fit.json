@@ -1,0 +1,55 @@
+{
+ "runner": "a9_fit",
+ "status": "ok",
+ "started": "2026-09-29T18:05:13",
+ "host": "2302bc1046ec",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "fit",
+  "arms": null,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a9",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "f99ecad452fe1b6cbf1239ebd9ac82d84af0a211",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "ga9_0_cos": {
+   "9": 0.9999999998985216,
+   "11": 0.9999999991323534
+  },
+  "cos_identity_framing": {
+   "9": -0.27017587423324585,
+   "11": -0.2214205414056778
+  },
+  "GA9_0_pass": true,
+  "cos_shuffle0_framing": {
+   "9": 0.15248557925224304,
+   "11": 0.19144296646118164
+  },
+  "cos_shuffle1_framing": {
+   "9": -0.09344597160816193,
+   "11": -0.08710178732872009
+  },
+  "cos_shuffle2_framing": {
+   "9": 0.14243218302726746,
+   "11": 0.1464124619960785
+  },
+  "env": {
+   "torch": "2.4.1+cu124",
+   "cuda": "12.4",
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "gpu": "NVIDIA A100-SXM4-80GB"
+  }
+ },
+ "finished": "2026-09-29T18:06:16",
+ "git_changed_during_run": false
+}
