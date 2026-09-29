@@ -114,6 +114,6 @@ Exploratory (not pre-registered): prompt + A8 − prompt alone on the fresh set:
    not the label alone. Prompt + A8 does reduce J on all three judges on the fresh set without
    erasure or quality loss; its advantage over the prompt alone holds on J3 only (exploratory).
 
-**Caveats.** One model (Llama-3.1-8B-Instruct), greedy decoding. All three judges are LLMs; no human
+**Caveats.** One model (Llama-3.1-8B-Instruct); generation samples at temperature 0.1 with one seed (42), not greedy (Correction C1 in the pre-registration). All three judges are LLMs; no human
 labels. The fresh questions are the ones the E1 loudness filter dropped, so they carry less
 medicalization; this is a shift, not an i.i.d. replication.

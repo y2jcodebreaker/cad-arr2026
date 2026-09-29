@@ -96,4 +96,4 @@ degeneracy flag (unique answers < 50%) misses it: all 250 salads are distinct st
    includes 0.
 5. *Additive steering fails.* α = 4 lengthens answers (742 words), loses 3.5–5.5 quality points and
    raises the lexical score; α = 8 destroys the text.
-6. One model (Llama-3.1-8B-Instruct), one seed, greedy decoding.
+6. One model (Llama-3.1-8B-Instruct), one seed (42); generation samples at temperature 0.1 (corrected 2026-09-29: this line first said "greedy decoding").

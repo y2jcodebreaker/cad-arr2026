@@ -186,3 +186,11 @@ tokenizers and GPU.
 **Why.** The new pod's image ships torch 2.8.0; the earlier runs used the torch 2.4 image, and their
 exact torch build was not recorded. A library change can alter greedy decoding by itself. Torch
 2.4.1 is installed on the pod to stay close to the earlier stack; this rule covers any residual drift.
+
+### Correction C1 — 2026-09-29, after scoring (a description error; no design or criterion changes)
+
+Section 4's heading and A9-A5's "Why" call the Llama generation **greedy**. It is not: every
+generation arm in E1, M1, A8 and A9 samples at **temperature 0.1 with a fixed seed**
+(`evaluate_rtsd_fullres_generation.py`: `TEMPERATURE = 0.1`, `do_sample = TEMPERATURE > 0`,
+`seed_all(42)`). The runs are still deterministic given seed, software and hardware, which is why
+the A9-A5 reruns match 250/250. The judges (M1, J3) do decode greedily, as stated.

@@ -137,6 +137,17 @@ run: the two arms GPT-5.5 rates far lowest on quality (SADI −5.26, Angular −
 (descriptive; 6 points). No steered answer is empty. It cannot be compared number-for-number with
 E1/A8.
 
+### F3. Decoding and tokenisation facts (checked 2026-09-29 against `evaluate_rtsd_fullres_generation.py`)
+
+- **Generation is not greedy.** `TEMPERATURE = 0.1`, `do_sample = TEMPERATURE > 0`, seed 42 via
+  `seed_all`. Any draft sentence saying "greedy decoding" for the steered model is wrong; say
+  "sampling at temperature 0.1 with a fixed seed". Judges (M1, J3, accessibility) are greedy/temperature
+  as their own scripts state.
+- **Doubled start token on Llama.** `format_prompt` writes `<|begin_of_text|>` and
+  `generate_responses` tokenises with the default `add_special_tokens=True`, so every Llama generation
+  starts with two BOS tokens; A8's feature pass (`add_special_tokens=False`) has one. Consistent across
+  all arms, so no comparison is affected; state it only if implementation details are listed.
+
 ## G. Summary
 
 - 224 sentences read; numeric claims (45) traced to files, citation claims checked against the
