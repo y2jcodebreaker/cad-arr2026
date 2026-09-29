@@ -136,3 +136,14 @@ Clarifications of points the frozen text leaves open; none changes a criterion o
 6. **Perplexity.** Text = the test split's lines joined with "\n\n" (the Hugging Face perplexity
    guide); the final partial 1,024-token window is dropped;
    perplexity = exp(mean token negative log-likelihood).
+
+### A9-A2 — 2026-09-29, before any J3 rating exists
+
+**What changed.** J3's tokenizer uses the corrected pre-tokenizer split that transformers ≥ 4.57
+applies with `fix_mistral_regex=True`; we set it by hand (`judge_medicalization.fix_mistral_tokenizer`)
+because the pinned 4.44.2 lacks the flag. **Why.** The tokenizer.json in the pinned revision
+mis-splits some capitalised words relative to the reference tokenizer (mistral-common); transformers
+4.57 warns about it. **Checked:** the hand-set pre-tokenizer is identical (JSON) to transformers'
+fix and gives identical ids on 550 sampled judge prompts; the unfixed tokenizer differs on 1 of the
+550 (1 token of 384,016). The chat-template change of section 3 was also checked: with our system
+message the rendered prompt equals the official template's, byte for byte.
