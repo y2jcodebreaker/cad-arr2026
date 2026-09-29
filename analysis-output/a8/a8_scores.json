@@ -1,0 +1,396 @@
+{
+ "bonferroni_interval_percentiles": [
+  0.4166666666666667,
+  99.58333333333333
+ ],
+ "arms": {
+  "fc_remove_a1": {
+   "echo_drop": -0.0843373493975903,
+   "llama": {
+    "dJ": -0.22127659574468084,
+    "ci_bonferroni": [
+     -0.3645567375886525,
+     -0.09927304964539098
+    ],
+    "ci95": [
+     -0.3276595744680851,
+     -0.1276595744680851
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.03,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.11627906976744186,
+    "ci_bonferroni": [
+     -0.20274987800910865,
+     -0.052888071895425166
+    ],
+    "ci95": [
+     -0.1761904761904762,
+     -0.06796116504854369
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.028,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": true,
+   "success": true
+  },
+  "fc_remove_a2": {
+   "echo_drop": -0.04332222507049455,
+   "llama": {
+    "dJ": -0.16170212765957448,
+    "ci_bonferroni": [
+     -0.2879609929078014,
+     -0.03829787234042553
+    ],
+    "ci95": [
+     -0.2511702127659574,
+     -0.06808510638297872
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.042,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.1,
+    "ci_bonferroni": [
+     -0.17214830520048072,
+     -0.04457565188506901
+    ],
+    "ci95": [
+     -0.1527860845295056,
+     -0.053811659192825115
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.04,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": true,
+   "success": true
+  },
+  "fc_add_a4": {
+   "echo_drop": 0.0012817226352217492,
+   "llama": {
+    "dJ": -0.16826923076923078,
+    "ci_bonferroni": [
+     -0.4786729857819905,
+     0.1513116201755748
+    ],
+    "ci95": [
+     -0.39906103286384975,
+     0.06811125654450235
+    ],
+    "u_rate": 0.1148936170212766,
+    "dQ_accessibility": -5.462,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.2553191489361702,
+    "ci_bonferroni": [
+     -0.40287955820476856,
+     -0.1305613023988978
+    ],
+    "ci95": [
+     -0.36471521942110174,
+     -0.15979381443298968
+    ],
+    "u_rate": 0.02127659574468085,
+    "dQ_accessibility": -3.52,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "fc_add_a8": {
+   "echo_drop": 1.0,
+   "llama": {
+    "dJ": 0.0,
+    "ci_bonferroni": [
+     0.0,
+     0.0
+    ],
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "u_rate": 0.9957446808510638,
+    "dQ_accessibility": -6.466,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.07407407407407407,
+    "ci_bonferroni": [
+     -0.2857142857142857,
+     0.0
+    ],
+    "ci95": [
+     -0.21739130434782608,
+     0.0
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -5.36,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "fc_prompt_remove_a1": {
+   "echo_drop": 0.11048449115611392,
+   "llama": {
+    "dJ": -0.20425531914893616,
+    "ci_bonferroni": [
+     -0.36030141843971636,
+     -0.06382978723404255
+    ],
+    "ci95": [
+     -0.3191489361702128,
+     -0.09787234042553192
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": 0.014,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.13615023474178403,
+    "ci_bonferroni": [
+     -0.2471311858645981,
+     -0.05487794612794634
+    ],
+    "ci95": [
+     -0.2112814819954208,
+     -0.07211538461538461
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": 0.076,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": true,
+   "success": true
+  },
+  "fc_remove_a1_L21L25": {
+   "echo_drop": -0.049730838246603515,
+   "llama": {
+    "dJ": -0.08936170212765958,
+    "ci_bonferroni": [
+     -0.22127659574468084,
+     0.02127659574468085
+    ],
+    "ci95": [
+     -0.17872340425531916,
+     -0.00851063829787234
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.11,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.0593607305936073,
+    "ci_bonferroni": [
+     -0.15396359427609427,
+     0.02286714623297188
+    ],
+    "ci95": [
+     -0.12798883962696833,
+     0.0045050140638375905
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.056,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "prompt_explicit": {
+   "echo_drop": 0.17175083311971295,
+   "llama": {
+    "dJ": -0.14468085106382977,
+    "ci_bonferroni": [
+     -0.27093971631205677,
+     -0.03829787234042553
+    ],
+    "ci95": [
+     -0.23404255319148937,
+     -0.06382978723404255
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": 0.008,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.06422018348623854,
+    "ci_bonferroni": [
+     -0.1337326388888889,
+     0.0
+    ],
+    "ci95": [
+     -0.11504832592471759,
+     -0.017543859649122806
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": 0.068,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "caa": {
+   "echo_drop": 0.31350935657523726,
+   "llama": {
+    "dJ": -0.14042553191489363,
+    "ci_bonferroni": [
+     -0.2723404255319149,
+     -0.00851063829787234
+    ],
+    "ci95": [
+     -0.23829787234042554,
+     -0.0425531914893617
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.802,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.09174311926605505,
+    "ci_bonferroni": [
+     -0.20125978090766825,
+     0.0091324200913242
+    ],
+    "ci95": [
+     -0.16589861751152074,
+     -0.021956540155879747
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.296,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "cad_proj_k40": {
+   "echo_drop": 0.6144578313253013,
+   "llama": {
+    "dJ": -0.06382978723404255,
+    "ci_bonferroni": [
+     -0.23404255319148937,
+     0.10072695035460902
+    ],
+    "ci95": [
+     -0.19148936170212766,
+     0.059574468085106386
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.586,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.022727272727272728,
+    "ci_bonferroni": [
+     -0.11747261967850203,
+     0.07218445846776089
+    ],
+    "ci95": [
+     -0.09502801120448179,
+     0.047186218211648805
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.232,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": false,
+   "success": false
+  },
+  "prompt_explicit_cad_k40": {
+   "echo_drop": 0.6900794668033837,
+   "llama": {
+    "dJ": -0.2765957446808511,
+    "ci_bonferroni": [
+     -0.4297872340425532,
+     -0.14042553191489363
+    ],
+    "ci95": [
+     -0.39148936170212767,
+     -0.17436170212766017
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.696,
+    "unscored_accessibility": 0
+   },
+   "qwen": {
+    "dJ": -0.13839285714285715,
+    "ci_bonferroni": [
+     -0.23088848631239936,
+     -0.06240823422629803
+    ],
+    "ci95": [
+     -0.20628162669189948,
+     -0.07894127680311894
+    ],
+    "u_rate": 0.0,
+    "dQ_accessibility": -0.2,
+    "unscored_accessibility": 0
+   },
+   "reduces_both_judges": true,
+   "success": false
+  }
+ },
+ "succeeding_arms": [
+  "fc_remove_a1",
+  "fc_remove_a2",
+  "fc_prompt_remove_a1"
+ ],
+ "erasing_arms": [],
+ "outcome": "(a) framing-contrast steering reduces medicalization without erasing the disability",
+ "secondary": {
+  "best_arm": "fc_prompt_remove_a1",
+  "best_vs_prompt_explicit": {
+   "llama": {
+    "diff": -0.059574468085106386,
+    "ci95": [
+     -0.14468085106382977,
+     0.02127659574468085
+    ]
+   },
+   "qwen": {
+    "diff": -0.0787037037037037,
+    "ci95": [
+     -0.13085063644436926,
+     -0.028708133971291867
+    ]
+   }
+  },
+  "best_vs_caa": {
+   "llama": {
+    "diff": -0.06382978723404255,
+    "ci95": [
+     -0.17882978723404255,
+     0.04680851063829787
+    ]
+   },
+   "qwen": {
+    "diff": -0.046511627906976744,
+    "ci95": [
+     -0.12684035476718403,
+     0.023696682464454975
+    ]
+   }
+  },
+  "selected_vs_L21L25": {
+   "llama": {
+    "diff": -0.13191489361702127,
+    "ci95": [
+     -0.25957446808510637,
+     -0.01276595744680851
+    ]
+   },
+   "qwen": {
+    "diff": -0.046296296296296294,
+    "ci95": [
+     -0.10186111111111111,
+     0.009570528156054465
+    ]
+   }
+  }
+ }
+}

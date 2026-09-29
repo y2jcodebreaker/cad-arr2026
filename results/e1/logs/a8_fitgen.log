@@ -1,0 +1,11 @@
+nohup: ignoring input
+Repo card metadata block was not found. Setting CardData to empty.
+  Expanded pairs: 4164
+  [CKPT] Loaded loudness norms from accesseval_loudness.npz
+  Filtered: 4164 → 2083 pairs (threshold=7.1150)
+Repo card metadata block was not found. Setting CardData to empty.
+fit pool: 633 questions-by-category; domains {'Finance': 178, 'Healthcare': 36, 'Hospitality': 100, 'Media': 109, 'Technology': 112, 'Education': 98}
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:12<00:37, 12.36s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:23<00:23, 11.72s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:33<00:11, 11.01s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:36<00:00,  7.63s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:36<00:00,  9.06s/it]
+  A8 fit answers:   0%|          | 0/5 [00:00<?, ?it/s]  A8 fit answers:  20%|██        | 1/5 [02:00<08:01, 120.47s/it]  A8 fit answers:  40%|████      | 2/5 [03:36<05:18, 106.29s/it]  A8 fit answers:  60%|██████    | 3/5 [05:58<04:04, 122.34s/it]  A8 fit answers:  80%|████████  | 4/5 [08:04<02:04, 124.06s/it]  A8 fit answers: 100%|██████████| 5/5 [09:42<00:00, 114.65s/it]  A8 fit answers: 100%|██████████| 5/5 [09:42<00:00, 116.59s/it]
+  Done: 633 responses
+wrote e1_outputs/a8/fit_items.json
