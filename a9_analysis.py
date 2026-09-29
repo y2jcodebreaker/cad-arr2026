@@ -27,6 +27,8 @@ SHUF = ("fc_shuffle_s0", "fc_shuffle_s1", "fc_shuffle_s2")
 GATE_MISS, GATE_U, GATE_RHO = 0.10, 0.10, 0.5
 ECHO_MAX, DQ_MIN, U_MAX = 0.25, -1.0, 0.10
 SIDE_BAND, PPL_MAX = 0.10, 0.05
+DRIFT_MIN = 0.95          # A9-A5: identical-text share needed to keep the registered references
+RERUN = {"unsteered_s42": "unsteered_rerun", "neutral_s42": "neutral_rerun", "fc_remove_a1": "fc_remove_a1_rerun"}
 
 
 def bootstat(f, idx, boots):
@@ -44,7 +46,7 @@ def main(argv=None) -> int:
     # ---------------------------------------------------------------- frozen set
     items = fe.eval_pairs(fe.load())
     arms = m1_arms.load(base, required=False)
-    need = ["unsteered_s42", "neutral_s42", "fc_remove_a1", *SHUF, "id_remove_a1", "fc_remove_a1_neutral"]
+    need = ["unsteered_s42", "neutral_s42", "fc_remove_a1", *SHUF, "id_remove_a1", "fc_remove_a1_neutral", *RERUN.values()]
     if [a for a in need if a not in arms]:
         raise SystemExit(f"missing arms: {[a for a in need if a not in arms]}")
     J = {j: load_judge(base / f"m1_judge_{j}.json") for j in M1J}
@@ -54,7 +56,6 @@ def main(argv=None) -> int:
     boots = [np.array(nonhc)[b] for b in boot_sets(qids)]
     num = {j: {a: [numeric(J[j]["by_arm"][a].get(i)) for i in range(250)] for a in J[j]["by_arm"]} for j in J}
     rep = json.loads((base / "a9/a9_fit_report.json").read_text())
-    R["GA9_0"] = {"cos": rep["ga9_0_cos"], "pass": rep["GA9_0_pass"]}
 
     # ---------------------------------------------------------------- fresh set
     fitems, ftexts = m1_arms.load_fresh(base)
@@ -62,6 +63,18 @@ def main(argv=None) -> int:
     fnonhc = [i for i, it in enumerate(fitems) if it["domain"] != "Healthcare"]
     fboots = [np.array(fnonhc)[b] for b in boot_sets(np.array([fitems[i]["question_id"] for i in fnonhc]))]
     fnum = {j: {a: [numeric(FJ[j]["by_arm"][a].get(i)) for i in range(len(fitems))] for a in ftexts} for j in FJ}
+
+    # ---------------------------------------------------------------- A9-A5 environment drift
+    ident = {o: float(np.mean([x == y for x, y in zip(arms[o]["texts"], arms[n]["texts"])])) for o, n in RERUN.items()}
+    same_env = all(v >= DRIFT_MIN for v in ident.values())
+    REF, NREF, FC = (("unsteered_s42", "neutral_s42", "fc_remove_a1") if same_env
+                     else ("unsteered_rerun", "neutral_rerun", "fc_remove_a1_rerun"))
+    R["A9_A5_drift"] = {"identical_share": ident, "registered_references_used": same_env,
+                        "references": {"disability": REF, "neutral": NREF, "framing_arm": FC},
+                        "dJ_rerun_minus_committed": {j: bootstat(
+                            lambda idx: paired_mean(num[j]["unsteered_rerun"], num[j]["unsteered_s42"], idx), nonhc, boots)
+                            for j in M1J}}
+    R["GA9_0"] = {"cos": rep["ga9_0_cos"], "pass": rep["GA9_0_pass"]}
 
     # ---------------------------------------------------------------- gates on J3
     u42 = [J["mistral"]["by_arm"]["unsteered_s42"].get(i) for i in range(250)]
@@ -105,9 +118,9 @@ def main(argv=None) -> int:
     spec = {}
     for j in M1J:
         sm = shuf_mean(j)
-        spec[j] = {"fc_minus_shuffle_mean": bootstat(lambda idx: paired_mean(num[j]["fc_remove_a1"], sm, idx), nonhc, boots),
-                   "shuffle_mean_dJ": bootstat(lambda idx: paired_mean(sm, num[j]["unsteered_s42"], idx), nonhc, boots),
-                   "per_shuffle_dJ": {a: bootstat(lambda idx, a=a: paired_mean(num[j][a], num[j]["unsteered_s42"], idx),
+        spec[j] = {"fc_minus_shuffle_mean": bootstat(lambda idx: paired_mean(num[j][FC], sm, idx), nonhc, boots),
+                   "shuffle_mean_dJ": bootstat(lambda idx: paired_mean(sm, num[j][REF], idx), nonhc, boots),
+                   "per_shuffle_dJ": {a: bootstat(lambda idx, a=a: paired_mean(num[j][a], num[j][REF], idx),
                                                   nonhc, boots) for a in SHUF}}
     a_ok = all(spec[j]["fc_minus_shuffle_mean"]["ci"][1] < 0 for j in M1J)
     b_ok = any(spec[j]["fc_minus_shuffle_mean"]["ci"][1] >= 0 and spec[j]["shuffle_mean_dJ"]["ci"][1] < 0 for j in M1J)
@@ -115,7 +128,7 @@ def main(argv=None) -> int:
     R["Q_SPEC"] = spec
 
     # ---------------------------------------------------------------- Q-MECH
-    e_ref = np.array([echo(t, it) for t, it in zip(arms["unsteered_s42"]["texts"], items)], float)[nonhc]
+    e_ref = np.array([echo(t, it) for t, it in zip(arms[REF]["texts"], items)], float)[nonhc]
 
     def echo_drop(texts, its, idx, ref):
         v = np.array([echo(t, it) for t, it in zip(texts, its)], float)[idx]
@@ -123,7 +136,7 @@ def main(argv=None) -> int:
     mech = {"echo_drop": echo_drop(arms["id_remove_a1"]["texts"], items, nonhc, e_ref),
             "cos_identity_framing": rep["cos_identity_framing"]}
     for j in M1J:
-        mech[j] = bootstat(lambda idx: paired_mean(num[j]["id_remove_a1"], num[j]["unsteered_s42"], idx), nonhc, boots)
+        mech[j] = bootstat(lambda idx: paired_mean(num[j]["id_remove_a1"], num[j][REF], idx), nonhc, boots)
     reduces = all(mech[j]["ci"][1] < 0 for j in M1J)
     mech["outcome"] = ("(a) erasure" if mech["echo_drop"] >= ECHO_MAX else
                        "(b) reduction without erasure: mechanism claim withdrawn" if reduces else "(c) neither")
@@ -132,11 +145,11 @@ def main(argv=None) -> int:
     # ---------------------------------------------------------------- Q-SIDE
     ppl = json.loads((base / "a9/ppl.json").read_text())
     side = {"ppl": ppl, "ppl_rel_change": {a: ppl[a]["ppl"] / ppl["unsteered"]["ppl"] - 1 for a in ("fc_remove_a1", "fc_remove_a2")}}
-    nt, rt_ = arms["fc_remove_a1_neutral"]["texts"], arms["neutral_s42"]["texts"]
+    nt, rt_ = arms["fc_remove_a1_neutral"]["texts"], arms[NREF]["texts"]
     side["identical_share"] = float(np.mean([a == b for a, b in zip(nt, rt_)]))
     side["mean_chars"] = {"steered": float(np.mean([len(t) for t in nt])), "unsteered": float(np.mean([len(t) for t in rt_]))}
     for j in M1J:
-        side[j] = bootstat(lambda idx: paired_mean(num[j]["fc_remove_a1_neutral"], num[j]["neutral_s42"], idx), nonhc, boots)
+        side[j] = bootstat(lambda idx: paired_mean(num[j]["fc_remove_a1_neutral"], num[j][NREF], idx), nonhc, boots)
     in_band = all(-SIDE_BAND <= side[j]["ci"][0] and side[j]["ci"][1] <= SIDE_BAND for j in M1J)
     side["outcome"] = ("(a) negligible" if in_band and side["ppl_rel_change"]["fc_remove_a1"] <= PPL_MAX
                        else "(b) side effect reported")
@@ -177,6 +190,7 @@ def main(argv=None) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "a9_scores.json").write_text(json.dumps(R, indent=1, default=float))
+    print(f"A9-A5 identical shares {ident} -> references {R['A9_A5_drift']['references']}")
     print(f"gates: GA9-0 {R['GA9_0']}  GA9-1 {g1}  GA9-2 {g2}")
     for q in ("Q_J3", "Q_SPEC", "Q_MECH", "Q_SIDE", "Q_FRESH"):
         print(f"{q}: {R[q]['outcome']}")

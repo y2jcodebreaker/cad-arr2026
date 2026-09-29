@@ -5,7 +5,7 @@ pod is seeded from the committed results/e1. Outputs go to e1_outputs/a9.
 
     python a9_robustness.py fit_neutral_generate    # unsteered answers to the 96 fit questions' neutral forms
     python a9_robustness.py fit                     # GA9-0, shuffled and identity directions
-    python a9_robustness.py generate [--arms ...]   # five frozen-set arms, four fresh arms
+    python a9_robustness.py generate [--arms ...]   # three reruns, five frozen-set arms, four fresh arms
     python a9_robustness.py ppl                     # WikiText-2 perplexity
     add --dry_run to any of them: no model, prints what would run
 """
@@ -42,6 +42,10 @@ PPL_WINDOW, PPL_BATCH = 1024, 8
 
 # arm -> (direction, question side, system prompt, eval set)
 ARMS = {
+    # A9-A5: same-environment references, generated first; compared text-for-text with the committed arms
+    "unsteered_rerun": (None, "disability", "default", "frozen"),
+    "neutral_rerun": (None, "neutral", "default", "frozen"),
+    "fc_remove_a1_rerun": ("a8", "disability", "default", "frozen"),
     **{f"fc_shuffle_s{s}": (f"shuffle{s}", "disability", "default", "frozen") for s in SHUFFLE_SEEDS},
     "id_remove_a1": ("identity", "disability", "default", "frozen"),
     "fc_remove_a1_neutral": ("a8", "neutral", "default", "frozen"),
@@ -50,6 +54,16 @@ ARMS = {
     "fresh_fc_prompt_remove_a1": ("a8", "disability", "explicit", "fresh"),
     "fresh_prompt_explicit": (None, "disability", "explicit", "fresh"),
 }
+
+
+def env() -> dict:
+    """Library versions, stored in every A9 run record (A9-A5: earlier runs did not record them)."""
+    import tokenizers
+    import torch
+    import transformers
+    return {"torch": torch.__version__, "cuda": torch.version.cuda, "transformers": transformers.__version__,
+            "tokenizers": tokenizers.__version__,
+            "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None}
 
 
 def load_fresh() -> list[dict]:
@@ -104,7 +118,7 @@ def cmd_fit_neutral_generate(args) -> int:
         ans = rt.generate_responses(model, tok, [rt.format_prompt(q) for q in qs], NEUTRAL_GEN, "A9 neutral fit")
         NEUTRAL_ITEMS.write_text(json.dumps([{"item": i, "question": q, "answer": a}
                                              for i, (q, a) in enumerate(zip(qs, ans))], indent=1))
-        rec.result(n_questions=len(qs), output=str(NEUTRAL_ITEMS))
+        rec.result(n_questions=len(qs), output=str(NEUTRAL_ITEMS), env=env())
     return 0
 
 
@@ -148,7 +162,7 @@ def cmd_fit(args) -> int:
             rep["cos_identity_framing"][L] = float(dirs["identity"][L] @ D8["v"][L])
         torch.save(dirs, DIRS)
         REPORT.write_text(json.dumps(rep, indent=1))
-        rec.result(**rep)
+        rec.result(**rep, env=env())
     print(json.dumps(rep, indent=1))
     return 0
 
@@ -196,7 +210,7 @@ def cmd_generate(args) -> int:
                     h.remove()
             rec.result(direction=name, layers=LAYERS if V else [], alpha=ALPHA if V else 0.0, side=side,
                        system_prompt=sysp, eval_set=eset, fresh_sha256=FRESH_SHA if eset == "fresh" else None,
-                       n=len(resp), lexical_mean=float(np.mean([rt.medicalization_score(r) for r in resp])))
+                       n=len(resp), lexical_mean=float(np.mean([rt.medicalization_score(r) for r in resp])), env=env())
     return 0
 
 
@@ -234,7 +248,7 @@ def cmd_ppl(args) -> int:
             out[arm] = {"alpha": alpha, "ppl": float(np.exp(nll / out["n_tokens_scored"]))}
             print(f"{arm}: ppl {out[arm]['ppl']:.3f}")
         (OUT / "ppl.json").write_text(json.dumps(out, indent=1))
-        rec.result(**{a: out[a]["ppl"] for a in arms})
+        rec.result(**{a: out[a]["ppl"] for a in arms}, env=env())
     return 0
 
 
