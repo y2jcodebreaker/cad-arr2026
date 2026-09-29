@@ -60,9 +60,22 @@ for _a in A9_ARMS:
     ARM_FILES[_a] = (f"a9/{_a}_responses.json", _RESP, "neutral" if "neutral" in _a else "disability")
 OPTIONAL_ARMS = A7_ARMS + A8_ARMS + A9_ARMS
 
-# A9-A1 item 3: the frozen-set arms the third judge (J3) scores, fixed before any J3 rating
+# A10 (PREREG_A10): bias-blind edits of unsteered_s42 and a decode-time ban (Llama, frozen set)
+A10_ARMS = ("game_append", "game_sub", "game_ban")
+for _a in A10_ARMS:
+    ARM_FILES[_a] = (f"a10/{_a}_responses.json", _RESP, "disability")
+# A11 (PREREG_A11): Mistral-7B-Instruct-v0.3. A different model: never compared with Llama's unsteered
+# answers, so m1_analysis leaves these out; a10_a11_analysis.py scores them against mistral_unsteered.
+A11_ARMS = ("mistral_unsteered", "mistral_neutral", "mistral_fc_remove_a1", "mistral_fc_prompt_remove_a1",
+            "mistral_prompt_explicit", "mistral_fc_shuffle_s0")
+for _a in A11_ARMS:
+    ARM_FILES[_a] = (f"a11/{_a}_responses.json", _RESP, "neutral" if "neutral" in _a else "disability")
+OPTIONAL_ARMS = OPTIONAL_ARMS + A10_ARMS + A11_ARMS
+
+# A9-A1 item 3: the frozen-set arms the third judge (J3) scores, fixed before any J3 rating;
+# A10 and A11 add their own arms (their pre-registrations name J3 as a judge)
 J3_ARMS = ("unsteered_s42", "neutral_s42", "prompt_explicit", "prompt_explicit_cad_k40", "cad_proj_k40",
-           "caa", "angular", "fairsteer", "sadi", *A7_ARMS, *A8_ARMS, *A9_ARMS)
+           "caa", "angular", "fairsteer", "sadi", *A7_ARMS, *A8_ARMS, *A9_ARMS, *A10_ARMS, *A11_ARMS)
 # A9 fresh set (fresh_eval_a9.json): arm -> file under base; items are the fresh set's, not the frozen set's
 FRESH_ARMS = ("fresh_unsteered", "fresh_fc_remove_a1", "fresh_fc_prompt_remove_a1", "fresh_prompt_explicit")
 FRESH_FILE = "fresh_eval_a9.json"

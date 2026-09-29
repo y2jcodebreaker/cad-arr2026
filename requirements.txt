@@ -18,3 +18,7 @@ scipy
 tqdm
 matplotlib
 vaderSentiment
+
+# A11: Mistral-7B-v0.3 tokenizer is rebuilt from its SentencePiece model (add_prefix_space); Llama/Qwen do not use it
+sentencepiece
+protobuf

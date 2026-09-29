@@ -134,10 +134,14 @@ def stratified_direction(F: np.ndarray, y: np.ndarray, domains: list[str]) -> np
 
 
 # ------------------------------------------------------------------ model steps
-def answer_features(model, tok, items: list[dict], idx: list[int]) -> np.ndarray:
+def answer_features(model, tok, items: list[dict], idx: list[int], fmt=None,
+                    prompt_special: bool = False) -> np.ndarray:
     """Mean raw output of every decoder layer over the answer tokens (the E1 hook point).
 
-    Hooks, not output_hidden_states: HF returns the LAST layer after the final norm."""
+    Hooks, not output_hidden_states: HF returns the LAST layer after the final norm.
+    fmt / prompt_special default to the Llama path used by A8 and A9 (unchanged); A11 passes the
+    Mistral formatter and prompt_special=True so the prompt carries the tokenizer's single BOS."""
+    fmt = fmt or rt.format_prompt
     import torch
     feats = np.zeros((len(idx), N_LAYERS, model.config.hidden_size), dtype=np.float32)
     store: dict = {}
@@ -151,8 +155,8 @@ def answer_features(model, tok, items: list[dict], idx: list[int]) -> np.ndarray
     try:
         for r, i in enumerate(idx):
             it = items[i]
-            prompt = rt.format_prompt(it["question"])
-            p_ids = tok(prompt, add_special_tokens=False)["input_ids"]
+            prompt = fmt(it["question"])
+            p_ids = tok(prompt, add_special_tokens=prompt_special)["input_ids"]
             a_ids = tok(it["answer"], add_special_tokens=False)["input_ids"][:MAX_ANSWER_TOKENS]
             if not a_ids:
                 raise ValueError(f"fit item {i} has an empty answer")

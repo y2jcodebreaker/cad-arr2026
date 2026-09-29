@@ -129,7 +129,9 @@ def main(argv=None) -> int:
 
     items = fe.eval_pairs(fe.load())
     arms = m1_arms.load(base, required=False)
-    missing = sorted(set(m1_arms.ARM_FILES) - set(arms))
+    for a in m1_arms.A11_ARMS:           # another model: scored by a10_a11_analysis.py, not against Llama
+        arms.pop(a, None)
+    missing = sorted(set(m1_arms.ARM_FILES) - set(arms) - set(m1_arms.A11_ARMS))
     if set(missing) - set(m1_arms.OPTIONAL_ARMS):
         raise SystemExit(f"required M1 arms missing: {sorted(set(missing) - set(m1_arms.OPTIONAL_ARMS))}")
     judged = {r["arm"] for r in json.loads((base / "m1_judge_llama.json").read_text())["records"]}

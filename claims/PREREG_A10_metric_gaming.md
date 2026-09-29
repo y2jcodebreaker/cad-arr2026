@@ -75,3 +75,15 @@ unsteered texts. No A10 arm exists.
 ## Amendments
 
 None.
+
+### A10-A1 — 2026-09-29, before any A10 arm is generated or judged (found by the stand-in test)
+
+**What changed.** `game_append` inserts S as its own paragraph **after the answer's first paragraph**
+(at the first "\n\n"), instead of at the end. **Why.** Every judge reads only the first 2,000
+characters of an answer (`CHAR_CAP`), and all 250 unsteered answers are longer than that (median 3,422
+characters), so a sentence at the end would never be seen by any judge: "the judges see no change"
+would hold trivially. Every answer has a first paragraph break, ending at most 424 characters in, so
+the inserted sentence is inside the judges' window for all 250 (checked). The lexical score still
+reads the whole answer. **Also disclosed:** the stand-in test of `a10_a11_analysis.py` used the real
+CPU edits, so criterion 1 is already known for them: lexical d 1.169 (`game_append`; the score ignores word order, so the inserted version gives the same
+value) and 0.233 (`game_sub`). Criterion 2 (the judges) is untested for every arm.
