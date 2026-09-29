@@ -1,0 +1,241 @@
+{
+ "note": "NOT PRE-REGISTERED: post-hoc descriptive audit",
+ "arms": {
+  "unsteered_s42": {
+   "lexical_mean": 0.5967215104925877,
+   "lexical_d": 0.0,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 476.768,
+   "L_rate_per_1k_nonhc": 0.11993953013103098,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.5446808510638298,
+    "qwen": 0.3080357142857143
+   }
+  },
+  "fc_remove_a1": {
+   "lexical_mean": 0.5693527516246433,
+   "lexical_d": 0.02072194831159343,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 485.868,
+   "L_rate_per_1k_nonhc": 0.06991926227779738,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.32340425531914896,
+    "qwen": 0.1891891891891892
+   },
+   "to_clean_both": 10,
+   "to_med_both": 1
+  },
+  "fc_remove_a2": {
+   "lexical_mean": 0.5799295944108731,
+   "lexical_d": 0.012855171162629318,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 482.364,
+   "L_rate_per_1k_nonhc": 0.08780551449826263,
+   "acc_parse_fail": {
+    "llama": 0.004,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.3829787234042553,
+    "qwen": 0.21145374449339208
+   },
+   "to_clean_both": 9,
+   "to_med_both": 0
+  },
+  "fc_add_a4": {
+   "lexical_mean": 1.4060915482805405,
+   "lexical_d": -0.5720308060408446,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 742.196,
+   "L_rate_per_1k_nonhc": 0.0,
+   "acc_parse_fail": {
+    "llama": 0.004,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.3317307692307692,
+    "qwen": 0.0
+   },
+   "to_clean_both": 26,
+   "to_med_both": 0
+  },
+  "fc_add_a8": {
+   "lexical_mean": 0.0,
+   "lexical_d": 0.669442358034458,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 1047.996,
+   "L_rate_per_1k_nonhc": 0.0,
+   "acc_parse_fail": {
+    "llama": 0.252,
+    "qwen": 0.024
+   },
+   "mean_J_nonhc": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "to_clean_both": 0,
+   "to_med_both": 0
+  },
+  "fc_prompt_remove_a1": {
+   "lexical_mean": 0.4800944002237974,
+   "lexical_d": 0.09253472089775075,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 418.176,
+   "L_rate_per_1k_nonhc": 0.03607307103453602,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.3404255319148936,
+    "qwen": 0.15454545454545454
+   },
+   "to_clean_both": 10,
+   "to_med_both": 0
+  },
+  "fc_remove_a1_L21L25": {
+   "lexical_mean": 0.556778138878035,
+   "lexical_d": 0.03175460695861508,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 481.836,
+   "L_rate_per_1k_nonhc": 0.08244752618076315,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.4553191489361702,
+    "qwen": 0.24444444444444444
+   },
+   "to_clean_both": 6,
+   "to_med_both": 0
+  },
+  "prompt_explicit": {
+   "lexical_mean": 0.5166226822562208,
+   "lexical_d": 0.06481611717482652,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 419.676,
+   "L_rate_per_1k_nonhc": 0.06904614720711585,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.4,
+    "qwen": 0.24336283185840707
+   },
+   "to_clean_both": 7,
+   "to_med_both": 3
+  },
+  "caa": {
+   "lexical_mean": 0.1357318980868043,
+   "lexical_d": 0.3650401286111106,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 492.528,
+   "L_rate_per_1k_nonhc": 0.10364022771772663,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.40425531914893614,
+    "qwen": 0.20353982300884957
+   },
+   "to_clean_both": 10,
+   "to_med_both": 4
+  },
+  "cad_proj_k40": {
+   "lexical_mean": 0.20197103184182585,
+   "lexical_d": 0.3398409642625526,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 484.076,
+   "L_rate_per_1k_nonhc": 0.022773392693995167,
+   "acc_parse_fail": {
+    "llama": 0.0,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.4808510638297872,
+    "qwen": 0.29130434782608694
+   },
+   "to_clean_both": 7,
+   "to_med_both": 5
+  },
+  "prompt_explicit_cad_k40": {
+   "lexical_mean": 0.015453785473739923,
+   "lexical_d": 0.5058802909567442,
+   "unique_frac": 1.0,
+   "empty": 0,
+   "mean_words": 411.564,
+   "L_rate_per_1k_nonhc": 0.037278633655055966,
+   "acc_parse_fail": {
+    "llama": 0.004,
+    "qwen": 0.0
+   },
+   "mean_J_nonhc": {
+    "llama": 0.2680851063829787,
+    "qwen": 0.18723404255319148
+   },
+   "to_clean_both": 12,
+   "to_med_both": 1
+  }
+ },
+ "fit_eval_overlap": {
+  "fit_answers": 633,
+  "fit_question_ids": 96,
+  "eval_question_ids": 50,
+  "shared_question_ids": 0
+ },
+ "exploratory_paired": {
+  "fc_remove_a1_vs_prompt_explicit": {
+   "llama": {
+    "diff": -0.07659574468085106,
+    "ci95": [
+     -0.1702127659574468,
+     0.00851063829787234
+    ]
+   },
+   "qwen": {
+    "diff": -0.046296296296296294,
+    "ci95": [
+     -0.096920576536504,
+     -0.004524886877828055
+    ]
+   }
+  },
+  "fc_remove_a1_vs_caa": {
+   "llama": {
+    "diff": -0.08085106382978724,
+    "ci95": [
+     -0.2,
+     0.02127659574468085
+    ]
+   },
+   "qwen": {
+    "diff": -0.01834862385321101,
+    "ci95": [
+     -0.09004846078305793,
+     0.048783197831978306
+    ]
+   }
+  }
+ }
+}
