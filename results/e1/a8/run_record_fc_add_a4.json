@@ -1,0 +1,35 @@
+{
+ "runner": "a8_generate",
+ "status": "ok",
+ "started": "2026-09-28T20:52:52",
+ "host": "721dd136ef09",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "generate",
+  "arms": null,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a8",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "6cfb5b1c0b7b52b25ac85252d3e39ac984d8d725",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "layers": [
+   9,
+   11
+  ],
+  "operator": "additive",
+  "alpha": 4.0,
+  "system_prompt": "default",
+  "lexical_mean": 1.4060915482805405
+ },
+ "finished": "2026-09-28T20:57:51",
+ "git_changed_during_run": false
+}

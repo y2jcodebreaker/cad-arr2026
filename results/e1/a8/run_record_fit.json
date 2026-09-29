@@ -1,0 +1,58 @@
+{
+ "runner": "a8_fit",
+ "status": "ok",
+ "started": "2026-09-28T20:39:27",
+ "host": "721dd136ef09",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "fit",
+  "arms": null,
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a8",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "6cfb5b1c0b7b52b25ac85252d3e39ac984d8d725",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "n_medicalizing": 106,
+  "n_clean": 374,
+  "by_domain": {
+   "Education": {
+    "med": 14,
+    "clean": 68
+   },
+   "Finance": {
+    "med": 52,
+    "clean": 70
+   },
+   "Hospitality": {
+    "med": 22,
+    "clean": 63
+   },
+   "Media": {
+    "med": 7,
+    "clean": 84
+   },
+   "Technology": {
+    "med": 11,
+    "clean": 89
+   }
+  },
+  "GA8_1_pass": true,
+  "selected_layers": [
+   9,
+   11
+  ],
+  "best_cv_acc": 0.8221970281970282,
+  "GA8_2_pass": true
+ },
+ "finished": "2026-09-28T20:40:39",
+ "git_changed_during_run": false
+}

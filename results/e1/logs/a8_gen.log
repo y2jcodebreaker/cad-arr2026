@@ -1,0 +1,20 @@
+nohup: ignoring input
+fc_remove_a1: layers [9, 11], projection, alpha 1.0, system prompt default
+fc_remove_a2: layers [9, 11], projection, alpha 2.0, system prompt default
+fc_add_a4: layers [9, 11], additive, alpha 4.0, system prompt default
+fc_add_a8: layers [9, 11], additive, alpha 8.0, system prompt default
+fc_prompt_remove_a1: layers [9, 11], projection, alpha 1.0, system prompt explicit
+fc_remove_a1_L21L25: layers [21, 25], projection, alpha 1.0, system prompt default
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:13<00:40, 13.53s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:22<00:21, 10.80s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:31<00:10, 10.22s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:33<00:00,  6.99s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:33<00:00,  8.49s/it]
+  fc_remove_a1:   0%|          | 0/2 [00:00<?, ?it/s]  fc_remove_a1:  50%|█████     | 1/2 [02:07<02:07, 127.34s/it]  fc_remove_a1: 100%|██████████| 2/2 [04:32<00:00, 138.08s/it]  fc_remove_a1: 100%|██████████| 2/2 [04:32<00:00, 136.47s/it]
+  Done: 250 responses
+  fc_remove_a2:   0%|          | 0/2 [00:00<?, ?it/s]  fc_remove_a2:  50%|█████     | 1/2 [02:31<02:31, 151.47s/it]  fc_remove_a2: 100%|██████████| 2/2 [04:57<00:00, 148.47s/it]  fc_remove_a2: 100%|██████████| 2/2 [04:57<00:00, 148.92s/it]
+  Done: 250 responses
+  fc_add_a4:   0%|          | 0/2 [00:00<?, ?it/s]  fc_add_a4:  50%|█████     | 1/2 [02:31<02:31, 151.57s/it]  fc_add_a4: 100%|██████████| 2/2 [04:58<00:00, 148.59s/it]  fc_add_a4: 100%|██████████| 2/2 [04:58<00:00, 149.04s/it]
+  Done: 250 responses
+  fc_add_a8:   0%|          | 0/2 [00:00<?, ?it/s]  fc_add_a8:  50%|█████     | 1/2 [02:34<02:34, 154.62s/it]  fc_add_a8: 100%|██████████| 2/2 [04:59<00:00, 149.07s/it]  fc_add_a8: 100%|██████████| 2/2 [04:59<00:00, 149.90s/it]
+  Done: 250 responses
+  fc_prompt_remove_a1:   0%|          | 0/2 [00:00<?, ?it/s]  fc_prompt_remove_a1:  50%|█████     | 1/2 [02:24<02:24, 144.35s/it]  fc_prompt_remove_a1: 100%|██████████| 2/2 [04:55<00:00, 148.54s/it]  fc_prompt_remove_a1: 100%|██████████| 2/2 [04:55<00:00, 147.91s/it]
+  Done: 250 responses
+  fc_remove_a1_L21L25:   0%|          | 0/2 [00:00<?, ?it/s]  fc_remove_a1_L21L25:  50%|█████     | 1/2 [02:15<02:15, 135.39s/it]  fc_remove_a1_L21L25: 100%|██████████| 2/2 [04:02<00:00, 118.64s/it]  fc_remove_a1_L21L25: 100%|██████████| 2/2 [04:02<00:00, 121.16s/it]
+  Done: 250 responses
