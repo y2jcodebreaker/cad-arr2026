@@ -147,3 +147,12 @@ mis-splits some capitalised words relative to the reference tokenizer (mistral-c
 fix and gives identical ids on 550 sampled judge prompts; the unfixed tokenizer differs on 1 of the
 550 (1 token of 384,016). The chat-template change of section 3 was also checked: with our system
 message the rendered prompt equals the official template's, byte for byte.
+
+### A9-A3 — 2026-09-29, before any A9 generation (found by the stand-in test of `a9_analysis.py`)
+
+**What changed.** The fresh set drops items with no disability category: 3 generic questions
+(ids 142, 152, 153, all Media, e.g. "How can journalists cover disability-related topics
+sensitively while avoiding stereotypes?"), each the only pair of its question. The fresh set is 425
+items from 85 questions (310 non-Healthcare), sha256 2fd13f1a…. **Why.** The echo measure needs the
+item's category, and these items are a different kind of question from every frozen-set item (the
+frozen set has none). Dropping them after sampling leaves every other draw unchanged.

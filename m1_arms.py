@@ -53,7 +53,35 @@ A7_ARMS = ("angular_adaptive", "caa_m2", "fairsteer_a1", "sadi_s5")
 A8_ARMS = ("fc_remove_a1", "fc_remove_a2", "fc_add_a4", "fc_add_a8", "fc_prompt_remove_a1", "fc_remove_a1_L21L25")
 for _a in A8_ARMS:
     ARM_FILES[_a] = (f"a8/{_a}_responses.json", _RESP, "disability")
-OPTIONAL_ARMS = A7_ARMS + A8_ARMS
+# A9 (PREREG_A9): frozen-set control and side-effect arms
+A9_ARMS = ("fc_shuffle_s0", "fc_shuffle_s1", "fc_shuffle_s2", "id_remove_a1", "fc_remove_a1_neutral")
+for _a in A9_ARMS:
+    ARM_FILES[_a] = (f"a9/{_a}_responses.json", _RESP, "neutral" if _a.endswith("_neutral") else "disability")
+OPTIONAL_ARMS = A7_ARMS + A8_ARMS + A9_ARMS
+
+# A9-A1 item 3: the frozen-set arms the third judge (J3) scores, fixed before any J3 rating
+J3_ARMS = ("unsteered_s42", "neutral_s42", "prompt_explicit", "prompt_explicit_cad_k40", "cad_proj_k40",
+           "caa", "angular", "fairsteer", "sadi", *A7_ARMS, *A8_ARMS, *A9_ARMS)
+# A9 fresh set (fresh_eval_a9.json): arm -> file under base; items are the fresh set's, not the frozen set's
+FRESH_ARMS = ("fresh_unsteered", "fresh_fc_remove_a1", "fresh_fc_prompt_remove_a1", "fresh_prompt_explicit")
+FRESH_FILE = "fresh_eval_a9.json"
+
+
+def load_fresh(base: Path, required: bool = True) -> tuple[list[dict], dict[str, list[str]]]:
+    """(fresh items, {arm: texts}) for the A9 fresh arms under base/a9."""
+    items = json.loads(Path(FRESH_FILE).read_text())
+    out = {}
+    for arm in FRESH_ARMS:
+        f = Path(base) / "a9" / f"{arm}_responses.json"
+        if not f.exists():
+            if required:
+                raise FileNotFoundError(f"fresh arm {arm}: {f} is missing")
+            continue
+        texts = _texts(json.loads(f.read_text())["responses"])
+        if len(texts) != len(items):
+            raise ValueError(f"fresh arm {arm}: {len(texts)} responses, expected {len(items)}")
+        out[arm] = texts
+    return items, out
 
 
 def _texts(raw: list) -> list[str]:
