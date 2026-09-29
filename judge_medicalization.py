@@ -21,7 +21,9 @@ from typing import Callable, Optional
 import frozen_eval as fe
 import m1_arms
 
-JUDGES = {"llama": "meta-llama/Llama-3.1-8B-Instruct", "qwen": "Qwen/Qwen2.5-7B-Instruct"}
+JUDGES = {"llama": "meta-llama/Llama-3.1-8B-Instruct", "qwen": "Qwen/Qwen2.5-7B-Instruct",
+          "mistral": "mistralai/Mistral-Small-24B-Instruct-2501"}      # mistral = A9's third judge J3
+REVISIONS = {"mistral": "9527884be6e5616bdd54de542f9ae13384489724"}    # PREREG_A9 section 3
 CHAR_CAP = 2000
 CUT_MARK = " [answer continues]"
 TOKEN_BUDGET = 48000   # padded tokens per batch; two 8B judges share one 80 GB A100
@@ -113,6 +115,44 @@ def greedy_decode(model, input_ids, attention_mask, eos_ids, pad_id, max_new_tok
     return torch.stack(steps, dim=1)
 
 
+def build_items_fresh(base: Path, required: bool = True) -> tuple[list[dict], dict[str, tuple[str, str]]]:
+    """records for the A9 fresh arms; item indices refer to fresh_eval_a9.json."""
+    items, arms = m1_arms.load_fresh(base, required=required)
+    records, unique = [], {}
+    for arm, texts in arms.items():
+        for it, text in zip(items, texts):
+            k = key(it["question"], text)
+            unique.setdefault(k, (it["question"], text))
+            records.append({"arm": arm, "item": it["item"], "key": k})
+    return records, unique
+
+
+# PREREG_A9 amendment A9-A2: the corrected pre-tokenizer split that transformers >= 4.57 applies with
+# fix_mistral_regex=True (the tokenizer.json regex mis-splits capitalised words; mistral-common is right)
+MISTRAL_SPLIT = (r"[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]*[\p{Ll}\p{Lm}\p{Lo}\p{M}]+"
+                 r"|[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]+[\p{Ll}\p{Lm}\p{Lo}\p{M}]*"
+                 r"|\p{N}| ?[^\s\p{L}\p{N}]+[\r\n/]*|\s*[\r\n]+|\s+(?!\S)|\s+")
+
+
+def fix_mistral_tokenizer(tok) -> None:
+    from tokenizers import Regex, pre_tokenizers
+    tok.backend_tokenizer.pre_tokenizer = pre_tokenizers.Sequence([
+        pre_tokenizers.Split(Regex(MISTRAL_SPLIT), behavior="isolated", invert=False),
+        pre_tokenizers.ByteLevel(add_prefix_space=False, trim_offsets=True, use_regex=False)])
+
+
+def fixed_chat_template(template: str) -> str:
+    """PREREG_A9 section 3: Mistral's official template minus its date and default-system-message
+    lines (transformers 4.44.2 has no strftime_now). With a system message present the output is
+    the official template's; make_generate checks the rendered prompt against the V7 format."""
+    import re as _re
+    out = _re.sub(r"\{%-\s*set today = .*?%\}\n?", "", template, count=1, flags=_re.S)
+    out = _re.sub(r"\{%-\s*set default_system_message = .*?%\}\n?", "", out, count=1, flags=_re.S)
+    if "strftime_now" in out or "set default_system_message" in out:
+        raise SystemExit("could not remove the date / default-system lines from the Mistral template")
+    return out
+
+
 def build_items_from_file(path: Path, arm: str = "a8_fit") -> tuple[list[dict], dict[str, tuple[str, str]]]:
     """(question, answer) pairs from a JSON list such as e1_outputs/a8/fit_items.json (A8 training answers)."""
     records, unique = [], {}
@@ -123,16 +163,24 @@ def build_items_from_file(path: Path, arm: str = "a8_fit") -> tuple[list[dict], 
     return records, unique
 
 
-def make_generate(model_name: str):
+def make_generate(model_name: str, revision: Optional[str] = None):
     """Returns (generate, measure): generate(batch of (question, answer)) -> raw strings;
     measure(question, answer) -> prompt length in tokens, for length-sorted token-budget batching."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    tok = AutoTokenizer.from_pretrained(model_name)
+    tok = AutoTokenizer.from_pretrained(model_name, revision=revision)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    if "Mistral-Small" in model_name:
+        fix_mistral_tokenizer(tok)
+        tok.chat_template = fixed_chat_template(tok.chat_template)
+        probe = tok.apply_chat_template([{"role": "system", "content": "S"}, {"role": "user", "content": "U"}],
+                                        tokenize=False, add_generation_prompt=True)
+        want = f"{tok.bos_token}[SYSTEM_PROMPT]S[/SYSTEM_PROMPT][INST]U[/INST]"
+        if probe != want:
+            raise SystemExit(f"Mistral prompt format unexpected: {probe!r}")
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="cuda",
-                                                 attn_implementation="sdpa")
+                                                 attn_implementation="sdpa", revision=revision)
     model.eval()
     eos = model.generation_config.eos_token_id
     eos_ids = set(eos if isinstance(eos, list) else [eos]) | {tok.eos_token_id}
@@ -225,11 +273,19 @@ def main(argv=None) -> int:
     ap.add_argument("--token_budget", type=int, default=TOKEN_BUDGET,
                     help="padded tokens per batch; 48k lets two judges share an 80 GB A100 (lower it on OOM; resume keeps work)")
     ap.add_argument("--max_batch", type=int, default=MAX_BATCH)
+    ap.add_argument("--fresh", action="store_true", help="judge the A9 fresh arms (fresh_eval_a9.json)")
+    ap.add_argument("--j3_arms", action="store_true",
+                    help="restrict the frozen-set arms to m1_arms.J3_ARMS (A9-A1 item 3)")
     args = ap.parse_args(argv)
     if args.items:
         records, unique = build_items_from_file(Path(args.items))
+    elif args.fresh:
+        records, unique = build_items_fresh(Path(args.base), required=not args.dry_run)
     else:
         records, unique = build_items(Path(args.base), required=not args.dry_run)
+        if args.j3_arms:
+            records = [r for r in records if r["arm"] in m1_arms.J3_ARMS]
+            unique = {r["key"]: unique[r["key"]] for r in records}
     arms = sorted({r["arm"] for r in records})
     print(f"rubric sha256 {RUBRIC_SHA[:16]} | {len(arms)} arms, {len(records)} records, {len(unique)} unique texts")
     if args.dry_run:
@@ -237,9 +293,10 @@ def main(argv=None) -> int:
         print("--- example prompt ---\n" + USER.format(question=q, answer=cap(a))[:900] + "\n...")
         return 0
     default = (Path(args.items).parent / f"m1_judge_{args.judge}_fit.json" if args.items
+               else Path(f"{args.base}/m1_judge_{args.judge}_fresh.json") if args.fresh
                else Path(f"{args.base}/m1_judge_{args.judge}.json"))
     out = Path(args.out) if args.out else default
-    gen, measure = make_generate(JUDGES[args.judge])
+    gen, measure = make_generate(JUDGES[args.judge], REVISIONS.get(args.judge))
     st = run(out, JUDGES[args.judge], records, unique, gen, measure, args.token_budget, args.max_batch)
     print(f"wrote {out}  missing (unparseable) rate {st['missing_rate']:.4f}")
     return 0
