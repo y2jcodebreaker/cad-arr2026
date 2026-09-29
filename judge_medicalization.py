@@ -70,7 +70,14 @@ def parse(raw: str) -> Optional[str]:
 def build_items(base: Path, required: bool = True) -> tuple[list[dict], dict[str, tuple[str, str]]]:
     """records (arm, item index, key) for every M1 text, and the unique (question, answer) per key."""
     ev = fe.eval_pairs(fe.load())
-    arms = m1_arms.load(base, required=required)
+    arms = m1_arms.load(base, required=False)
+    if required:             # core arms must exist; optional ones (e.g. A11 S2 after a failed gate) may not
+        core = [a for a in m1_arms.ARM_FILES if a not in m1_arms.OPTIONAL_ARMS and a not in arms]
+        if core:
+            raise FileNotFoundError(f"required M1 arms missing: {core}")
+        absent = [a for a in m1_arms.OPTIONAL_ARMS if a not in arms]
+        if absent:
+            print(f"optional arms absent, not judged: {absent}")
     records, unique = [], {}
     for arm, a in arms.items():
         for i, (item, text) in enumerate(zip(ev, a["texts"])):
