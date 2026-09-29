@@ -2,6 +2,7 @@
 # run_a9.sh — the whole A9 pod run (claims/PREREG_A9_robustness.md), in pre-registered order.
 #
 #   export HF_TOKEN=...                       # Llama is gated; never write the token to a file
+#   pip install hf_transfer                  # the image sets HF_HUB_ENABLE_HF_TRANSFER=1 without the package
 #   nohup bash run_a9.sh > a9.log 2>&1 &
 #   tail -f a9.log                            # progress; ends with "A9 DONE" and the tarball
 #
@@ -10,6 +11,9 @@
 # 8B M1 judges, which share the card as before.
 set -euo pipefail
 cd "$(dirname "$0")"
+if [ "${HF_HUB_ENABLE_HF_TRANSFER:-0}" = "1" ] && ! python -c "import hf_transfer" 2>/dev/null; then
+  echo "HF_HUB_ENABLE_HF_TRANSFER=1 but hf_transfer is missing: run 'pip install hf_transfer' first"; exit 1
+fi
 MISTRAL=mistralai/Mistral-Small-24B-Instruct-2501
 MISTRAL_REV=9527884be6e5616bdd54de542f9ae13384489724
 
@@ -32,11 +36,21 @@ mkdir -p e1_outputs && cp -rn results/e1/. e1_outputs/
 huggingface-cli download "$MISTRAL" --revision "$MISTRAL_REV" > a9_mistral_download.log 2>&1 &
 DL=$!
 
-# 1. neutral fit answers, directions (GA9-0), arms, perplexity
-python a9_robustness.py fit_neutral_generate
-python a9_robustness.py fit
-python a9_robustness.py generate
-python a9_robustness.py ppl
+# 1. neutral fit answers, directions (GA9-0), arms, perplexity; a step whose outputs are complete is
+#    skipped on a re-run (its run record is kept, not rewritten)
+A9=e1_outputs/a9
+done_ok() { python - "$@" <<'PY'
+import json, sys
+from pathlib import Path
+ok = all(Path(f).exists() and json.loads(Path(f).read_text()).get("status") == "ok" for f in sys.argv[1:])
+sys.exit(0 if ok else 1)
+PY
+}
+ARMS=$(python -c "import sys; sys.argv=sys.argv[:1]; import a9_robustness as a; print(' '.join(a.ARMS))" 2>/dev/null | tail -n 1)
+done_ok $A9/run_record_fit_neutral_generate.json && echo "skip fit_neutral_generate (done)" || python a9_robustness.py fit_neutral_generate
+done_ok $A9/run_record_fit.json && [ -f $A9/a9_directions.pt ] && echo "skip fit (done)" || python a9_robustness.py fit
+done_ok $(for a in $ARMS; do printf '%s ' "$A9/run_record_$a.json"; done) && echo "skip generate (all arms done)" || python a9_robustness.py generate
+done_ok $A9/run_record_ppl.json && [ -f $A9/ppl.json ] && echo "skip ppl (done)" || python a9_robustness.py ppl
 
 # 2. third judge J3 (55 GB, alone on the card). Its tokenizer file needs tokenizers >= 0.20, which the
 #    pinned transformers 4.44.2 refuses, so J3 runs in its own venv on the image's torch (amendment A9-A4)
