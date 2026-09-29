@@ -42,7 +42,7 @@ python a9_robustness.py ppl
 #    pinned transformers 4.44.2 refuses, so J3 runs in its own venv on the image's torch (amendment A9-A4)
 if [ ! -x .venv-j3/bin/python ]; then
   python -m venv --system-site-packages .venv-j3
-  .venv-j3/bin/pip install -q "transformers==4.46.3" "tokenizers==0.20.3"
+  .venv-j3/bin/pip install -q "transformers==4.46.3" "tokenizers==0.20.3" "accelerate==1.1.1"
 fi
 .venv-j3/bin/python -c "import transformers, tokenizers; print('J3 env', transformers.__version__, tokenizers.__version__)"
 wait "$DL" || echo "background download failed; from_pretrained will download instead"
