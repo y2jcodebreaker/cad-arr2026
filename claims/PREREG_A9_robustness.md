@@ -114,4 +114,25 @@ Also reported: J3 on the fresh arms; the other three fresh arms against the same
 
 ## Amendments
 
-None.
+### A9-A1 — 2026-09-29, before any A9 code has run (no answer, direction or J3 rating exists)
+
+Clarifications of points the frozen text leaves open; none changes a criterion or an outcome.
+
+1. **Identity-direction weights.** "Domain-stratified mean" uses the A8 weights
+   w_d ∝ min(n_med,d, n_clean,d) over the same 480 labelled fit items, so the identity direction
+   differs from the A8 direction *only* in the contrast (disability answer − same question's neutral
+   answer, instead of medicalizing − clean).
+2. **Shuffles.** Within each domain, the labels of the 480 labelled items are permuted with
+   `numpy.random.default_rng(seed)`, seed 0, 1, 2; class counts per domain are unchanged.
+3. **Arms J3 scores** (fixed now, before any J3 rating): on the frozen set `unsteered_s42`,
+   `neutral_s42`, `prompt_explicit`, `prompt_explicit_cad_k40`, `cad_proj_k40`, `caa`, `angular`,
+   `fairsteer`, `sadi`, the four A7 arms, the six A8 arms and the five A9 frozen-set arms; and the
+   four fresh arms. GA9-2 is computed over exactly these texts.
+4. **References.** `fc_remove_a1_neutral` is compared with `neutral_s42` (M1's unsteered neutral
+   answers); fresh arms with `fresh_unsteered`.
+5. **Fresh sampling order.** Questions in ascending question id; within a question, its unique pairs
+   sorted by category name, then `random.Random(0).sample(pairs, min(5, n))` with one generator
+   shared across questions in that order.
+6. **Perplexity.** Text = the test split's lines joined with "\n\n" (the Hugging Face perplexity
+   guide); the final partial 1,024-token window is dropped;
+   perplexity = exp(mean token negative log-likelihood).
