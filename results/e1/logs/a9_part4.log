@@ -1,0 +1,1 @@
+HF_HUB_ENABLE_HF_TRANSFER=1 but hf_transfer is missing: run 'pip install hf_transfer' first

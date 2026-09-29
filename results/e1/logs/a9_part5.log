@@ -1,0 +1,251 @@
+== A9 start 2026-09-29T20:21:56Z  commit 15f052f
+cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
+skip fit_neutral_generate (done)
+skip fit (done)
+skip generate (all arms done)
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:09<00:29,  9.73s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:19<00:19,  9.69s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:28<00:09,  9.45s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  6.66s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:30<00:00,  7.73s/it]
+Token indices sequence length is longer than the specified maximum sequence length for this model (289077 > 131072). Running this sequence through the model will result in indexing errors
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+unsteered: ppl 8.052
+fc_remove_a1: ppl 8.052
+fc_remove_a2: ppl 8.063
+J3 env 4.46.3 0.20.3
+rubric sha256 a5ec3d922f23739f | 27 arms, 6750 records, 5996 unique texts
+Loading checkpoint shards:   0%|          | 0/10 [00:00<?, ?it/s]Loading checkpoint shards:  10%|█         | 1/10 [00:09<01:23,  9.30s/it]Loading checkpoint shards:  20%|██        | 2/10 [00:17<01:08,  8.52s/it]Loading checkpoint shards:  30%|███       | 3/10 [00:26<01:02,  8.91s/it]Loading checkpoint shards:  40%|████      | 4/10 [00:36<00:55,  9.18s/it]Loading checkpoint shards:  50%|█████     | 5/10 [00:45<00:46,  9.26s/it]Loading checkpoint shards:  60%|██████    | 6/10 [00:54<00:36,  9.11s/it]Loading checkpoint shards:  70%|███████   | 7/10 [00:55<00:19,  6.51s/it]Loading checkpoint shards:  80%|████████  | 8/10 [00:56<00:09,  4.87s/it]Loading checkpoint shards:  90%|█████████ | 9/10 [00:57<00:03,  3.65s/it]Loading checkpoint shards: 100%|██████████| 10/10 [00:58<00:00,  2.77s/it]Loading checkpoint shards: 100%|██████████| 10/10 [00:58<00:00,  5.87s/it]
+5996 unique texts, 5996 to judge with mistralai/Mistral-Small-24B-Instruct-2501
+We detected that you are passing `past_key_values` as a tuple of tuples. This is deprecated and will be removed in v4.47. Please convert your cache or use an appropriate `Cache` class (https://huggingface.co/docs/transformers/kv_cache#legacy-cache-format)
+  [ckpt] 1056/5996  5.3 texts/s  ETA 16 min
+  [ckpt] 2114/5996  5.7 texts/s  ETA 11 min
+  [ckpt] 3129/5996  5.9 texts/s  ETA 8 min
+  [ckpt] 4169/5996  6.0 texts/s  ETA 5 min
+  [ckpt] 5235/5996  6.2 texts/s  ETA 2 min
+  [ckpt] 5996/5996  6.3 texts/s  ETA 0 min
+wrote e1_outputs/m1_judge_mistral.json  missing (unparseable) rate 0.0000
+rubric sha256 a5ec3d922f23739f | 4 arms, 1700 records, 1700 unique texts
+Loading checkpoint shards:   0%|          | 0/10 [00:00<?, ?it/s]Loading checkpoint shards:  10%|█         | 1/10 [00:10<01:32, 10.24s/it]Loading checkpoint shards:  20%|██        | 2/10 [00:20<01:20, 10.11s/it]Loading checkpoint shards:  30%|███       | 3/10 [00:29<01:08,  9.81s/it]Loading checkpoint shards:  40%|████      | 4/10 [00:39<00:58,  9.74s/it]Loading checkpoint shards:  50%|█████     | 5/10 [00:49<00:50, 10.03s/it]Loading checkpoint shards:  60%|██████    | 6/10 [00:59<00:39,  9.92s/it]Loading checkpoint shards:  70%|███████   | 7/10 [01:09<00:29,  9.91s/it]Loading checkpoint shards:  80%|████████  | 8/10 [01:19<00:19,  9.95s/it]Loading checkpoint shards:  90%|█████████ | 9/10 [01:29<00:10, 10.04s/it]Loading checkpoint shards: 100%|██████████| 10/10 [01:37<00:00,  9.42s/it]Loading checkpoint shards: 100%|██████████| 10/10 [01:37<00:00,  9.78s/it]
+1700 unique texts, 1700 to judge with mistralai/Mistral-Small-24B-Instruct-2501
+We detected that you are passing `past_key_values` as a tuple of tuples. This is deprecated and will be removed in v4.47. Please convert your cache or use an appropriate `Cache` class (https://huggingface.co/docs/transformers/kv_cache#legacy-cache-format)
+  [ckpt] 1021/1700  6.3 texts/s  ETA 2 min
+  [ckpt] 1700/1700  6.5 texts/s  ETA 0 min
+wrote e1_outputs/m1_judge_mistral_fresh.json  missing (unparseable) rate 0.0000
+==> a9_m1l.log <==
+wrote e1_outputs/m1_judge_llama.json  missing (unparseable) rate 0.0000
+
+==> a9_m1q.log <==
+wrote e1_outputs/m1_judge_qwen.json  missing (unparseable) rate 0.0522
+
+==> a9_m1lf.log <==
+wrote e1_outputs/m1_judge_llama_fresh.json  missing (unparseable) rate 0.0000
+
+==> a9_m1qf.log <==
+wrote e1_outputs/m1_judge_qwen_fresh.json  missing (unparseable) rate 0.0747
+
+$ /usr/local/bin/python judge_sweep_outputs.py --glob e1_outputs/*/*_responses.json e1_outputs/leace/base_seed*.json e1_outputs/leace/dual_k*.json e1_outputs/sadi*/sadi_results.json e1_outputs/caa_*/caa_results.json e1_outputs/fairsteer*/fairsteer_results.json e1_outputs/angular*/angular_results.json --out e1_outputs/judge_llama.json
+==========================================================================
+JUDGE SWEEP OUTPUTS
+==========================================================================
+Files matched: 60
+
+Sweep points and responses found:
+  angular_results.json                            250 responses
+  base_seed42.json                                250 responses
+  baseline_seed42_neutral_responses.json          250 responses
+  baseline_seed42_responses.json                  250 responses
+  baseline_seed42_sysexplicit_responses.json      250 responses
+  baseline_seed42_sysmin_responses.json           250 responses
+  baseline_seed43_responses.json                  250 responses
+  baseline_seed44_responses.json                  250 responses
+  caa_results.json                                250 responses
+  dual_k1.json                                    250 responses
+  dual_k10.json                                   250 responses
+  dual_k20.json                                   250 responses
+  dual_k40.json                                   250 responses
+  dual_k5.json                                    250 responses
+  dual_k80.json                                   250 responses
+  fairsteer_results.json                          250 responses
+  fc_add_a4_responses.json                        250 responses
+  fc_add_a8_responses.json                        250 responses
+  fc_prompt_remove_a1_responses.json              250 responses
+  fc_remove_a1_L21L25_responses.json              250 responses
+  fc_remove_a1_neutral_responses.json             250 responses
+  fc_remove_a1_rerun_responses.json               250 responses
+  fc_remove_a1_responses.json                     250 responses
+  fc_remove_a2_responses.json                     250 responses
+  fc_shuffle_s0_responses.json                    250 responses
+  fc_shuffle_s1_responses.json                    250 responses
+  fc_shuffle_s2_responses.json                    250 responses
+  fresh_fc_prompt_remove_a1_responses.json        425 responses
+  fresh_fc_remove_a1_responses.json               425 responses
+  fresh_prompt_explicit_responses.json            425 responses
+  fresh_unsteered_responses.json                  425 responses
+  id_remove_a1_responses.json                     250 responses
+  meandiff_alpha3.0_responses.json                250 responses
+  meandiff_alpha5.0_responses.json                250 responses
+  meandiff_alpha7.0_responses.json                250 responses
+  meandiff_alpha8.0_responses.json                250 responses
+  neutral_rerun_responses.json                    250 responses
+  probe_alpha3.0_responses.json                   250 responses
+  probe_alpha5.0_responses.json                   250 responses
+  probe_alpha7.0_responses.json                   250 responses
+  probe_alpha9.0_responses.json                   250 responses
+  proj_alpha1.0_responses.json                    250 responses
+  proj_k10_alpha1.0_responses.json                250 responses
+  proj_k1_alpha1.0_responses.json                 250 responses
+  proj_k20_alpha1.0_responses.json                250 responses
+  proj_k40_alpha1.0_responses.json                250 responses
+  proj_k40_sysexplicit_alpha1.0_responses.json    250 responses
+  proj_k5_alpha1.0_responses.json                 250 responses
+  proj_k80_alpha1.0_responses.json                250 responses
+  proj_meandiffbasis_alpha1.0_responses.json      250 responses
+  proj_probebasis_alpha1.0_responses.json         250 responses
+  sadi_results.json                               250 responses
+  unsteered_rerun_responses.json                  250 responses
+
+  total responses     : 15700
+  unique texts        : 14688
+  dedup saving        : 6.4% fewer judge calls
+
+[resume] loaded 11741 scores from judge_llama.json
+  to judge now        : 2947
+
+Loading judge model on cuda ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:12<00:38, 12.84s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:23<00:23, 11.58s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:36<00:12, 12.05s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  8.30s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  9.67s/it]
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:17<03:30, 17.56s/it]  judging:  15%|█▌        | 2/13 [00:34<03:06, 16.99s/it]  judging:  23%|██▎       | 3/13 [00:51<02:51, 17.11s/it]  judging:  31%|███       | 4/13 [01:07<02:32, 16.90s/it]  judging:  38%|███▊      | 5/13 [01:24<02:15, 16.93s/it]  judging:  46%|████▌     | 6/13 [01:41<01:58, 16.88s/it]  judging:  54%|█████▍    | 7/13 [01:58<01:41, 16.98s/it]  judging:  62%|██████▏   | 8/13 [02:16<01:25, 17.01s/it]  judging:  69%|██████▉   | 9/13 [02:33<01:08, 17.08s/it]  judging:  77%|███████▋  | 10/13 [02:50<00:51, 17.09s/it]  judging:  85%|████████▍ | 11/13 [03:07<00:34, 17.04s/it]  judging:  92%|█████████▏| 12/13 [03:24<00:17, 17.10s/it]  judging: 100%|██████████| 13/13 [03:35<00:00, 15.31s/it]  judging: 100%|██████████| 13/13 [03:35<00:00, 16.59s/it]
+  [ckpt] 200/2947 unique judged, ETA 49 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:17<03:25, 17.14s/it]  judging:  15%|█▌        | 2/13 [00:34<03:08, 17.13s/it]  judging:  23%|██▎       | 3/13 [00:51<02:49, 16.96s/it]  judging:  31%|███       | 4/13 [01:07<02:30, 16.74s/it]  judging:  38%|███▊      | 5/13 [01:23<02:13, 16.63s/it]  judging:  46%|████▌     | 6/13 [01:40<01:56, 16.61s/it]  judging:  54%|█████▍    | 7/13 [01:57<01:39, 16.61s/it]  judging:  62%|██████▏   | 8/13 [02:13<01:23, 16.64s/it]  judging:  69%|██████▉   | 9/13 [02:29<01:06, 16.52s/it]  judging:  77%|███████▋  | 10/13 [02:46<00:49, 16.53s/it]  judging:  85%|████████▍ | 11/13 [03:03<00:33, 16.53s/it]  judging:  92%|█████████▏| 12/13 [03:19<00:16, 16.48s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 14.96s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 16.22s/it]
+  [ckpt] 400/2947 unique judged, ETA 45 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:16, 16.40s/it]  judging:  15%|█▌        | 2/13 [00:33<03:02, 16.55s/it]  judging:  23%|██▎       | 3/13 [00:49<02:45, 16.55s/it]  judging:  31%|███       | 4/13 [01:06<02:29, 16.59s/it]  judging:  38%|███▊      | 5/13 [01:22<02:11, 16.50s/it]  judging:  46%|████▌     | 6/13 [01:39<01:56, 16.60s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:39, 16.57s/it]  judging:  62%|██████▏   | 8/13 [02:12<01:22, 16.55s/it]  judging:  69%|██████▉   | 9/13 [02:29<01:06, 16.61s/it]  judging:  77%|███████▋  | 10/13 [02:45<00:49, 16.60s/it]  judging:  85%|████████▍ | 11/13 [03:02<00:33, 16.64s/it]  judging:  92%|█████████▏| 12/13 [03:19<00:16, 16.61s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 14.99s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 16.17s/it]
+  [ckpt] 600/2947 unique judged, ETA 42 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:15, 16.33s/it]  judging:  15%|█▌        | 2/13 [00:32<03:00, 16.45s/it]  judging:  23%|██▎       | 3/13 [00:49<02:44, 16.49s/it]  judging:  31%|███       | 4/13 [01:06<02:30, 16.75s/it]  judging:  38%|███▊      | 5/13 [01:22<02:12, 16.60s/it]  judging:  46%|████▌     | 6/13 [01:39<01:55, 16.54s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:39, 16.52s/it]  judging:  62%|██████▏   | 8/13 [02:12<01:22, 16.49s/it]  judging:  69%|██████▉   | 9/13 [02:28<01:06, 16.58s/it]  judging:  77%|███████▋  | 10/13 [02:45<00:49, 16.59s/it]  judging:  85%|████████▍ | 11/13 [03:01<00:32, 16.47s/it]  judging:  92%|█████████▏| 12/13 [03:18<00:16, 16.64s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 15.01s/it]  judging: 100%|██████████| 13/13 [03:30<00:00, 16.16s/it]
+  [ckpt] 800/2947 unique judged, ETA 38 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:19, 16.61s/it]  judging:  15%|█▌        | 2/13 [00:33<03:02, 16.57s/it]  judging:  23%|██▎       | 3/13 [00:49<02:44, 16.49s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.42s/it]  judging:  38%|███▊      | 5/13 [01:22<02:11, 16.47s/it]  judging:  46%|████▌     | 6/13 [01:39<01:55, 16.54s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:39, 16.55s/it]  judging:  62%|██████▏   | 8/13 [02:12<01:22, 16.50s/it]  judging:  69%|██████▉   | 9/13 [02:28<01:05, 16.50s/it]  judging:  77%|███████▋  | 10/13 [02:45<00:49, 16.54s/it]  judging:  85%|████████▍ | 11/13 [03:01<00:32, 16.48s/it]  judging:  92%|█████████▏| 12/13 [03:17<00:16, 16.44s/it]  judging: 100%|██████████| 13/13 [03:29<00:00, 14.85s/it]  judging: 100%|██████████| 13/13 [03:29<00:00, 16.08s/it]
+  [ckpt] 1000/2947 unique judged, ETA 34 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:20, 16.74s/it]  judging:  15%|█▌        | 2/13 [00:33<03:02, 16.62s/it]  judging:  23%|██▎       | 3/13 [00:49<02:44, 16.42s/it]  judging:  31%|███       | 4/13 [01:05<02:26, 16.24s/it]  judging:  38%|███▊      | 5/13 [01:21<02:10, 16.30s/it]  judging:  46%|████▌     | 6/13 [01:37<01:53, 16.19s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:37, 16.24s/it]  judging:  62%|██████▏   | 8/13 [02:10<01:20, 16.14s/it]  judging:  69%|██████▉   | 9/13 [02:26<01:04, 16.14s/it]  judging:  77%|███████▋  | 10/13 [02:42<00:48, 16.19s/it]  judging:  85%|████████▍ | 11/13 [02:58<00:32, 16.21s/it]  judging:  92%|█████████▏| 12/13 [03:15<00:16, 16.28s/it]  judging: 100%|██████████| 13/13 [03:26<00:00, 14.69s/it]  judging: 100%|██████████| 13/13 [03:26<00:00, 15.86s/it]
+  [ckpt] 1200/2947 unique judged, ETA 31 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:14, 16.25s/it]  judging:  15%|█▌        | 2/13 [00:32<02:58, 16.24s/it]  judging:  23%|██▎       | 3/13 [00:48<02:41, 16.14s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.36s/it]  judging:  38%|███▊      | 5/13 [01:21<02:10, 16.34s/it]  judging:  46%|████▌     | 6/13 [01:38<01:54, 16.40s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:37, 16.32s/it]  judging:  62%|██████▏   | 8/13 [02:10<01:21, 16.31s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.40s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:48, 16.31s/it]  judging:  85%|████████▍ | 11/13 [02:59<00:32, 16.33s/it]  judging:  92%|█████████▏| 12/13 [03:15<00:16, 16.22s/it]  judging: 100%|██████████| 13/13 [03:26<00:00, 14.71s/it]  judging: 100%|██████████| 13/13 [03:26<00:00, 15.91s/it]
+  [ckpt] 1400/2947 unique judged, ETA 27 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:17, 16.43s/it]  judging:  15%|█▌        | 2/13 [00:32<03:01, 16.50s/it]  judging:  23%|██▎       | 3/13 [00:49<02:47, 16.70s/it]  judging:  31%|███       | 4/13 [01:06<02:29, 16.59s/it]  judging:  38%|███▊      | 5/13 [01:22<02:11, 16.46s/it]  judging:  46%|████▌     | 6/13 [01:38<01:54, 16.41s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:38, 16.38s/it]  judging:  62%|██████▏   | 8/13 [02:11<01:21, 16.32s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.39s/it]  judging:  77%|███████▋  | 10/13 [02:44<00:49, 16.37s/it]  judging:  85%|████████▍ | 11/13 [03:00<00:32, 16.29s/it]  judging:  92%|█████████▏| 12/13 [03:16<00:16, 16.36s/it]  judging: 100%|██████████| 13/13 [03:28<00:00, 14.77s/it]  judging: 100%|██████████| 13/13 [03:28<00:00, 16.00s/it]
+  [ckpt] 1600/2947 unique judged, ETA 24 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:18, 16.57s/it]  judging:  15%|█▌        | 2/13 [00:32<02:58, 16.20s/it]  judging:  23%|██▎       | 3/13 [00:48<02:42, 16.24s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.34s/it]  judging:  38%|███▊      | 5/13 [01:22<02:12, 16.51s/it]  judging:  46%|████▌     | 6/13 [01:38<01:54, 16.41s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:38, 16.40s/it]  judging:  62%|██████▏   | 8/13 [02:10<01:21, 16.34s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.33s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:48, 16.30s/it]  judging:  85%|████████▍ | 11/13 [02:59<00:32, 16.29s/it]  judging:  92%|█████████▏| 12/13 [03:16<00:16, 16.30s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 14.75s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 15.94s/it]
+  [ckpt] 1800/2947 unique judged, ETA 20 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:12, 16.02s/it]  judging:  15%|█▌        | 2/13 [00:33<03:02, 16.61s/it]  judging:  23%|██▎       | 3/13 [00:49<02:45, 16.55s/it]  judging:  31%|███       | 4/13 [01:06<02:29, 16.60s/it]  judging:  38%|███▊      | 5/13 [01:22<02:11, 16.49s/it]  judging:  46%|████▌     | 6/13 [01:38<01:54, 16.38s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:37, 16.33s/it]  judging:  62%|██████▏   | 8/13 [02:11<01:21, 16.31s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.28s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:48, 16.26s/it]  judging:  85%|████████▍ | 11/13 [02:59<00:32, 16.26s/it]  judging:  92%|█████████▏| 12/13 [03:16<00:16, 16.27s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 14.74s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 15.95s/it]
+  [ckpt] 2000/2947 unique judged, ETA 17 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:15, 16.30s/it]  judging:  15%|█▌        | 2/13 [00:32<02:59, 16.29s/it]  judging:  23%|██▎       | 3/13 [00:48<02:42, 16.24s/it]  judging:  31%|███       | 4/13 [01:05<02:26, 16.26s/it]  judging:  38%|███▊      | 5/13 [01:21<02:10, 16.36s/it]  judging:  46%|████▌     | 6/13 [01:37<01:54, 16.33s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:38, 16.35s/it]  judging:  62%|██████▏   | 8/13 [02:10<01:21, 16.35s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.38s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:48, 16.33s/it]  judging:  85%|████████▍ | 11/13 [02:59<00:32, 16.34s/it]  judging:  92%|█████████▏| 12/13 [03:15<00:16, 16.28s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 14.80s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 15.93s/it]
+  [ckpt] 2200/2947 unique judged, ETA 13 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:19, 16.63s/it]  judging:  15%|█▌        | 2/13 [00:32<03:01, 16.47s/it]  judging:  23%|██▎       | 3/13 [00:49<02:42, 16.28s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.38s/it]  judging:  38%|███▊      | 5/13 [01:21<02:11, 16.39s/it]  judging:  46%|████▌     | 6/13 [01:39<01:56, 16.65s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:39, 16.58s/it]  judging:  62%|██████▏   | 8/13 [02:11<01:22, 16.47s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.34s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:48, 16.25s/it]  judging:  85%|████████▍ | 11/13 [03:00<00:32, 16.26s/it]  judging:  92%|█████████▏| 12/13 [03:16<00:16, 16.23s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 14.73s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 15.97s/it]
+  [ckpt] 2400/2947 unique judged, ETA 10 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:16, 16.39s/it]  judging:  15%|█▌        | 2/13 [00:32<02:59, 16.31s/it]  judging:  23%|██▎       | 3/13 [00:49<02:44, 16.44s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.43s/it]  judging:  38%|███▊      | 5/13 [01:21<02:10, 16.32s/it]  judging:  46%|████▌     | 6/13 [01:38<01:54, 16.31s/it]  judging:  54%|█████▍    | 7/13 [01:54<01:38, 16.38s/it]  judging:  62%|██████▏   | 8/13 [02:10<01:21, 16.32s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.47s/it]  judging:  77%|███████▋  | 10/13 [02:43<00:49, 16.44s/it]  judging:  85%|████████▍ | 11/13 [03:00<00:32, 16.42s/it]  judging:  92%|█████████▏| 12/13 [03:16<00:16, 16.36s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 14.75s/it]  judging: 100%|██████████| 13/13 [03:27<00:00, 15.97s/it]
+  [ckpt] 2600/2947 unique judged, ETA 6 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:16<03:15, 16.28s/it]  judging:  15%|█▌        | 2/13 [00:32<02:58, 16.22s/it]  judging:  23%|██▎       | 3/13 [00:48<02:42, 16.30s/it]  judging:  31%|███       | 4/13 [01:05<02:27, 16.34s/it]  judging:  38%|███▊      | 5/13 [01:21<02:11, 16.43s/it]  judging:  46%|████▌     | 6/13 [01:38<01:55, 16.53s/it]  judging:  54%|█████▍    | 7/13 [01:55<01:39, 16.60s/it]  judging:  62%|██████▏   | 8/13 [02:11<01:22, 16.49s/it]  judging:  69%|██████▉   | 9/13 [02:27<01:05, 16.46s/it]  judging:  77%|███████▋  | 10/13 [02:44<00:49, 16.38s/it]  judging:  85%|████████▍ | 11/13 [03:00<00:32, 16.39s/it]  judging:  92%|█████████▏| 12/13 [03:17<00:16, 16.51s/it]  judging: 100%|██████████| 13/13 [03:28<00:00, 14.98s/it]  judging: 100%|██████████| 13/13 [03:28<00:00, 16.06s/it]
+  [ckpt] 2800/2947 unique judged, ETA 3 min
+  judging:   0%|          | 0/10 [00:00<?, ?it/s]  judging:  10%|█         | 1/10 [00:16<02:28, 16.51s/it]  judging:  20%|██        | 2/10 [00:33<02:13, 16.67s/it]  judging:  30%|███       | 3/10 [00:49<01:56, 16.66s/it]  judging:  40%|████      | 4/10 [01:06<01:39, 16.65s/it]  judging:  50%|█████     | 5/10 [01:22<01:22, 16.53s/it]  judging:  60%|██████    | 6/10 [01:39<01:06, 16.51s/it]  judging:  70%|███████   | 7/10 [01:56<00:49, 16.57s/it]  judging:  80%|████████  | 8/10 [02:12<00:33, 16.66s/it]  judging:  90%|█████████ | 9/10 [02:29<00:16, 16.61s/it]  judging: 100%|██████████| 10/10 [02:38<00:00, 14.35s/it]  judging: 100%|██████████| 10/10 [02:38<00:00, 15.87s/it]
+  [ckpt] 2947/2947 unique judged, ETA 0 min
+
+Wrote e1_outputs/judge_llama.json  (15700 records, 14688 unique scores)
+
+$ /usr/local/bin/python judge_sweep_outputs.py --glob e1_outputs/*/*_responses.json e1_outputs/leace/base_seed*.json e1_outputs/leace/dual_k*.json e1_outputs/sadi*/sadi_results.json e1_outputs/caa_*/caa_results.json e1_outputs/fairsteer*/fairsteer_results.json e1_outputs/angular*/angular_results.json --out e1_outputs/judge_second.json --judge_model Qwen/Qwen2.5-7B-Instruct
+==========================================================================
+JUDGE SWEEP OUTPUTS
+==========================================================================
+Files matched: 60
+
+Sweep points and responses found:
+  angular_results.json                            250 responses
+  base_seed42.json                                250 responses
+  baseline_seed42_neutral_responses.json          250 responses
+  baseline_seed42_responses.json                  250 responses
+  baseline_seed42_sysexplicit_responses.json      250 responses
+  baseline_seed42_sysmin_responses.json           250 responses
+  baseline_seed43_responses.json                  250 responses
+  baseline_seed44_responses.json                  250 responses
+  caa_results.json                                250 responses
+  dual_k1.json                                    250 responses
+  dual_k10.json                                   250 responses
+  dual_k20.json                                   250 responses
+  dual_k40.json                                   250 responses
+  dual_k5.json                                    250 responses
+  dual_k80.json                                   250 responses
+  fairsteer_results.json                          250 responses
+  fc_add_a4_responses.json                        250 responses
+  fc_add_a8_responses.json                        250 responses
+  fc_prompt_remove_a1_responses.json              250 responses
+  fc_remove_a1_L21L25_responses.json              250 responses
+  fc_remove_a1_neutral_responses.json             250 responses
+  fc_remove_a1_rerun_responses.json               250 responses
+  fc_remove_a1_responses.json                     250 responses
+  fc_remove_a2_responses.json                     250 responses
+  fc_shuffle_s0_responses.json                    250 responses
+  fc_shuffle_s1_responses.json                    250 responses
+  fc_shuffle_s2_responses.json                    250 responses
+  fresh_fc_prompt_remove_a1_responses.json        425 responses
+  fresh_fc_remove_a1_responses.json               425 responses
+  fresh_prompt_explicit_responses.json            425 responses
+  fresh_unsteered_responses.json                  425 responses
+  id_remove_a1_responses.json                     250 responses
+  meandiff_alpha3.0_responses.json                250 responses
+  meandiff_alpha5.0_responses.json                250 responses
+  meandiff_alpha7.0_responses.json                250 responses
+  meandiff_alpha8.0_responses.json                250 responses
+  neutral_rerun_responses.json                    250 responses
+  probe_alpha3.0_responses.json                   250 responses
+  probe_alpha5.0_responses.json                   250 responses
+  probe_alpha7.0_responses.json                   250 responses
+  probe_alpha9.0_responses.json                   250 responses
+  proj_alpha1.0_responses.json                    250 responses
+  proj_k10_alpha1.0_responses.json                250 responses
+  proj_k1_alpha1.0_responses.json                 250 responses
+  proj_k20_alpha1.0_responses.json                250 responses
+  proj_k40_alpha1.0_responses.json                250 responses
+  proj_k40_sysexplicit_alpha1.0_responses.json    250 responses
+  proj_k5_alpha1.0_responses.json                 250 responses
+  proj_k80_alpha1.0_responses.json                250 responses
+  proj_meandiffbasis_alpha1.0_responses.json      250 responses
+  proj_probebasis_alpha1.0_responses.json         250 responses
+  sadi_results.json                               250 responses
+  unsteered_rerun_responses.json                  250 responses
+
+  total responses     : 15700
+  unique texts        : 14688
+  dedup saving        : 6.4% fewer judge calls
+
+[resume] loaded 11741 scores from judge_second.json
+  to judge now        : 2947
+
+Loading judge model on cuda ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:10<00:32, 10.82s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:20<00:20, 10.30s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:29<00:09,  9.68s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  9.50s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:38<00:00,  9.73s/it]
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:14<02:50, 14.19s/it]  judging:  15%|█▌        | 2/13 [00:27<02:30, 13.66s/it]  judging:  23%|██▎       | 3/13 [00:41<02:17, 13.76s/it]  judging:  31%|███       | 4/13 [00:54<02:02, 13.57s/it]  judging:  38%|███▊      | 5/13 [01:08<01:48, 13.58s/it]  judging:  46%|████▌     | 6/13 [01:21<01:34, 13.49s/it]  judging:  54%|█████▍    | 7/13 [01:35<01:21, 13.58s/it]  judging:  62%|██████▏   | 8/13 [01:49<01:08, 13.62s/it]  judging:  69%|██████▉   | 9/13 [02:02<00:54, 13.67s/it]  judging:  77%|███████▋  | 10/13 [02:16<00:41, 13.67s/it]  judging:  85%|████████▍ | 11/13 [02:30<00:27, 13.63s/it]  judging:  92%|█████████▏| 12/13 [02:43<00:13, 13.65s/it]  judging: 100%|██████████| 13/13 [02:53<00:00, 12.41s/it]  judging: 100%|██████████| 13/13 [02:53<00:00, 13.33s/it]
+  [ckpt] 200/2947 unique judged, ETA 40 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:44, 13.73s/it]  judging:  15%|█▌        | 2/13 [00:27<02:31, 13.75s/it]  judging:  23%|██▎       | 3/13 [00:40<02:15, 13.58s/it]  judging:  31%|███       | 4/13 [00:54<02:00, 13.41s/it]  judging:  38%|███▊      | 5/13 [01:07<01:46, 13.32s/it]  judging:  46%|████▌     | 6/13 [01:20<01:33, 13.31s/it]  judging:  54%|█████▍    | 7/13 [01:33<01:19, 13.31s/it]  judging:  62%|██████▏   | 8/13 [01:47<01:06, 13.29s/it]  judging:  69%|██████▉   | 9/13 [02:00<00:52, 13.21s/it]  judging:  77%|███████▋  | 10/13 [02:13<00:39, 13.22s/it]  judging:  85%|████████▍ | 11/13 [02:26<00:26, 13.22s/it]  judging:  92%|█████████▏| 12/13 [02:39<00:13, 13.19s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 12.16s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 13.03s/it]
+  [ckpt] 400/2947 unique judged, ETA 36 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:38, 13.24s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.23s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.24s/it]  judging:  31%|███       | 4/13 [00:53<01:59, 13.28s/it]  judging:  38%|███▊      | 5/13 [01:06<01:45, 13.21s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.27s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:19, 13.26s/it]  judging:  62%|██████▏   | 8/13 [01:46<01:06, 13.26s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:53, 13.30s/it]  judging:  77%|███████▋  | 10/13 [02:12<00:39, 13.24s/it]  judging:  85%|████████▍ | 11/13 [02:25<00:26, 13.28s/it]  judging:  92%|█████████▏| 12/13 [02:39<00:13, 13.28s/it]  judging: 100%|██████████| 13/13 [02:48<00:00, 12.15s/it]  judging: 100%|██████████| 13/13 [02:48<00:00, 12.98s/it]
+  [ckpt] 600/2947 unique judged, ETA 33 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:37, 13.12s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.19s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.22s/it]  judging:  31%|███       | 4/13 [00:53<02:00, 13.38s/it]  judging:  38%|███▊      | 5/13 [01:06<01:46, 13.27s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.23s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:19, 13.22s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:05, 13.19s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:53, 13.26s/it]  judging:  77%|███████▋  | 10/13 [02:12<00:39, 13.27s/it]  judging:  85%|████████▍ | 11/13 [02:25<00:26, 13.18s/it]  judging:  92%|█████████▏| 12/13 [02:38<00:13, 13.27s/it]  judging: 100%|██████████| 13/13 [02:48<00:00, 12.14s/it]  judging: 100%|██████████| 13/13 [02:48<00:00, 12.96s/it]
+  [ckpt] 800/2947 unique judged, ETA 30 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:39, 13.29s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.26s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.21s/it]  judging:  31%|███       | 4/13 [00:52<01:58, 13.18s/it]  judging:  38%|███▊      | 5/13 [01:06<01:45, 13.21s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.23s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:19, 13.24s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:06, 13.20s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:52, 13.23s/it]  judging:  77%|███████▋  | 10/13 [02:12<00:39, 13.23s/it]  judging:  85%|████████▍ | 11/13 [02:25<00:26, 13.19s/it]  judging:  92%|█████████▏| 12/13 [02:38<00:13, 13.16s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.05s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.92s/it]
+  [ckpt] 1000/2947 unique judged, ETA 28 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:41, 13.47s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.26s/it]  judging:  23%|██▎       | 3/13 [00:39<02:11, 13.13s/it]  judging:  31%|███       | 4/13 [00:52<01:57, 13.01s/it]  judging:  38%|███▊      | 5/13 [01:05<01:44, 13.05s/it]  judging:  46%|████▌     | 6/13 [01:18<01:30, 12.96s/it]  judging:  54%|█████▍    | 7/13 [01:31<01:18, 13.01s/it]  judging:  62%|██████▏   | 8/13 [01:44<01:04, 12.94s/it]  judging:  69%|██████▉   | 9/13 [01:57<00:51, 12.92s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:38, 12.97s/it]  judging:  85%|████████▍ | 11/13 [02:23<00:25, 12.99s/it]  judging:  92%|█████████▏| 12/13 [02:36<00:13, 13.04s/it]  judging: 100%|██████████| 13/13 [02:45<00:00, 11.93s/it]  judging: 100%|██████████| 13/13 [02:45<00:00, 12.75s/it]
+  [ckpt] 1200/2947 unique judged, ETA 25 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:36, 13.02s/it]  judging:  15%|█▌        | 2/13 [00:26<02:23, 13.03s/it]  judging:  23%|██▎       | 3/13 [00:38<02:09, 12.96s/it]  judging:  31%|███       | 4/13 [00:52<01:58, 13.12s/it]  judging:  38%|███▊      | 5/13 [01:05<01:44, 13.10s/it]  judging:  46%|████▌     | 6/13 [01:18<01:32, 13.14s/it]  judging:  54%|█████▍    | 7/13 [01:31<01:18, 13.09s/it]  judging:  62%|██████▏   | 8/13 [01:44<01:05, 13.08s/it]  judging:  69%|██████▉   | 9/13 [01:57<00:52, 13.15s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:39, 13.08s/it]  judging:  85%|████████▍ | 11/13 [02:23<00:26, 13.09s/it]  judging:  92%|█████████▏| 12/13 [02:36<00:13, 13.01s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 11.96s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 12.80s/it]
+  [ckpt] 1400/2947 unique judged, ETA 22 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:38, 13.17s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.19s/it]  judging:  23%|██▎       | 3/13 [00:40<02:13, 13.39s/it]  judging:  31%|███       | 4/13 [00:53<01:59, 13.30s/it]  judging:  38%|███▊      | 5/13 [01:06<01:45, 13.19s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.14s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:18, 13.07s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:05, 13.04s/it]  judging:  69%|██████▉   | 9/13 [01:58<00:52, 13.11s/it]  judging:  77%|███████▋  | 10/13 [02:11<00:39, 13.10s/it]  judging:  85%|████████▍ | 11/13 [02:24<00:26, 13.05s/it]  judging:  92%|█████████▏| 12/13 [02:37<00:13, 13.11s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.00s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.85s/it]
+  [ckpt] 1600/2947 unique judged, ETA 19 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:38, 13.17s/it]  judging:  15%|█▌        | 2/13 [00:25<02:22, 12.97s/it]  judging:  23%|██▎       | 3/13 [00:39<02:10, 13.02s/it]  judging:  31%|███       | 4/13 [00:52<01:57, 13.10s/it]  judging:  38%|███▊      | 5/13 [01:05<01:45, 13.22s/it]  judging:  46%|████▌     | 6/13 [01:18<01:32, 13.16s/it]  judging:  54%|█████▍    | 7/13 [01:31<01:18, 13.14s/it]  judging:  62%|██████▏   | 8/13 [01:44<01:05, 13.10s/it]  judging:  69%|██████▉   | 9/13 [01:57<00:52, 13.10s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:39, 13.07s/it]  judging:  85%|████████▍ | 11/13 [02:24<00:26, 13.07s/it]  judging:  92%|█████████▏| 12/13 [02:37<00:13, 13.08s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 11.99s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 12.82s/it]
+  [ckpt] 1800/2947 unique judged, ETA 16 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:12<02:34, 12.89s/it]  judging:  15%|█▌        | 2/13 [00:26<02:26, 13.31s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.26s/it]  judging:  31%|███       | 4/13 [00:53<01:59, 13.32s/it]  judging:  38%|███▊      | 5/13 [01:06<01:45, 13.22s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.14s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:18, 13.09s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:05, 13.07s/it]  judging:  69%|██████▉   | 9/13 [01:58<00:52, 13.06s/it]  judging:  77%|███████▋  | 10/13 [02:11<00:39, 13.04s/it]  judging:  85%|████████▍ | 11/13 [02:24<00:26, 13.03s/it]  judging:  92%|█████████▏| 12/13 [02:37<00:13, 13.04s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 11.95s/it]  judging: 100%|██████████| 13/13 [02:46<00:00, 12.82s/it]
+  [ckpt] 2000/2947 unique judged, ETA 13 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:36, 13.06s/it]  judging:  15%|█▌        | 2/13 [00:26<02:23, 13.06s/it]  judging:  23%|██▎       | 3/13 [00:39<02:10, 13.03s/it]  judging:  31%|███       | 4/13 [00:52<01:57, 13.04s/it]  judging:  38%|███▊      | 5/13 [01:05<01:44, 13.11s/it]  judging:  46%|████▌     | 6/13 [01:18<01:31, 13.09s/it]  judging:  54%|█████▍    | 7/13 [01:31<01:18, 13.11s/it]  judging:  62%|██████▏   | 8/13 [01:44<01:05, 13.11s/it]  judging:  69%|██████▉   | 9/13 [01:57<00:52, 13.13s/it]  judging:  77%|███████▋  | 10/13 [02:10<00:39, 13.09s/it]  judging:  85%|████████▍ | 11/13 [02:24<00:26, 13.15s/it]  judging:  92%|█████████▏| 12/13 [02:37<00:13, 13.14s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.19s/it]  judging: 100%|██████████| 13/13 [02:47<00:00, 12.87s/it]
+  [ckpt] 2200/2947 unique judged, ETA 10 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:39, 13.32s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.27s/it]  judging:  23%|██▎       | 3/13 [00:39<02:11, 13.17s/it]  judging:  31%|███       | 4/13 [00:52<01:59, 13.24s/it]  judging:  38%|███▊      | 5/13 [01:06<01:46, 13.27s/it]  judging:  46%|████▌     | 6/13 [01:20<01:34, 13.54s/it]  judging:  54%|█████▍    | 7/13 [01:33<01:20, 13.46s/it]  judging:  62%|██████▏   | 8/13 [01:46<01:06, 13.34s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:53, 13.25s/it]  judging:  77%|███████▋  | 10/13 [02:12<00:39, 13.19s/it]  judging:  85%|████████▍ | 11/13 [02:26<00:26, 13.20s/it]  judging:  92%|█████████▏| 12/13 [02:39<00:13, 13.15s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 12.19s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 13.00s/it]
+  [ckpt] 2400/2947 unique judged, ETA 8 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:39, 13.28s/it]  judging:  15%|█▌        | 2/13 [00:26<02:25, 13.19s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.28s/it]  judging:  31%|███       | 4/13 [00:53<01:59, 13.29s/it]  judging:  38%|███▊      | 5/13 [01:06<01:45, 13.24s/it]  judging:  46%|████▌     | 6/13 [01:19<01:32, 13.22s/it]  judging:  54%|█████▍    | 7/13 [01:32<01:19, 13.26s/it]  judging:  62%|██████▏   | 8/13 [01:45<01:06, 13.20s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:53, 13.31s/it]  judging:  77%|███████▋  | 10/13 [02:12<00:39, 13.30s/it]  judging:  85%|████████▍ | 11/13 [02:25<00:26, 13.30s/it]  judging:  92%|█████████▏| 12/13 [02:39<00:13, 13.25s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 12.27s/it]  judging: 100%|██████████| 13/13 [02:49<00:00, 13.01s/it]
+  [ckpt] 2600/2947 unique judged, ETA 5 min
+  judging:   0%|          | 0/13 [00:00<?, ?it/s]  judging:   8%|▊         | 1/13 [00:13<02:37, 13.13s/it]  judging:  15%|█▌        | 2/13 [00:26<02:24, 13.14s/it]  judging:  23%|██▎       | 3/13 [00:39<02:12, 13.22s/it]  judging:  31%|███       | 4/13 [00:52<01:59, 13.24s/it]  judging:  38%|███▊      | 5/13 [01:06<01:46, 13.30s/it]  judging:  46%|████▌     | 6/13 [01:19<01:33, 13.38s/it]  judging:  54%|█████▍    | 7/13 [01:33<01:20, 13.43s/it]  judging:  62%|██████▏   | 8/13 [01:46<01:06, 13.33s/it]  judging:  69%|██████▉   | 9/13 [01:59<00:53, 13.36s/it]  judging:  77%|███████▋  | 10/13 [02:13<00:39, 13.33s/it]  judging:  85%|████████▍ | 11/13 [02:26<00:26, 13.36s/it]  judging:  92%|█████████▏| 12/13 [02:40<00:13, 13.46s/it]  judging: 100%|██████████| 13/13 [02:50<00:00, 12.45s/it]  judging: 100%|██████████| 13/13 [02:50<00:00, 13.11s/it]
+  [ckpt] 2800/2947 unique judged, ETA 2 min
+  judging:   0%|          | 0/10 [00:00<?, ?it/s]  judging:  10%|█         | 1/10 [00:13<02:01, 13.45s/it]  judging:  20%|██        | 2/10 [00:27<01:48, 13.58s/it]  judging:  30%|███       | 3/10 [00:40<01:34, 13.57s/it]  judging:  40%|████      | 4/10 [00:54<01:22, 13.68s/it]  judging:  50%|█████     | 5/10 [01:07<01:07, 13.54s/it]  judging:  60%|██████    | 6/10 [01:21<00:53, 13.49s/it]  judging:  70%|███████   | 7/10 [01:34<00:40, 13.45s/it]  judging:  80%|████████  | 8/10 [01:48<00:26, 13.47s/it]  judging:  90%|█████████ | 9/10 [02:01<00:13, 13.41s/it]  judging: 100%|██████████| 10/10 [02:10<00:00, 12.14s/it]  judging: 100%|██████████| 10/10 [02:10<00:00, 13.07s/it]
+  [ckpt] 2947/2947 unique judged, ETA 0 min
+
+Wrote e1_outputs/judge_second.json  (15700 records, 14688 unique scores)
+    llama   meta-llama/Llama-3.1-8B-Instruct     parse-failure rate 0.009940087145969499
+    second  Qwen/Qwen2.5-7B-Instruct             parse-failure rate 0.0016339869281045752
+G3  per-item Spearman rho 0.660 over 14688 texts (>= 0.5) -> PASS
+== A9 DONE 2026-09-29T22:29:37Z   (a9.tgz is written on exit)

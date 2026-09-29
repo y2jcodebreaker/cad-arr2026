@@ -1,0 +1,17 @@
+{
+ "n_windows": 282,
+ "n_tokens_scored": 288486,
+ "dataset_fingerprint": "a46124b21ac53738",
+ "unsteered": {
+  "alpha": 0.0,
+  "ppl": 8.052102437241071
+ },
+ "fc_remove_a1": {
+  "alpha": 1.0,
+  "ppl": 8.051618482835453
+ },
+ "fc_remove_a2": {
+  "alpha": 2.0,
+  "ppl": 8.062865848550649
+ }
+}
