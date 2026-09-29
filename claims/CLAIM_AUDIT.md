@@ -128,9 +128,11 @@ line was wrong and is replaced below.
 Context that must go with any GPT-5.5 sentence: it rated **accessibility quality** (0–10, the
 AccessEval rubric), not medicalization; on the pre-repo runs (different prompt draws from the
 frozen set; CAD arm 196 paired items; code not attributable to a commit, LEDGER rows 14–15); 0 of
-its 2,885 texts overlap with any text the E1 judges scored. It can support "the methods the lexical
-score ranks highest (SADI, Angular) are the ones a frontier judge rates lowest on quality", labelled as
-an earlier run; it cannot be compared number-for-number with E1/A8.
+its 2,885 texts overlap with any text the E1 judges scored. Candidate use, labelled as an earlier
+run: the two arms GPT-5.5 rates far lowest on quality (SADI −5.26, Angular −2.24) were strong
+debiasers on the lexical score in those same runs. **UNVERIFIED**: their lexical d on exactly the
+GPT-5.5-judged texts must be recomputed from `response_text` before this is written. It cannot be
+compared number-for-number with E1/A8.
 
 ## G. Summary
 
