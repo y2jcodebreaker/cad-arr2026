@@ -55,3 +55,13 @@ and the Mistral arms against `mistral_unsteered`.
 ## Amendments
 
 None.
+
+### A13-A1 — 2026-09-30, before any VADER or Regard score exists
+
+1. **Erasing arms** are read from `analysis-output/m1/m1_scores.json` (Q3 echo drop ≥ 0.25) rather than
+   listed by hand: `caa`, `caa_m2`, `angular`, `angular_adaptive`, `fairsteer`, `sadi`, `cad_proj_k40`,
+   `prompt_explicit_cad_k40`.
+2. **Disclosed:** the wiring test of `a13_analysis.py` used random VADER/Regard scores but the real texts,
+   so the lexical comparator's numbers were seen: Q1 ρ −0.222 [−0.362, −0.080], Q2 salad −0.514
+   [−0.740, −0.285] (salad looks better), Q3 ρ +0.343. The lexical score is a comparator here, not a
+   pre-registered test; no VADER or Regard number has been seen.
