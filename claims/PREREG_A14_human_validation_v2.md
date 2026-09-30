@@ -55,3 +55,14 @@ All A12 ratings and results; all judge ratings (used for stratification by desig
 ## Amendments
 
 None.
+
+### A14-A1 — 2026-09-30, before any rater has seen an A14 item
+
+1. **Page**: https://claude.ai/artifact/9QGzevdGqmJHXRBa5Us6tS (`human_eval/a14/rating_page.html`, built by
+   `human_eval/build_page.py a14`; items sha 1a960f3a…). Exports are saved unedited as
+   `human_eval/a14/ratings_R1.json` / `ratings_R2.json`; `a14_analysis.py` (committed now) scores them.
+2. **Disclosed limitation of the stratified design, found by the stand-in test**: items were drawn where
+   both M1 judges agree (both ≥ 1 or both 0), so judge–judge agreement on this sample is near perfect and
+   human–judge correlations here will be higher than on a random sample of answers. A14 tests whether
+   humans separate clear medicalization from clear non-medicalization as the judges do; it does not
+   estimate agreement on typical, borderline answers. The paper states this.
