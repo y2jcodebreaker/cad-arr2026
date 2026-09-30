@@ -81,6 +81,7 @@ th { font-weight: 600; color: var(--muted); font-size: 12.5px; text-transform: u
 .done { max-width: 72ch; margin: 28px auto 0; display: grid; gap: 16px; }
 .done h2 { font: 600 22px/1.3 var(--sans); margin: 0; }
 textarea { width: 100%; min-height: 160px; font: 12px/1.45 var(--mono); background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 10px; }
+details.start summary { cursor: pointer; }
 .missing { display: flex; flex-wrap: wrap; gap: 6px; }
 .missing button { font: 12px var(--mono); }
 @media (prefers-reduced-motion: no-preference) { .bar > i { transition: width .2s ease; } }
@@ -94,6 +95,8 @@ textarea { width: 100%; min-height: 160px; font: 12px/1.45 var(--mono); backgrou
       <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
       <span id="rCode" class="code"></span>
       <button class="linkbtn" id="showGuide" type="button" hidden>Guide</button>
+      <button class="linkbtn" id="backupBtn" type="button" hidden>Copy backup</button>
+      <span class="hint" id="backupMsg" role="status"></span>
     </div>
   </header>
 
@@ -121,16 +124,24 @@ textarea { width: 100%; min-height: 160px; font: 12px/1.45 var(--mono); backgrou
         <label><input type="radio" name="rater" id="raterR1" value="R1"> R1</label>
         <label><input type="radio" name="rater" id="raterR2" value="R2"> R2</label>
       </fieldset>
+      <p class="hint">Use a normal (not private or incognito) window, and the same browser on the same device until you finish. Your ratings are kept in this browser.</p>
       <div class="row">
         <button class="btn primary" id="startBtn" type="submit" disabled>Start with 3 practice answers</button>
         <span class="hint" id="resumeHint"></span>
       </div>
     </form>
+    <details class="start" id="restoreBox">
+      <summary><strong>Lost your progress? Restore from a backup</strong></summary>
+      <p class="hint">Paste the last backup you copied from this page, then press Restore. Your rater code is read from the backup.</p>
+      <textarea id="restoreText" aria-label="Backup to restore"></textarea>
+      <div class="row"><button class="btn" id="restoreBtn" type="button">Restore</button><span class="hint" id="restoreMsg" role="status"></span></div>
+    </details>
   </section>
 
   <section id="vRate" hidden>
     <div class="grid">
       <article>
+        <div class="notice" id="checkpoint" hidden><strong id="cpTitle"></strong> Press <em>Copy backup</em> at the top and send it to the person who gave you the link. If this browser ever loses your progress, that backup restores it. <button class="linkbtn" id="cpCopy" type="button">Copy backup now</button></div>
         <p class="notice" id="practiceNote" hidden>Practice answer: it is not scored and there is no feedback. It only lets you get used to the page. After the third one, the 110 real answers begin.</p>
         <div class="q"><span class="kicker" id="itemLabel">Question</span><p id="qText"></p></div>
         <div class="answer"><span class="kicker">Answer</span><div class="text" id="aText"></div></div>
@@ -230,7 +241,9 @@ U = not a usable answer (incoherent, corrupted, repetitive, empty, or does not a
     document.querySelectorAll(".rate").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
     $("nextBtn").disabled = v === undefined;
     $("backBtn").disabled = S.pos === 0;
+    checkpoint();
     header(); show("vRate");
+    $("backupBtn").hidden = false;
   }
   function rate(v) {
     const id = seq()[S.pos];
@@ -242,6 +255,16 @@ U = not a usable answer (incoherent, corrupted, repetitive, empty, or does not a
     const prac = Object.fromEntries(D.practice.map(p => [p.id, S.ratings[p.id] ?? null]));
     return JSON.stringify({ study: "A12", items: D.sha, rater: S.rater, n_rated: Object.keys(main).length, n_items: NI,
       started: S.started, exported: new Date().toISOString(), ratings: main, practice: prac, times: S.times });
+  }
+  function copyText(t, msgEl) {
+    const done = ok => { msgEl.textContent = ok ? "Copied. Paste it into a message." : "Copy did not work here: use the text on the last screen."; };
+    try { navigator.clipboard.writeText(t).then(() => done(true), () => done(false)); } catch (e) { done(false); }
+  }
+  function checkpoint() {
+    const n = ratedMain(), cp = [25, 50, 75, 100].filter(k => n >= k).pop();
+    const show = cp && S.pos >= NP && !(S.cpSeen || []).includes(cp);
+    $("checkpoint").hidden = !show;
+    if (show) $("cpTitle").textContent = `${n} answers rated. Time for a backup.`;
   }
   function finish() {
     const ids = D.orders[S.rater], miss = ids.filter(id => S.ratings[id] === undefined);
@@ -269,16 +292,34 @@ U = not a usable answer (incoherent, corrupted, repetitive, empty, or does not a
     save(); render();
   });
   $("showGuide").addEventListener("click", () => { header(); show("vGuide"); });
+  const backup = () => {
+    copyText(exportText(), $("backupMsg"));
+    const cp = [25, 50, 75, 100].filter(k => ratedMain() >= k).pop();
+    if (cp) { S.cpSeen = [...new Set([...(S.cpSeen || []), cp])]; save(); }
+    $("checkpoint").hidden = true;
+  };
+  $("backupBtn").addEventListener("click", backup);
+  $("cpCopy").addEventListener("click", backup);
+  $("restoreBtn").addEventListener("click", () => {
+    let b;
+    try { b = JSON.parse($("restoreText").value); } catch (e) { $("restoreMsg").textContent = "That is not a backup from this page: copy the whole text and try again."; return; }
+    if (!b || b.study !== "A12" || b.items !== D.sha || !D.orders[b.rater]) { $("restoreMsg").textContent = "That backup is not from this study page."; return; }
+    const cur = load(b.rater) || { rater: b.rater, pos: 0, ratings: {}, times: {}, started: b.started || new Date().toISOString() };
+    const valid = v => ["0", "1", "2", "3", "U"].includes(v);
+    for (const [id, v] of Object.entries(b.ratings || {})) if (byId[id] && valid(v)) cur.ratings[id] = v;
+    for (const [id, v] of Object.entries(b.practice || {})) if (byId[id] && valid(v)) cur.ratings[id] = v;
+    Object.assign(cur.times, b.times || {});
+    const order = D.orders[b.rater], firstOpen = order.findIndex(id => cur.ratings[id] === undefined);
+    cur.pos = firstOpen < 0 ? NP + NI : NP + firstOpen;
+    S = cur; save();
+    $("restoreMsg").textContent = `Restored ${Object.keys(b.ratings || {}).length} ratings for ${b.rater}.`;
+    render();
+  });
   document.querySelectorAll(".rate").forEach(b => b.addEventListener("click", () => rate(b.dataset.v)));
   $("nextBtn").addEventListener("click", () => go(1));
   $("backBtn").addEventListener("click", () => go(-1));
   $("reviewBtn").addEventListener("click", () => { S.pos = NP; save(); render(); });
-  $("copyBtn").addEventListener("click", () => {
-    const t = $("export").value;
-    const done = ok => { $("copyMsg").textContent = ok ? "Copied. Paste it into a message." : "Copy did not work here: select the text above and copy it."; };
-    try { navigator.clipboard.writeText(t).then(() => done(true), () => { $("export").select(); done(false); }); }
-    catch (e) { $("export").select(); done(false); }
-  });
+  $("copyBtn").addEventListener("click", () => { $("export").select(); copyText($("export").value, $("copyMsg")); });
   document.addEventListener("keydown", e => {
     if ($("vRate").hidden || e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key.toUpperCase();
