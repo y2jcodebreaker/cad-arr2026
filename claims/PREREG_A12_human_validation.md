@@ -64,3 +64,16 @@ All LLM-judge ratings of every arm. Item selection uses no rating.
 ## Amendments
 
 None.
+
+### A12-A1 — 2026-09-30, before any rater has seen an item
+
+Operational details the frozen text leaves open; no criterion changes.
+1. **Delivery.** A private claude.ai page (`human_eval/rating_page.html`, built by
+   `human_eval/build_page.py` from the frozen guide, the verbatim rubric and `items.json`; no method names
+   on the page). Progress stays in the rater's browser; at the end each rater copies a JSON export and
+   sends it to the first author, who saves it as `human_eval/ratings_R1.json` / `ratings_R2.json`
+   unedited. The page shows a short label beside each rating button (the rubric's own wording, shortened)
+   and the full rubric beside every item.
+2. **Mean human rating** of an item = mean of the numeric ratings available for it (one or two raters);
+   Cohen's κ (quadratic) uses items both raters rated numerically. Bootstrap: 2,000 resamples of question
+   ids, seed 0. `a12_analysis.py` implements this and was committed before any rating exists.
