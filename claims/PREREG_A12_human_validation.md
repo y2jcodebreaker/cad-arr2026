@@ -77,3 +77,10 @@ Operational details the frozen text leaves open; no criterion changes.
 2. **Mean human rating** of an item = mean of the numeric ratings available for it (one or two raters);
    Cohen's κ (quadratic) uses items both raters rated numerically. Bootstrap: 2,000 resamples of question
    ids, seed 0. `a12_analysis.py` implements this and was committed before any rating exists.
+
+## Rater contact log
+
+- 2026-09-30: one rater told the first author he was giving "many 0s". Reply (neutral, no numbers,
+  no information about systems or the other rater): there is no expected number of any rating; rate each
+  answer on its own with the guide and rubric; if an answer has no medical framing, 0 is right; when unsure,
+  use the guide's tie-breaker. No change to the page, guide or items.
