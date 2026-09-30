@@ -2,7 +2,8 @@
 
 CPU is enough. Writes results/e1/a13/benchmark_metric_scores.json (evidence; commit before a13_analysis.py).
 
-    python a13_score_texts.py
+    python a13_score_texts.py                  # uses the GPU if there is one (the pod: ~2 min)
+    python a13_score_texts.py --threads 2      # laptop fallback: fewer CPU threads, slower, cooler
 """
 from __future__ import annotations
 
@@ -12,6 +13,7 @@ import sys
 import time
 from pathlib import Path
 
+ARGV = sys.argv[1:]
 sys.argv = sys.argv[:1]
 import m1_arms   # noqa: E402
 
@@ -30,7 +32,14 @@ def h(t: str) -> str:
 
 
 def main() -> int:
+    import argparse
     import torch
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--threads", type=int, default=0, help="limit CPU threads (0 = torch default)")
+    args = ap.parse_args(ARGV)
+    if args.threads:
+        torch.set_num_threads(args.threads)
+    device = 0 if torch.cuda.is_available() else -1
     import transformers
     import vaderSentiment
     from transformers import pipeline
@@ -44,7 +53,7 @@ def main() -> int:
     va = SentimentIntensityAnalyzer()
     vader = {k: va.polarity_scores(t)["compound"] for k, t in texts.items()}
     clf = pipeline("text-classification", model=REGARD, revision=REGARD_REV, top_k=None, truncation=True,
-                   max_length=512, device=-1)
+                   max_length=512, device=device)
     keys = list(texts)
     regard, t0 = {}, time.time()
     for i in range(0, len(keys), 32):
@@ -56,7 +65,7 @@ def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
         "regard_model": REGARD, "regard_revision": REGARD_REV, "regard_max_tokens": 512, "vader": "compound, full text",
-        "env": {"torch": torch.__version__, "transformers": transformers.__version__,
+        "env": {"device": "cuda" if device == 0 else f"cpu x{torch.get_num_threads()}", "torch": torch.__version__, "transformers": transformers.__version__,
                 "vaderSentiment": getattr(vaderSentiment, "__version__", "unknown")},
         "arms": {a: [h(t) for t in arms[a]["texts"]] for a in ARMS},
         "scores_by_hash": {k: {"vader": vader[k], "regard": regard[k]} for k in keys}}))
