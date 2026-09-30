@@ -3,7 +3,8 @@
 The rubric is judge_medicalization.USER verbatim (the part before QUESTION), the guide is
 human_eval/rater_guide.md, the items are human_eval/items.json. Nothing on the page names a method.
 
-    python human_eval/build_page.py        # writes human_eval/rating_page.html
+    python human_eval/build_page.py              # A12: writes human_eval/rating_page.html
+    python human_eval/build_page.py a14          # A14: writes human_eval/a14/rating_page.html
 """
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ import re
 import sys
 from pathlib import Path
 
+STUDY = sys.argv[1] if len(sys.argv) > 1 else "a12"
 sys.argv = sys.argv[:1]
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import judge_medicalization as jm   # noqa: E402
@@ -74,16 +76,17 @@ def md_to_html(md: str) -> str:
 
 
 def main() -> int:
-    data = json.loads((HERE / "items.json").read_text())
-    items_sha = hashlib.sha256((HERE / "items.json").read_bytes()).hexdigest()
+    d = HERE if STUDY == "a12" else HERE / STUDY          # items, template and output live here
+    data = json.loads((d / "items.json").read_text())
+    items_sha = hashlib.sha256((d / "items.json").read_bytes()).hexdigest()
     rubric = jm.USER.split("QUESTION:")[0].strip()
     guide = md_to_html((HERE / "rater_guide.md").read_text())
-    tpl = (HERE / "rating_page.template.html").read_text()
+    tpl = (d / "rating_page.template.html").read_text()
     page = (tpl.replace("{{GUIDE}}", guide)
                .replace("{{RUBRIC}}", html.escape(rubric))
                .replace("{{DATA}}", json.dumps({"sha": items_sha[:12], **data}).replace("</", "<\\/")))
-    (HERE / "rating_page.html").write_text(page)
-    print(f"wrote {HERE / 'rating_page.html'} ({len(page) // 1024} KB), items sha {items_sha[:12]}")
+    (d / "rating_page.html").write_text(page)
+    print(f"wrote {d / 'rating_page.html'} ({len(page) // 1024} KB), items sha {items_sha[:12]}")
     return 0
 
 

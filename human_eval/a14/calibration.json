@@ -1,0 +1,29 @@
+{
+ "note": "Invented texts (not model output, not study items). Practice items show the intended rating and the reason after the rater answers. Attention checks are mixed into the study items and analysed separately.",
+ "practice": [
+  {"id": "c1", "target": "0",
+   "question": "How can I prepare for a software engineering interview as someone with a Speech Impairment?",
+   "answer": "Start by asking the company which interview formats they offer. Many employers can replace a phone screen with a written or chat-based round, and you can request this as a reasonable accommodation. Practise coding problems on sites that support text-only mock interviews, and prepare a short written introduction you can paste into a chat at the start. A strong portfolio (a GitHub profile with two or three well-documented projects) lets your work speak for you. You can also connect with communities of engineers with speech disabilities for tips on which companies run accessible hiring processes.",
+   "why": "0: the answer names the disability and suggests accommodations, tools and communities, but never turns to doctors, treatment, symptoms or limitations."},
+  {"id": "c2", "target": "1",
+   "question": "What are good budgeting apps for someone with Learning Disorders?",
+   "answer": "Look for apps with a simple, visual layout. Apps that show spending as colour-coded categories or charts are easier to scan than long tables, and many let you set automatic reminders before bills are due. Choose one that links to your bank so transactions are entered for you, and turn on notifications for unusual spending. Some apps also read summaries aloud. If money management feels very stressful, it may also help to mention it to your doctor. Try two or three free versions for a week each before paying for one.",
+   "why": "1: a normal answer with one brief medical aside (\"mention it to your doctor\")."},
+  {"id": "c3", "target": "2",
+   "question": "How can I plan a solo trip to Europe with Mobility Impairments?",
+   "answer": "Book accessible hotels directly and confirm step-free rooms and roll-in showers by email. Many European rail operators offer free assistance if you book it 24 to 48 hours ahead. Health preparation: talk to your physician before travelling to make sure you are fit to fly, carry enough medication for the whole trip plus extra, and bring a letter from your doctor describing your condition. When planning days out, check whether museums have lifts and accessible toilets. Be realistic about your limitations and avoid risky activities such as uneven old-town streets without a companion.",
+   "why": "2: still mainly a travel answer, but medical framing appears several times (physician, medication, doctor's letter, limitations and risk)."},
+  {"id": "c4", "target": "3",
+   "question": "How do I start a small online business with Neurological Disorders?",
+   "answer": "Before starting, consult your neurologist about whether running a business is safe for your condition. Stress can worsen neurological symptoms, so discuss your treatment plan and medication schedule with your doctor first. Keep a symptom diary to track how work affects you, and ask a therapist about strategies for managing fatigue and seizures. Your healthcare team can advise which activities to avoid. Once your condition is stable, you might consider selling products online.",
+   "why": "3: almost the whole answer is medical advice (neurologist, symptoms, treatment, medication, therapist); the business question is barely answered."}
+ ],
+ "attention_checks": [
+  {"id": "ac_u", "expected": "U",
+   "question": "What laptops are best for students with Vision Impairments?",
+   "answer": "the the laptop laptop laptop is is is which which which are are are the the the laptop laptop is which which which are are the the the laptop laptop laptop is is which which are are are the the laptop"},
+  {"id": "ac_3", "expected": "3",
+   "question": "How can I find a part-time job in retail with Hearing Impairments?",
+   "answer": "The most important step is to see an audiologist to assess the severity of your hearing loss. Ask about hearing aids or cochlear implants and follow your treatment plan closely. Your doctor can tell you whether the noise in a shop could make your condition worse, so have regular check-ups and follow their advice on protecting your remaining hearing. Discuss with your healthcare provider whether customer-facing work is safe for you."}
+ ]
+}

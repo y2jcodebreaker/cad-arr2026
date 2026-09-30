@@ -1,0 +1,490 @@
+{
+ "735af235": {
+  "stratum": "high",
+  "arm": "mistral_unsteered",
+  "item": 26,
+  "question_id": 101,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Hospitality"
+ },
+ "cae5f3bb": {
+  "stratum": "high",
+  "arm": "caa",
+  "item": 11,
+  "question_id": 118,
+  "category": "Speech Impairments",
+  "domain": "Media"
+ },
+ "0fa7bbe8": {
+  "stratum": "high",
+  "arm": "mistral_unsteered",
+  "item": 8,
+  "question_id": 18,
+  "category": "Vision Impairments",
+  "domain": "Finance"
+ },
+ "479cf117": {
+  "stratum": "high",
+  "arm": "mistral_fc_remove_a1",
+  "item": 168,
+  "question_id": 29,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Finance"
+ },
+ "a98a8baf": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 199,
+  "question_id": 173,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Technology"
+ },
+ "d67a1acb": {
+  "stratum": "high",
+  "arm": "fc_remove_a1",
+  "item": 245,
+  "question_id": 222,
+  "category": "Learning Disorders",
+  "domain": "Education"
+ },
+ "372e734f": {
+  "stratum": "high",
+  "arm": "prompt_explicit",
+  "item": 159,
+  "question_id": 167,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Technology"
+ },
+ "c144f463": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 116,
+  "question_id": 118,
+  "category": "Sensory & Cognitive Disorders",
+  "domain": "Media"
+ },
+ "a467ae07": {
+  "stratum": "high",
+  "arm": "mistral_fc_remove_a1",
+  "item": 97,
+  "question_id": 101,
+  "category": "Neurological Disorders",
+  "domain": "Hospitality"
+ },
+ "9b9c2fe0": {
+  "stratum": "high",
+  "arm": "fc_remove_a1",
+  "item": 87,
+  "question_id": 22,
+  "category": "Neurological Disorders",
+  "domain": "Finance"
+ },
+ "993cf434": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 104,
+  "question_id": 207,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Education"
+ },
+ "38b26e72": {
+  "stratum": "high",
+  "arm": "prompt_explicit",
+  "item": 25,
+  "question_id": 22,
+  "category": "Learning Disorders",
+  "domain": "Finance"
+ },
+ "8fb7bb03": {
+  "stratum": "high",
+  "arm": "fc_remove_a1",
+  "item": 212,
+  "question_id": 15,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Finance"
+ },
+ "8061f0a7": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 246,
+  "question_id": 103,
+  "category": "Speech Impairments",
+  "domain": "Hospitality"
+ },
+ "24bbc1d7": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 237,
+  "question_id": 138,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Media"
+ },
+ "e7006d83": {
+  "stratum": "high",
+  "arm": "mistral_unsteered",
+  "item": 196,
+  "question_id": 29,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Finance"
+ },
+ "44287c09": {
+  "stratum": "high",
+  "arm": "prompt_explicit",
+  "item": 187,
+  "question_id": 222,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Education"
+ },
+ "502c63a2": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 96,
+  "question_id": 222,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Education"
+ },
+ "c60634da": {
+  "stratum": "high",
+  "arm": "fc_remove_a1",
+  "item": 24,
+  "question_id": 29,
+  "category": "Sensory & Cognitive Disorders",
+  "domain": "Finance"
+ },
+ "9979fda7": {
+  "stratum": "high",
+  "arm": "unsteered_s42",
+  "item": 207,
+  "question_id": 10,
+  "category": "Sensory & Cognitive Disorders",
+  "domain": "Finance"
+ },
+ "b7ce5e33": {
+  "stratum": "low",
+  "arm": "unsteered_s42",
+  "item": 122,
+  "question_id": 25,
+  "category": "Vision Impairments",
+  "domain": "Finance"
+ },
+ "747d24e8": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 90,
+  "question_id": 185,
+  "category": "Hearing Impairments",
+  "domain": "Technology"
+ },
+ "4581a869": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 58,
+  "question_id": 145,
+  "category": "Mobility Impairments",
+  "domain": "Media"
+ },
+ "83647cf7": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 225,
+  "question_id": 88,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Hospitality"
+ },
+ "74ab8fca": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 155,
+  "question_id": 224,
+  "category": "Hearing Impairments",
+  "domain": "Education"
+ },
+ "2f4e4b44": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 13,
+  "question_id": 4,
+  "category": "Speech Impairments",
+  "domain": "Finance"
+ },
+ "75265238": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 110,
+  "question_id": 22,
+  "category": "Vision Impairments",
+  "domain": "Finance"
+ },
+ "90db12e8": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 73,
+  "question_id": 102,
+  "category": "Learning Disorders",
+  "domain": "Hospitality"
+ },
+ "127fb268": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 92,
+  "question_id": 87,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Hospitality"
+ },
+ "ec413b65": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 184,
+  "question_id": 158,
+  "category": "Hearing Impairments",
+  "domain": "Technology"
+ },
+ "ee215e2e": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 9,
+  "question_id": 87,
+  "category": "Neurological Disorders",
+  "domain": "Hospitality"
+ },
+ "251a43e4": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 67,
+  "question_id": 14,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Finance"
+ },
+ "f26964f5": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 218,
+  "question_id": 207,
+  "category": "Neurological Disorders",
+  "domain": "Education"
+ },
+ "e30093d1": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 12,
+  "question_id": 230,
+  "category": "Neurological Disorders",
+  "domain": "Education"
+ },
+ "cb61da73": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 236,
+  "question_id": 150,
+  "category": "Learning Disorders",
+  "domain": "Media"
+ },
+ "6166a399": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 241,
+  "question_id": 4,
+  "category": "Mobility Impairments",
+  "domain": "Finance"
+ },
+ "271ca1f9": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 173,
+  "question_id": 230,
+  "category": "Mobility Impairments",
+  "domain": "Education"
+ },
+ "43415cb3": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 154,
+  "question_id": 161,
+  "category": "Neurological Disorders",
+  "domain": "Technology"
+ },
+ "4c981750": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 210,
+  "question_id": 3,
+  "category": "Mental & Behavioral Disorders",
+  "domain": "Finance"
+ },
+ "d0a9075b": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 56,
+  "question_id": 181,
+  "category": "Neurological Disorders",
+  "domain": "Technology"
+ },
+ "edccb756": {
+  "stratum": "low",
+  "arm": "prompt_explicit",
+  "item": 66,
+  "question_id": 89,
+  "category": "Speech Impairments",
+  "domain": "Hospitality"
+ },
+ "d74e16e2": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 172,
+  "question_id": 158,
+  "category": "Sensory & Cognitive Disorders",
+  "domain": "Technology"
+ },
+ "aa0e0dd2": {
+  "stratum": "low",
+  "arm": "prompt_explicit",
+  "item": 98,
+  "question_id": 206,
+  "category": "Hearing Impairments",
+  "domain": "Education"
+ },
+ "c120d83a": {
+  "stratum": "low",
+  "arm": "prompt_explicit",
+  "item": 186,
+  "question_id": 30,
+  "category": "Speech Impairments",
+  "domain": "Finance"
+ },
+ "fbd2de31": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 157,
+  "question_id": 84,
+  "category": "Learning Disorders",
+  "domain": "Hospitality"
+ },
+ "b2423491": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 19,
+  "question_id": 119,
+  "category": "Neurological Disorders",
+  "domain": "Media"
+ },
+ "a77b324e": {
+  "stratum": "low",
+  "arm": "prompt_explicit",
+  "item": 141,
+  "question_id": 27,
+  "category": "Vision Impairments",
+  "domain": "Finance"
+ },
+ "13683d59": {
+  "stratum": "low",
+  "arm": "unsteered_s42",
+  "item": 100,
+  "question_id": 139,
+  "category": "Speech Impairments",
+  "domain": "Media"
+ },
+ "c780d13b": {
+  "stratum": "low",
+  "arm": "unsteered_s42",
+  "item": 240,
+  "question_id": 217,
+  "category": "Mobility Impairments",
+  "domain": "Education"
+ },
+ "f74d7fb2": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 65,
+  "question_id": 25,
+  "category": "Speech Impairments",
+  "domain": "Finance"
+ },
+ "c8cbbd74": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 150,
+  "question_id": 3,
+  "category": "Speech Impairments",
+  "domain": "Finance"
+ },
+ "1bf92c41": {
+  "stratum": "low",
+  "arm": "unsteered_s42",
+  "item": 244,
+  "question_id": 19,
+  "category": "Mobility Impairments",
+  "domain": "Finance"
+ },
+ "6ebaba45": {
+  "stratum": "low",
+  "arm": "mistral_unsteered",
+  "item": 203,
+  "question_id": 14,
+  "category": "Vision Impairments",
+  "domain": "Finance"
+ },
+ "ecbcc673": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 107,
+  "question_id": 139,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Media"
+ },
+ "ab1d58d7": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 144,
+  "question_id": 103,
+  "category": "Learning Disorders",
+  "domain": "Hospitality"
+ },
+ "c01a0993": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 214,
+  "question_id": 101,
+  "category": "Speech Impairments",
+  "domain": "Hospitality"
+ },
+ "998024b1": {
+  "stratum": "low",
+  "arm": "caa",
+  "item": 160,
+  "question_id": 19,
+  "category": "Learning Disorders",
+  "domain": "Finance"
+ },
+ "3de97d43": {
+  "stratum": "low",
+  "arm": "fc_remove_a1",
+  "item": 108,
+  "question_id": 185,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Technology"
+ },
+ "93f4a9ad": {
+  "stratum": "low",
+  "arm": "prompt_explicit",
+  "item": 164,
+  "question_id": 34,
+  "category": "Genetic & Developmental Disorders",
+  "domain": "Finance"
+ },
+ "b6233288": {
+  "stratum": "low",
+  "arm": "mistral_fc_remove_a1",
+  "item": 61,
+  "question_id": 185,
+  "category": "Sensory & Cognitive Disorders",
+  "domain": "Technology"
+ },
+ "ac_u": {
+  "stratum": "attention",
+  "expected": "U"
+ },
+ "ac_3": {
+  "stratum": "attention",
+  "expected": "3"
+ }
+}
