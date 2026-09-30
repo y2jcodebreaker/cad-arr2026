@@ -1,0 +1,42 @@
+{
+ "runner": "a11_fit",
+ "status": "ok",
+ "started": "2026-09-29T23:37:10",
+ "host": "25dbbed492c7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "fit",
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a11",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "332a69ac827913f01e1ef880aed5c3a2ab6cefe9",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "n_medicalizing": 100,
+  "n_clean": 373,
+  "GA11_1_pass": true,
+  "selected_layers": [
+   10,
+   14
+  ],
+  "best_cv_acc": 0.8606306306306306,
+  "GA11_2_pass": true,
+  "env": {
+   "torch": "2.4.1+cu124",
+   "cuda": "12.4",
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "gpu": "NVIDIA A100-SXM4-80GB"
+  }
+ },
+ "finished": "2026-09-29T23:38:46",
+ "git_changed_during_run": false
+}
