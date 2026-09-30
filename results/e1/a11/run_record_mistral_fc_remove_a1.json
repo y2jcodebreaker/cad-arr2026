@@ -1,0 +1,44 @@
+{
+ "runner": "a11_generate",
+ "status": "ok",
+ "started": "2026-09-29T23:39:22",
+ "host": "25dbbed492c7",
+ "frozen_eval_sha256": "153439a63463081fe0773c26c6a259f1bc6a9cd4eafd40ffa49fab9aaf807658",
+ "fit_pool": "heldout",
+ "seed": 42,
+ "flags": {
+  "cmd": "generate",
+  "eval_set": "frozen_eval_v1.json",
+  "fit_pool": "heldout",
+  "out_dir": "e1_outputs/a11",
+  "seed": 42,
+  "dry_run": false
+ },
+ "git_at_import": {
+  "commit": "332a69ac827913f01e1ef880aed5c3a2ab6cefe9",
+  "branch": "main",
+  "dirty_tracked_files": []
+ },
+ "results": {
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "direction": "fc",
+  "layers": [
+   10,
+   14
+  ],
+  "side": "disability",
+  "system_prompt": "default",
+  "n": 250,
+  "env": {
+   "torch": "2.4.1+cu124",
+   "cuda": "12.4",
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "gpu": "NVIDIA A100-SXM4-80GB"
+  },
+  "lexical_mean": 0.361287127846673
+ },
+ "finished": "2026-09-29T23:42:47",
+ "git_changed_during_run": false
+}
