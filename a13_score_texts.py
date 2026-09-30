@@ -2,7 +2,7 @@
 
 CPU is enough. Writes results/e1/a13/benchmark_metric_scores.json (evidence; commit before a13_analysis.py).
 
-    python a13_score_texts.py                  # uses the GPU if there is one (the pod: ~2 min)
+    python a13_score_texts.py                  # CUDA GPU, else Apple GPU (MPS, M1/M2), else CPU
     python a13_score_texts.py --threads 2      # laptop fallback: fewer CPU threads, slower, cooler
 """
 from __future__ import annotations
@@ -39,7 +39,8 @@ def main() -> int:
     args = ap.parse_args(ARGV)
     if args.threads:
         torch.set_num_threads(args.threads)
-    device = 0 if torch.cuda.is_available() else -1
+    device = ("cuda:0" if torch.cuda.is_available() else
+              "mps" if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available() else "cpu")
     import transformers
     import vaderSentiment
     from transformers import pipeline
@@ -49,7 +50,7 @@ def main() -> int:
     if missing:
         raise SystemExit(f"arms missing: {missing}")
     texts = {h(t): t for a in ARMS for t in arms[a]["texts"]}
-    print(f"{len(ARMS)} arms, {len(texts)} unique texts")
+    print(f"{len(ARMS)} arms, {len(texts)} unique texts, device {device}")
     va = SentimentIntensityAnalyzer()
     vader = {k: va.polarity_scores(t)["compound"] for k, t in texts.items()}
     clf = pipeline("text-classification", model=REGARD, revision=REGARD_REV, top_k=None, truncation=True,
@@ -65,7 +66,7 @@ def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
         "regard_model": REGARD, "regard_revision": REGARD_REV, "regard_max_tokens": 512, "vader": "compound, full text",
-        "env": {"device": "cuda" if device == 0 else f"cpu x{torch.get_num_threads()}", "torch": torch.__version__, "transformers": transformers.__version__,
+        "env": {"device": device if device != "cpu" else f"cpu x{torch.get_num_threads()}", "torch": torch.__version__, "transformers": transformers.__version__,
                 "vaderSentiment": getattr(vaderSentiment, "__version__", "unknown")},
         "arms": {a: [h(t) for t in arms[a]["texts"]] for a in ARMS},
         "scores_by_hash": {k: {"vader": vader[k], "regard": regard[k]} for k in keys}}))
