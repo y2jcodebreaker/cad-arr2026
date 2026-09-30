@@ -28,6 +28,8 @@ GATE_MISS, GATE_U, GATE_RHO = 0.10, 0.10, 0.5
 ECHO_MAX, DQ_MIN, U_MAX = 0.25, -1.0, 0.10
 SIDE_BAND, PPL_MAX = 0.10, 0.05
 DRIFT_MIN = 0.95          # A9-A5: identical-text share needed to keep the registered references
+# A9-A1 item 3: the J3 arm set A9 is scored on, pinned (later experiments add arms to m1_arms.J3_ARMS)
+A9_J3 = tuple(a for a in m1_arms.J3_ARMS if a not in m1_arms.A10_ARMS + m1_arms.A11_ARMS)
 RERUN = {"unsteered_s42": "unsteered_rerun", "neutral_s42": "neutral_rerun", "fc_remove_a1": "fc_remove_a1_rerun"}
 
 
@@ -81,7 +83,7 @@ def main(argv=None) -> int:
     g1 = {"missing_rate": float(np.mean([v is None for v in u42])), "u_rate": float(np.mean([v == "U" for v in u42]))}
     g1["pass"] = g1["missing_rate"] <= GATE_MISS and g1["u_rate"] <= GATE_U
     R["GA9_1"] = g1
-    keys3 = {r["key"] for r in load_records(base / "m1_judge_mistral.json")} | \
+    keys3 = {r["key"] for r in load_records(base / "m1_judge_mistral.json") if r["arm"] in A9_J3} | \
             {r["key"] for r in load_records(base / "m1_judge_mistral_fresh.json")}
     g2 = {}
     for j in M1J:
@@ -101,7 +103,7 @@ def main(argv=None) -> int:
     qj3["outcome"] = ("not scored: a J3 gate (GA9-1 / GA9-2) failed" if not (g1["pass"] and g2["pass"]) else
                       "(a) the reduction holds on a judge never used for fitting" if e < 0 and lo_hi[1] < 0 else
                       "(b) not confirmed" if e < 0 else "(c) contradicted")
-    qj3["all_arms"] = {a: bootstat(d3(a), nonhc, boots) for a in m1_arms.J3_ARMS
+    qj3["all_arms"] = {a: bootstat(d3(a), nonhc, boots) for a in A9_J3
                        if a in num["mistral"] and arms.get(a, {}).get("side") == "disability" and a != "unsteered_s42"}
     qj3["Q1_gap_disability_minus_neutral"] = bootstat(d3("unsteered_s42", "neutral_s42"), nonhc, boots)
     qj3["fresh"] = {a: bootstat(lambda idx, a=a: paired_mean(fnum["mistral"][a], fnum["mistral"]["fresh_unsteered"], idx),
