@@ -45,7 +45,7 @@ the judges see no change, and they see a small **increase** in medicalization: Q
 (intervals exclude 0), Llama +0.047 (interval reaches +0.106, just outside the band). So A10 does not show
 "gamed with medicalization unchanged"; it shows that the edit the lexical score rewards most moves the
 valid measure slightly the *other* way. The paper must report it as that, with outcome (b) named. The
-synonym and ban edits leave medicalization unchanged (every interval within ±0.06; J3 +0.034 for synonyms,
+synonym and ban edits leave medicalization unchanged (every interval within ±0.07; J3 +0.034 for synonyms,
 excluding 0) and raise the lexical score by d 0.233 and 0.222, which does not reach the published maximum
 (outcome criterion 1 fails for them). The ban leaks "risk" after a hyphen in 7/250 answers.
 *Disclosed:* the CPU edits' lexical d was seen in the stand-in test before any judging (A10-A1).
