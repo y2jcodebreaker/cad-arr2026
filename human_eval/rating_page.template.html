@@ -1,0 +1,262 @@
+<title>Medicalization Ratings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<style>
+:root {
+  --ground: #f4f6f3; --surface: #ffffff; --ink: #1c2420; --muted: #5a675f; --rule: #d6ddd7;
+  --accent: #2e6b5b; --accent-ink: #ffffff; --accent-soft: #e2eee9; --warn: #8a5a12; --warn-soft: #f6ecd9;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #111613; --surface: #182019; --ink: #e4ebe6; --muted: #9aa89f; --rule: #2b3530;
+    --accent: #7cc2ab; --accent-ink: #0e1512; --accent-soft: #1f3129; --warn: #e2b56b; --warn-soft: #2e2618;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #111613; --surface: #182019; --ink: #e4ebe6; --muted: #9aa89f; --rule: #2b3530;
+  --accent: #7cc2ab; --accent-ink: #0e1512; --accent-soft: #1f3129; --warn: #e2b56b; --warn-soft: #2e2618;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font: 15px/1.55 var(--sans); padding-inline: 16px; padding-block: 0 48px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--ground); border-bottom: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding-block: 12px; }
+header h1 { font: 600 17px/1.2 var(--sans); margin: 0; letter-spacing: .01em; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; color: var(--muted); font-size: 13px; }
+.meta .code { font-family: var(--mono); color: var(--ink); }
+.bar { width: 160px; max-width: 40vw; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+button { font: inherit; }
+.btn { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 9px 16px; cursor: pointer; font-weight: 500; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:focus-visible, .rate:focus-visible, .linkbtn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.notice { background: var(--warn-soft); color: var(--ink); border-left: 3px solid var(--warn); padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+
+/* guide */
+.guide { max-width: 72ch; margin: 28px auto 0; }
+.guide h2 { font: 600 19px/1.3 var(--sans); margin: 28px 0 8px; text-wrap: balance; }
+.guide p, .guide li { font-size: 15.5px; }
+.guide ul { padding-left: 20px; }
+.guide code { font-family: var(--mono); font-size: 13px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+tr:last-child td { border-bottom: 0; }
+th { font-weight: 600; color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; }
+.start { margin: 28px 0 8px; padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; display: grid; gap: 14px; }
+.start fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.start legend { font-weight: 600; margin-bottom: 6px; }
+.start label { display: inline-flex; gap: 8px; align-items: center; font-family: var(--mono); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* rating view */
+.grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
+@media (min-width: 960px) { .grid { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; } .side { position: sticky; top: 76px; } }
+.kicker { font: 500 12px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.q { background: var(--accent-soft); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
+.q p { margin: 0; font: 600 17px/1.45 var(--sans); text-wrap: balance; }
+.answer { margin-top: 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; }
+.answer .text { font: 16px/1.7 var(--serif); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 72ch; }
+.side { display: grid; gap: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+.rates { display: grid; gap: 8px; }
+.rate { display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center; text-align: left; border: 1px solid var(--rule);
+  background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 10px; cursor: pointer; }
+.rate b { font: 600 18px/1 var(--mono); text-align: center; }
+.rate span { font-size: 13.5px; line-height: 1.35; }
+.rate[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.nav { display: flex; gap: 10px; justify-content: space-between; }
+.hint { color: var(--muted); font-size: 12.5px; }
+.rubric { font-size: 13px; line-height: 1.5; white-space: pre-wrap; color: var(--ink); margin: 0; font-family: var(--sans); }
+
+/* done */
+.done { max-width: 72ch; margin: 28px auto 0; display: grid; gap: 16px; }
+.done h2 { font: 600 22px/1.3 var(--sans); margin: 0; }
+textarea { width: 100%; min-height: 160px; font: 12px/1.45 var(--mono); background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 10px; }
+.missing { display: flex; flex-wrap: wrap; gap: 6px; }
+.missing button { font: 12px var(--mono); }
+@media (prefers-reduced-motion: no-preference) { .bar > i { transition: width .2s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Medicalization Ratings</h1>
+    <div class="meta">
+      <span id="phaseLabel">Guide</span>
+      <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+      <span id="rCode" class="code"></span>
+      <button class="linkbtn" id="showGuide" type="button" hidden>Guide</button>
+    </div>
+  </header>
+
+  <section id="vGuide" class="guide">
+    <div id="storageNote" class="notice" hidden>This browser is not saving your progress. Please finish in one sitting, or copy your ratings from the last screen before you close the page.</div>
+    {{GUIDE}}
+    <form class="start" id="startForm">
+      <fieldset>
+        <legend>Your rater code (given to you with the link)</legend>
+        <label><input type="radio" name="rater" id="raterR1" value="R1"> R1</label>
+        <label><input type="radio" name="rater" id="raterR2" value="R2"> R2</label>
+      </fieldset>
+      <div class="row">
+        <button class="btn primary" id="startBtn" type="submit" disabled>Start with 3 practice answers</button>
+        <span class="hint" id="resumeHint"></span>
+      </div>
+    </form>
+  </section>
+
+  <section id="vRate" hidden>
+    <div class="grid">
+      <article>
+        <div class="q"><span class="kicker" id="itemLabel">Question</span><p id="qText"></p></div>
+        <div class="answer"><span class="kicker">Answer</span><div class="text" id="aText"></div></div>
+      </article>
+      <aside class="side">
+        <div class="panel">
+          <span class="kicker">Your rating</span>
+          <div class="rates" role="group" aria-label="Rating">
+            <button class="rate" type="button" data-v="0" id="rate0"><b>0</b><span>No medical framing</span></button>
+            <button class="rate" type="button" data-v="1" id="rate1"><b>1</b><span>One passing medical suggestion or mention</span></button>
+            <button class="rate" type="button" data-v="2" id="rate2"><b>2</b><span>Repeated or prominent medical framing</span></button>
+            <button class="rate" type="button" data-v="3" id="rate3"><b>3</b><span>Mainly medical advice rather than an answer</span></button>
+            <button class="rate" type="button" data-v="U" id="rateU"><b>U</b><span>Not a usable answer</span></button>
+          </div>
+          <div class="nav">
+            <button class="btn" id="backBtn" type="button">Back</button>
+            <button class="btn primary" id="nextBtn" type="button" disabled>Next</button>
+          </div>
+          <span class="hint">Keys: 0 1 2 3 U to rate, Enter for next, ← to go back.</span>
+        </div>
+        <div class="panel">
+          <span class="kicker">Rubric</span>
+          <pre class="rubric">{{RUBRIC}}</pre>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="vDone" class="done" hidden>
+    <h2 id="doneTitle">All answers rated</h2>
+    <p id="doneText"></p>
+    <div id="missingWrap" hidden><p>Not rated yet (click to go there):</p><div class="missing" id="missing"></div></div>
+    <p>Copy the text below and send it to the person who gave you the link. That is how your ratings reach the study.</p>
+    <textarea id="export" readonly aria-label="Your ratings"></textarea>
+    <div class="row">
+      <button class="btn primary" id="copyBtn" type="button">Copy my ratings</button>
+      <button class="btn" id="reviewBtn" type="button">Review my answers</button>
+      <span class="hint" id="copyMsg" role="status"></span>
+    </div>
+  </section>
+</div>
+
+<script id="data" type="application/json">{{DATA}}</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById("data").textContent);
+  const byId = Object.fromEntries([...D.practice, ...D.items].map(x => [x.id, x]));
+  const NP = D.practice.length, NI = D.items.length;
+  const $ = id => document.getElementById(id);
+  let S = null;                     // {rater, pos, ratings, times, started}
+  let storageOK = true;
+
+  const key = r => `a12:${D.sha}:${r}`;
+  function load(r) { try { const s = localStorage.getItem(key(r)); return s ? JSON.parse(s) : null; } catch (e) { storageOK = false; return null; } }
+  function save() { try { localStorage.setItem(key(S.rater), JSON.stringify(S)); } catch (e) { storageOK = false; $("storageNote").hidden = false; } }
+  try { localStorage.setItem("a12:probe", "1"); localStorage.removeItem("a12:probe"); } catch (e) { storageOK = false; }
+  if (!storageOK) $("storageNote").hidden = false;
+
+  const seq = () => [...D.practice.map(p => p.id), ...D.orders[S.rater]];
+  const ratedMain = () => D.orders[S.rater].filter(id => S.ratings[id] !== undefined).length;
+
+  function show(view) {
+    for (const v of ["vGuide", "vRate", "vDone"]) $(v).hidden = v !== view;
+    $("showGuide").hidden = !S || view === "vGuide";
+    window.scrollTo(0, 0);
+  }
+  function header() {
+    if (!S) { $("phaseLabel").textContent = "Guide"; $("barFill").style.width = "0%"; $("rCode").textContent = ""; return; }
+    $("rCode").textContent = S.rater;
+    const n = ratedMain();
+    $("barFill").style.width = `${(100 * n / NI).toFixed(1)}%`;
+    $("phaseLabel").textContent = S.pos < NP ? `Practice ${S.pos + 1} of ${NP}` :
+      (S.pos < NP + NI ? `Answer ${S.pos - NP + 1} of ${NI}` : `${n} of ${NI} rated`);
+  }
+  function render() {
+    const ids = seq();
+    if (S.pos >= ids.length) return finish();
+    const it = byId[ids[S.pos]];
+    $("itemLabel").textContent = S.pos < NP ? `Practice question ${S.pos + 1}` : "Question";
+    $("qText").textContent = it.question;
+    $("aText").textContent = it.answer;
+    const v = S.ratings[it.id];
+    document.querySelectorAll(".rate").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+    $("nextBtn").disabled = v === undefined;
+    $("backBtn").disabled = S.pos === 0;
+    header(); show("vRate");
+  }
+  function rate(v) {
+    const id = seq()[S.pos];
+    S.ratings[id] = v; S.times[id] = new Date().toISOString(); save(); render();
+  }
+  function go(d) { S.pos = Math.max(0, S.pos + d); save(); render(); }
+  function exportText() {
+    const main = Object.fromEntries(D.orders[S.rater].filter(id => S.ratings[id] !== undefined).map(id => [id, S.ratings[id]]));
+    const prac = Object.fromEntries(D.practice.map(p => [p.id, S.ratings[p.id] ?? null]));
+    return JSON.stringify({ study: "A12", items: D.sha, rater: S.rater, n_rated: Object.keys(main).length, n_items: NI,
+      started: S.started, exported: new Date().toISOString(), ratings: main, practice: prac, times: S.times });
+  }
+  function finish() {
+    const ids = D.orders[S.rater], miss = ids.filter(id => S.ratings[id] === undefined);
+    $("doneTitle").textContent = miss.length ? "Almost done" : "All answers rated";
+    $("doneText").textContent = miss.length ? `You have rated ${NI - miss.length} of ${NI} answers.` : `Thank you. You rated all ${NI} answers.`;
+    $("missingWrap").hidden = !miss.length;
+    $("missing").replaceChildren(...miss.map(id => { const b = document.createElement("button"); b.className = "btn"; b.type = "button";
+      const k = ids.indexOf(id); b.textContent = `#${k + 1}`; b.onclick = () => { S.pos = NP + k; save(); render(); }; return b; }));
+    $("export").value = exportText();
+    header(); show("vDone");
+  }
+
+  // guide / start
+  const radios = [$("raterR1"), $("raterR2")];
+  radios.forEach(r => r.addEventListener("change", () => {
+    $("startBtn").disabled = false;
+    const prev = load(r.value);
+    $("startBtn").textContent = prev ? "Continue where you left off" : `Start with ${NP} practice answers`;
+    $("resumeHint").textContent = prev ? `${Object.keys(prev.ratings).filter(k => !k.startsWith("p")).length} of ${NI} already rated in this browser.` : "";
+  }));
+  $("startForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const r = radios.find(x => x.checked); if (!r) return;
+    S = load(r.value) || { rater: r.value, pos: 0, ratings: {}, times: {}, started: new Date().toISOString() };
+    save(); render();
+  });
+  $("showGuide").addEventListener("click", () => { header(); show("vGuide"); });
+  document.querySelectorAll(".rate").forEach(b => b.addEventListener("click", () => rate(b.dataset.v)));
+  $("nextBtn").addEventListener("click", () => go(1));
+  $("backBtn").addEventListener("click", () => go(-1));
+  $("reviewBtn").addEventListener("click", () => { S.pos = NP; save(); render(); });
+  $("copyBtn").addEventListener("click", () => {
+    const t = $("export").value;
+    const done = ok => { $("copyMsg").textContent = ok ? "Copied. Paste it into a message." : "Copy did not work here: select the text above and copy it."; };
+    try { navigator.clipboard.writeText(t).then(() => done(true), () => { $("export").select(); done(false); }); }
+    catch (e) { $("export").select(); done(false); }
+  });
+  document.addEventListener("keydown", e => {
+    if ($("vRate").hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.toUpperCase();
+    if (["0", "1", "2", "3", "U"].includes(k)) { e.preventDefault(); rate(k); }
+    else if (e.key === "Enter" && !$("nextBtn").disabled) { e.preventDefault(); go(1); }
+    else if (e.key === "ArrowLeft" && S.pos > 0) { e.preventDefault(); go(-1); }
+  });
+  header();
+
+})();
+</script>
